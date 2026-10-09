@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation/Tauri2 Documentation.md",
+                "file": "Documentation/OpenAPI Documentation.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Tauri2 Documentation"
+              "title": "OpenAPI Documentation"
             }
           }
         ],
@@ -202,23 +202,27 @@
   },
   "active": "b5996c264898d6d3",
   "lastOpenFiles": [
+    "Prototypes/openai-prototype/target/debug/deps/openai_prototype-a38b6017bf58b2d2",
+    "Prototypes/openai-prototype/target/debug/deps/openai_prototype-a38b6017bf58b2d2.tmp94994d8",
+    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9/symbols.o",
+    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9/raw-dylibs",
+    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9",
+    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/work-products.bin",
+    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/query-cache.bin",
+    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/ekrv3d6zyc6yvzmuw9f5ek055.o",
+    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/edinjr1eazf07egprh23r5d0b.o",
+    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/e631z0lc6hzjza0fsdw5pedzq.o",
+    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/dep-graph.bin",
+    "Documentation/Tauri2 Documentation.md",
     "Documentation/UI-Mock-Up.jpg",
     "Documentation/Color Guide.md",
-    "Prototypes",
     "Info/Mascot Info.md",
-    "Documentation/Tauri2 Documentation.md",
     "Documentation/Wiktapi Documentation.md",
-    "Causerie",
     "README.md",
-    "LICENSE",
     "Documentation/OpenAPI Documentation.md",
     "Pasted image 20260813082040.png",
     "Pasted image 20260813082036.png",
     "Info/Overview.md",
-    "Info/Capstone Proposal FIRST DRAFT.docx.pdf",
-    "Info/FINAL Capstone Proposal - Lily McClellan.pdf",
-    "Info/Capstone Proposal - Lily McClellan.docx.pdf",
-    "Documentation",
     "Overview.md",
     "REQUIREMENTS.md",
     "Bienvenue.md"
