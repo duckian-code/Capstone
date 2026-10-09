@@ -1,15 +1,19 @@
 {
   "name": "xstate-pixijs-prototype",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "keywords": [],
-  "type": "commonjs",
   "devDependencies": {
-    "@types/node": "^26.6.4",
-    "typescript": "^7.0.2"
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
+  },
+  "dependencies": {
+    "pixi.js": "^8.22.0",
+    "xstate": "^5.33.2"
   }
 }
