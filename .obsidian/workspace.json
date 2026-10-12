@@ -22,17 +22,17 @@
             }
           },
           {
-            "id": "b5996c264898d6d3",
+            "id": "de14ac3474d5ef83",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation/OpenAPI Documentation.md",
+                "file": "Prototypes/Prototype Notes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "OpenAPI Documentation"
+              "title": "Prototype Notes"
             }
           }
         ],
@@ -191,35 +191,35 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "canvas:Créer un nouveau canvas": false,
       "switcher:Ouvrir le sélecteur rapide": false,
       "graph:Ouvrir la vue graphique": false,
-      "canvas:Créer une nouvelle toile": false,
       "daily-notes:Ouvrir la note quotidienne": false,
       "templates:Insérer le modèle": false,
       "command-palette:Ouvrir la palette de commandes": false,
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "b5996c264898d6d3",
+  "active": "de14ac3474d5ef83",
   "lastOpenFiles": [
-    "Prototypes/openai-prototype/target/debug/deps/openai_prototype-a38b6017bf58b2d2",
-    "Prototypes/openai-prototype/target/debug/deps/openai_prototype-a38b6017bf58b2d2.tmp94994d8",
-    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9/symbols.o",
-    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9/raw-dylibs",
-    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/work-products.bin",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/query-cache.bin",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/ekrv3d6zyc6yvzmuw9f5ek055.o",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/edinjr1eazf07egprh23r5d0b.o",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/e631z0lc6hzjza0fsdw5pedzq.o",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/dep-graph.bin",
+    "Documentation/Wiktapi Documentation.md",
+    "Prototypes/Prototype Notes.md",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-2dv6ejodx7oud/s-hn223g5gjh-1a7z1cm-1cd7w3n1dacu0pc1gbeub460m/work-products.bin",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-2dv6ejodx7oud/s-hn223g5gjh-1a7z1cm-1cd7w3n1dacu0pc1gbeub460m/query-cache.bin",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-2dv6ejodx7oud/s-hn223g5gjh-1a7z1cm-1cd7w3n1dacu0pc1gbeub460m/dep-graph.bin",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-2dv6ejodx7oud/s-hn223g5gjh-1a7z1cm-1cd7w3n1dacu0pc1gbeub460m",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-0u0eyh75o3kr2/s-hn223g5gjf-16qikb1-8fri9y6lv13m5asa5k9jra40w/work-products.bin",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-0u0eyh75o3kr2/s-hn223g5gjf-16qikb1-8fri9y6lv13m5asa5k9jra40w/query-cache.bin",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-0u0eyh75o3kr2/s-hn223g5gjf-16qikb1-8fri9y6lv13m5asa5k9jra40w/dep-graph.bin",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-0u0eyh75o3kr2/s-hn223g5gjf-16qikb1-8fri9y6lv13m5asa5k9jra40w",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-0u0eyh75o3kr2/s-hn223g5gjf-16qikb1-working/work-products.bin",
+    "Prototypes/wiktapi-prototype/target/debug/incremental/wiktapi_prototype-0u0eyh75o3kr2/s-hn223g5gjf-16qikb1-working/query-cache.bin",
+    "Documentation/OpenAPI Documentation.md",
     "Documentation/Tauri2 Documentation.md",
     "Documentation/UI-Mock-Up.jpg",
     "Documentation/Color Guide.md",
     "Info/Mascot Info.md",
-    "Documentation/Wiktapi Documentation.md",
     "README.md",
-    "Documentation/OpenAPI Documentation.md",
     "Pasted image 20260813082040.png",
     "Pasted image 20260813082036.png",
     "Info/Overview.md",
