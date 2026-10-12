@@ -1,60 +1,83 @@
-import './style.css'
-import heroImg from './assets/hero.png'
-import typescriptLogo from './assets/typescript.svg'
-import viteLogo from './assets/vite.svg'
-import { setupCounter } from './counter.ts'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-<section id="center">
-  <div class="hero">
-    <img src="${heroImg}" class="base" width="170" height="179">
-    <img src="${typescriptLogo}" class="framework" alt="TypeScript logo"/>
-    <img src="${viteLogo}" class="vite" alt="Vite logo" />
-  </div>
-  <div>
-    <h1>Get started</h1>
-    <p>Edit <code>src/main.ts</code> and save to test <code>HMR</code></p>
-  </div>
-  <button id="counter" type="button" class="counter"></button>
-</section>
+import "./style.css";
 
-<div class="ticks"></div>
+import { Application, Assets, Sprite, Texture } from "pixi.js";
+import { createActor } from "xstate";
+import { mascotMachine } from "./mascotMachine";
 
-<section id="next-steps">
-  <div id="docs">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#documentation-icon"></use></svg>
-    <h2>Documentation</h2>
-    <p>Your questions, answered</p>
-    <ul>
-      <li>
-        <a href="https://vite.dev/" target="_blank">
-          <img class="logo" src="${viteLogo}" alt="" />
-          Explore Vite
-        </a>
-      </li>
-      <li>
-        <a href="https://www.typescriptlang.org" target="_blank">
-          <img class="button-icon" src="${typescriptLogo}" alt="">
-          Learn more
-        </a>
-      </li>
-    </ul>
-  </div>
-  <div id="social">
-    <svg class="icon" role="presentation" aria-hidden="true"><use href="/icons.svg#social-icon"></use></svg>
-    <h2>Connect with us</h2>
-    <p>Join the Vite community</p>
-    <ul>
-      <li><a href="https://github.com/vitejs/vite" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#github-icon"></use></svg>GitHub</a></li>
-      <li><a href="https://chat.vite.dev/" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#discord-icon"></use></svg>Discord</a></li>
-      <li><a href="https://x.com/vite_js" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#x-icon"></use></svg>X.com</a></li>
-      <li><a href="https://bsky.app/profile/vite.dev" target="_blank"><svg class="button-icon" role="presentation" aria-hidden="true"><use href="/icons.svg#bluesky-icon"></use></svg>Bluesky</a></li>
-    </ul>
-  </div>
-</section>
+async function main() {
+    // Initialize PixiJS
+    const app = new Application();
 
-<div class="ticks"></div>
-<section id="spacer"></section>
-`
+    // PixiJS requires async initialization
+    await app.init({
+        width: 400,
+        height: 300,
+        backgroundColor: 0x292c32,
+    });
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+    document.querySelector<HTMLDivElement>("#mascot")!
+        .appendChild(app.canvas);
+
+    // Load both assets once
+    const idleTexture = await Assets.load<Texture>(
+        "/assets/idle.png"
+    );
+
+    const happyTexture = await Assets.load<Texture>(
+        "/assets/happy.png"
+    );
+
+    // Create a single sprite
+    const mascot = new Sprite(idleTexture);
+
+    mascot.anchor.set(0.5);
+    mascot.position.set(200, 150);
+    mascot.scale.set(3);
+
+    // Preserve crisp pixel art
+    idleTexture.source.scaleMode = "nearest";
+    happyTexture.source.scaleMode = "nearest";
+
+    app.stage.addChild(mascot);
+
+    // Create XState actor
+    const actor = createActor(mascotMachine);
+
+    const status = document.querySelector("#status")!;
+
+    // React to state changes
+    function updateMascot(state: string) {
+        status.textContent = `Current state: ${state}`;
+
+        switch (state) {
+            case "idle":
+                mascot.texture = idleTexture;
+                break;
+
+            case "happy":
+                mascot.texture = happyTexture;
+                break;
+        }
+    }
+
+    // IMPORTANT EXPOSES AND SUBSCRIBES TO CHANGES
+    actor.subscribe((snapshot) => {
+        updateMascot(String(snapshot.value));
+    });
+
+    actor.start();
+
+    // Connect UI buttons to state machine
+    document.querySelector("#happy")!
+        .addEventListener("click", () => {
+            actor.send({ type: "MAKE_HAPPY" });
+        });
+
+    document.querySelector("#idle")!
+        .addEventListener("click", () => {
+            actor.send({ type: "MAKE_IDLE" });
+        });
+}
+
+main().catch(console.error);
