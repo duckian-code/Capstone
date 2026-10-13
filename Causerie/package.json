@@ -15,6 +15,7 @@
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-shell": "^2.5.0",
     "@tauri-apps/plugin-sql": "^2.5.0",
+    "@tauri-apps/plugin-stronghold": "^2.4.0",
     "pixi.js": "^8.22.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

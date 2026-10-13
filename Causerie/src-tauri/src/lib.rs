@@ -8,6 +8,8 @@ use openai_rust_sdk::{
 };
 use serde::Serialize;
 use tauri::ipc::Channel;
+use tauri::Manager;
+use tauri_plugin_sql::{Migration, MigrationKind};
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 // Messages from Rust to React
@@ -59,13 +61,10 @@ async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result
     // TODO: make model integration by configuration instead of hardcode
     let request = CreateResponseRequest::new_text("gpt-4o-mini", message);
 
-    let mut stream = client
-        .stream_response_v2(&request)
-        .await
-        .map_err(|e| {
-            log::error!("OpenAI request failed: {e}");
-            CommandError::app(e.to_string())
-        })?;
+    let mut stream = client.stream_response_v2(&request).await.map_err(|e| {
+        log::error!("OpenAI request failed: {e}");
+        CommandError::app(e.to_string())
+    })?;
 
     let mut completed = false;
     let mut received_text = false;
@@ -115,21 +114,48 @@ use tauri_plugin_log::{Target, TargetKind};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let migrations = vec![Migration {
+        version: 1,
+        description: "mvp_schema",
+        sql: include_str!("../migrations/0001_mvp.sql"),
+        kind: MigrationKind::Up,
+    }];
+
     tauri::Builder::default()
+        .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())
         .plugin(
             tauri_plugin_log::Builder::new()
                 .level(tauri_plugin_log::log::LevelFilter::Debug) // TODO: CHANGE TO Info or Warn for PROD
                 .targets([
                     Target::new(TargetKind::Stdout),
-                    Target::new(TargetKind::LogDir { file_name: None, }),
+                    Target::new(TargetKind::LogDir { file_name: None }),
                     Target::new(TargetKind::Webview),
                 ])
                 .build(),
         )
-        .plugin(tauri_plugin_sql::Builder::new().build())
+        .plugin(
+            tauri_plugin_sql::Builder::default()
+                .add_migrations("sqlite:causerie.db", migrations)
+                .build(),
+        )
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![send_message])
+        .setup(|app| {
+            let local_data_dir = app
+                .path()
+                .app_local_data_dir()?;
+
+            std::fs::create_dir_all(&local_data_dir)?;
+
+            let salt_path = local_data_dir.join("stronghold.salt");
+
+            app.handle().plugin(
+                tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build()
+            )?;
+
+            Ok(())
+        })
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
