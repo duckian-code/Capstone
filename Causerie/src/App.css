@@ -46,6 +46,41 @@
   justify-content: center;
 }
 
+.error-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  max-width: 380px;
+  padding: 14px 18px;
+
+  /**TODO: MATCH TO THEME**/
+  background: #442b35;
+  border: 1px solid #bb7485;
+  border-radius: 10px;
+  color: #f8aeee;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.error-toast button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.error-toast button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
 a {
   font-weight: 500;
   color: #646cff;

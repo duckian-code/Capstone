@@ -1,61 +1,131 @@
 use dotenv::dotenv;
-use openai_api_rust::chat::{ChatApi, ChatBody};
-use openai_api_rust::{Auth, Message, OpenAI, Role};
 use std::env;
+// use std::process::Command;
+use futures::StreamExt;
+use openai_rust_sdk::{
+    client::OpenAIClient,
+    models::responses_v2::{CreateResponseRequest, ResponseStreamEvent},
+};
+use serde::Serialize;
+use tauri::ipc::Channel;
+// use tauri::utils::config::CustomSignCommandConfig::Command;
 
-#[tauri::command]
-async fn send_message(message: String) -> Result<String, String> {
-    let message = message.trim().to_owned();
+// Messages from Rust to React
+#[derive(Clone, Serialize)]
+#[serde(tag = "event", content = "data", rename_all = "camelCase")]
+enum StreamEvent {
+    Chunk { text: String },
+}
 
-    if message.is_empty() {
-        return Err("Please enter a message.".to_owned());
+// Structured errors from Rust to React
+#[derive(Debug, Serialize)]
+struct CommandError {
+    kind: &'static str,
+    message: String,
+}
+// IMPL SEPARATES OPENAI ERRORS (delivered to mascot) from APP ERRORS (delivered via toast)
+impl CommandError {
+    fn app(message: impl Into<String>) -> Self {
+        Self {
+            kind: "app",
+            message: message.into(),
+        }
     }
 
-    tauri::async_runtime::spawn_blocking(move || {
-        dotenv().ok();
-        let api_key = env::var("API_KEY")
-            .ok()
-            .filter(|key| !key.trim().is_empty())
-            .ok_or_else(|| "API_KEY is not set. Add it to the project's .env file.".to_owned())?;
-
-        let openai = OpenAI::new(Auth::new(&api_key), "https://api.openai.com/v1/");
-        let request = ChatBody {
-            model: "gpt-4o-mini".to_owned(),
-            max_tokens: Some(256),
-            temperature: Some(0.7),
-            top_p: None,
-            n: Some(1),
-            stream: Some(false),
-            stop: None,
-            presence_penalty: None,
-            frequency_penalty: None,
-            logit_bias: None,
-            user: None,
-            messages: vec![Message {
-                role: Role::User,
-                content: message,
-            }],
-        };
-
-        let response = openai
-            .chat_completion_create(&request)
-            .map_err(|error| format!("OpenAI request failed: {error:?}"))?;
-
-        response
-            .choices
-            .first()
-            .and_then(|choice| choice.message.as_ref())
-            .map(|message| message.content.clone())
-            .filter(|content| !content.trim().is_empty())
-            .ok_or_else(|| "OpenAI returned an empty response.".to_owned())
-    })
-        .await
-        .map_err(|error| format!("OpenAI task failed: {error}"))?
+    fn openai(message: impl Into<String>) -> Self {
+        Self {
+            kind: "openai",
+            message: message.into(),
+        }
+    }
 }
+
+#[tauri::command]
+async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result<(), CommandError> {
+    log::info!("OpenAI request started");
+
+    let message = message.trim();
+
+    if message.is_empty() {
+        return Err(CommandError::app("Please enter a message."));
+    }
+
+    dotenv().ok();
+
+    let api_key = env::var("API_KEY").map_err(|_| CommandError::app("API_KEY is not set!"))?;
+
+    let client = OpenAIClient::new(api_key).map_err(|e| CommandError::app(e.to_string()))?;
+
+    // TODO: make model integration by configuration instead of hardcode
+    let request = CreateResponseRequest::new_text("gpt-4o-mini", message);
+
+    let mut stream = client
+        .stream_response_v2(&request)
+        .await
+        .map_err(|e| {
+            log::error!("OpenAI request failed: {e}");
+            CommandError::app(e.to_string())
+        })?;
+
+    let mut completed = false;
+    let mut received_text = false;
+
+    while let Some(event) = stream.next().await {
+        match event.map_err(|e| CommandError::openai(e.to_string()))? {
+            ResponseStreamEvent::OutputTextDelta { delta, .. } => {
+                if !delta.is_empty() {
+                    received_text = true;
+
+                    on_event
+                        .send(StreamEvent::Chunk { text: delta })
+                        .map_err(|e| CommandError::app(e.to_string()))?;
+                }
+            }
+
+            ResponseStreamEvent::ResponseCompleted { .. } => {
+                completed = true;
+            }
+
+            ResponseStreamEvent::StreamError { error, .. } => {
+                return Err(CommandError::openai(
+                    error
+                        .message
+                        .unwrap_or_else(|| "OpenAI stream error".to_string()),
+                ));
+            }
+
+            _ => {}
+        }
+    }
+
+    if !completed {
+        return Err(CommandError::openai(
+            "Response stream ended without completion.",
+        ));
+    }
+
+    if !received_text {
+        return Err(CommandError::openai("API returned no text!"));
+    }
+
+    Ok(())
+}
+
+use tauri_plugin_log::{Target, TargetKind};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .level(tauri_plugin_log::log::LevelFilter::Debug) // TODO: CHANGE TO Info or Warn for PROD
+                .targets([
+                    Target::new(TargetKind::Stdout),
+                    Target::new(TargetKind::LogDir { file_name: None, }),
+                    Target::new(TargetKind::Webview),
+                ])
+                .build(),
+        )
         .plugin(tauri_plugin_sql::Builder::new().build())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
