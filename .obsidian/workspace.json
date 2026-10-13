@@ -8,35 +8,20 @@
         "type": "tabs",
         "children": [
           {
-            "id": "12e8a6b19e93fbf2",
+            "id": "de14ac3474d5ef83",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation/Color Guide.md",
+                "file": "Info/Database Info.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Color Guide"
-            }
-          },
-          {
-            "id": "b5996c264898d6d3",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Documentation/OpenAPI Documentation.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "OpenAPI Documentation"
+              "title": "Database Info"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -191,40 +176,62 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "canvas:Créer un nouveau canvas": false,
       "switcher:Ouvrir le sélecteur rapide": false,
       "graph:Ouvrir la vue graphique": false,
-      "canvas:Créer une nouvelle toile": false,
       "daily-notes:Ouvrir la note quotidienne": false,
       "templates:Insérer le modèle": false,
       "command-palette:Ouvrir la palette de commandes": false,
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "b5996c264898d6d3",
+  "active": "de14ac3474d5ef83",
   "lastOpenFiles": [
-    "Prototypes/openai-prototype/target/debug/deps/openai_prototype-a38b6017bf58b2d2",
-    "Prototypes/openai-prototype/target/debug/deps/openai_prototype-a38b6017bf58b2d2.tmp94994d8",
-    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9/symbols.o",
-    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9/raw-dylibs",
-    "Prototypes/openai-prototype/target/debug/deps/rustcFiZzf9",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/work-products.bin",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/query-cache.bin",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/ekrv3d6zyc6yvzmuw9f5ek055.o",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/edinjr1eazf07egprh23r5d0b.o",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/e631z0lc6hzjza0fsdw5pedzq.o",
-    "Prototypes/openai-prototype/target/debug/incremental/openai_prototype-04ktoh8h62kq0/s-hn1ed7ff59-1m7p9su-as8ck6ly07vlyon7jijp7srsb/dep-graph.bin",
-    "Documentation/Tauri2 Documentation.md",
-    "Documentation/UI-Mock-Up.jpg",
-    "Documentation/Color Guide.md",
-    "Info/Mascot Info.md",
-    "Documentation/Wiktapi Documentation.md",
-    "README.md",
-    "Documentation/OpenAPI Documentation.md",
-    "Pasted image 20260813082040.png",
-    "Pasted image 20260813082036.png",
+    "Prototypes/Prototype Notes.md",
+    "Info/Database Info.md",
     "Info/Overview.md",
-    "Overview.md",
-    "REQUIREMENTS.md",
-    "Bienvenue.md"
+    "Causerie/src-tauri/target/debug/causerie.d",
+    "Causerie/src-tauri/target/debug/libcauserie_lib.d",
+    "Causerie/src-tauri/target/debug/causerie",
+    "Causerie/src-tauri/target/debug/deps/causerie-a7337c54760592bd",
+    "Causerie/src-tauri/target/debug/incremental/causerie-02g6uf5i140g3/s-hn5hq33igo-0k576g5-16txrncd9v4bgebgdqx6zdlu1/work-products.bin",
+    "Causerie/src-tauri/target/debug/incremental/causerie-02g6uf5i140g3/s-hn5hq33igo-0k576g5-16txrncd9v4bgebgdqx6zdlu1/query-cache.bin",
+    "Causerie/src-tauri/target/debug/incremental/causerie-02g6uf5i140g3/s-hn5hq33igo-0k576g5-16txrncd9v4bgebgdqx6zdlu1/ek43aoj10sxpv2mhabzjfktcj.o",
+    "Causerie/src-tauri/target/debug/incremental/causerie-02g6uf5i140g3/s-hn5hq33igo-0k576g5-16txrncd9v4bgebgdqx6zdlu1/dep-graph.bin",
+    "Causerie/src-tauri/target/debug/incremental/causerie-02g6uf5i140g3/s-hn5hq33igo-0k576g5-16txrncd9v4bgebgdqx6zdlu1/7x018t14vs3zrpnen17d3jhxj.o",
+    "Causerie/src-tauri/target/debug/incremental/causerie-02g6uf5i140g3/s-hn5hq33igo-0k576g5-16txrncd9v4bgebgdqx6zdlu1/49f80w5kb2tnhwsd4ri20fign.o",
+    "Causerie/src-tauri/target/debug/build/rust_decimal-37023b9a1db04c49/out/README-lib.md",
+    "Causerie/src-tauri/target/debug/build/rust_decimal-d58fcfa5751d94a9/out/README-lib.md",
+    "Causerie/node_modules/@tauri-apps/plugin-sql/README.md",
+    "Causerie/node_modules/@tauri-apps/plugin-shell/README.md",
+    "Causerie/node_modules/pixi.js/README.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/transforms.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/scene-management.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/render-groups.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/layers.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/masking.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/container-hierarchy.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/constructor-options.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-mesh/references/mesh.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-mesh/references/mesh-simple.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-mesh/references/mesh-rope.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-mesh/references/mesh-plane.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-mesh/references/mesh-perspective.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/tiling-sprite.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/sprite.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/nineslice-sprite.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/animated-sprite.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-text/references/text.md",
+    "Causerie/node_modules/pixi.js/skills/pixijs-scene-text/references/split-text.md",
+    "Causerie/node_modules/js-binary-schema-parser/example/horses.gif",
+    "Causerie/node_modules/js-binary-schema-parser/example/dog.gif",
+    "Causerie/node_modules/js-binary-schema-parser/example/box.gif",
+    "Causerie/node_modules/gifuct-js/demo/jblack.gif",
+    "Causerie/node_modules/gifuct-js/demo/horses.gif",
+    "Causerie/node_modules/gifuct-js/demo/dog.gif",
+    "Causerie/src-tauri/icons/icon.png",
+    "Causerie/src-tauri/icons/StoreLogo.png",
+    "Causerie/src-tauri/icons/Square89x89Logo.png",
+    "Causerie/src-tauri/icons/Square71x71Logo.png"
   ]
 }

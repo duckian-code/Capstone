@@ -47,3 +47,6 @@ npm run tauri add sql
 
 **Change in Cargo.toml:**
 `tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+
+**RUNNING**:
+`npm run tauri dev`
