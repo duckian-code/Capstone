@@ -4,7 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { Application, Assets, Sprite, Texture } from "pixi.js";
 import { createActor, createMachine } from "xstate";
 import type { ActorRefFrom } from "xstate";
-import "./App.css";
+import "./styles/App.css";
 import { useCallback } from "react";
 import { Channel } from "@tauri-apps/api/core";
 import { ErrorToast} from "./components/ErrorToast.tsx";

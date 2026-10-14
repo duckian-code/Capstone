@@ -1,5 +1,5 @@
 import { BaseDAO, newId, nowIso } from './base';
-import type { Message, MessageRole } from '../models/entities';
+import type { Message, MessageRole } from '../models/dao-types.ts';
 
 export class MessageDAO extends BaseDAO {
     get(id: string) { return this.one<Message>('SELECT * FROM messages WHERE id=$1', [id]); }

@@ -1,5 +1,5 @@
 import { BaseDAO, newId, nowIso } from './base';
-import type { MessageCorrection } from '../models/entities';
+import type { MessageCorrection } from '../models/dao-types.ts';
 
 export class CorrectionDAO extends BaseDAO {
     get(id: string) { return this.one<MessageCorrection>('SELECT * FROM message_corrections WHERE id=$1', [id]); }

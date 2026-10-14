@@ -1,5 +1,5 @@
 import { BaseDAO, newId } from './base';
-import type { User, UserSettings } from '../models/entities';
+import type { User, UserSettings } from '../models/dao-types.ts';
 
 export class UserDAO extends BaseDAO {
     get(id: string) { return this.one<User>('SELECT * FROM users WHERE id = $1', [id]); }

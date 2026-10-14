@@ -1,5 +1,5 @@
 import { BaseDAO, newId, nowIso } from './base';
-import type { Sticky } from '../models/entities';
+import type { Sticky } from '../models/dao-types.ts';
 
 export class StickyDAO extends BaseDAO {
     get(id: string) { return this.one<Sticky>('SELECT * FROM stickies WHERE id=$1', [id]); }

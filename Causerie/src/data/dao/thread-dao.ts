@@ -1,5 +1,5 @@
 import { BaseDAO, newId, nowIso } from './base';
-import type { Thread } from '../models/entities';
+import type { Thread } from '../models/dao-types.ts';
 
 export class ThreadDAO extends BaseDAO {
     get(id: string) { return this.one<Thread>('SELECT * FROM threads WHERE id=$1', [id]); }

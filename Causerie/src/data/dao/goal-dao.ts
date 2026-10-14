@@ -1,5 +1,5 @@
 import { BaseDAO, newId } from './base';
-import type { Goal } from '../models/entities';
+import type { Goal } from '../models/dao-types.ts';
 
 export class GoalDAO extends BaseDAO {
     get(id: string) { return this.one<Goal>('SELECT * FROM goals WHERE id=$1', [id]); }
