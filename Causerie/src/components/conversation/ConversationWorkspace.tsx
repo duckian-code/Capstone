@@ -11,7 +11,7 @@ import { MascotStage } from "./MascotStage";
 import { MessageComposer } from "./MessageComposer";
 import { MessageHistory } from "./MessageHistory";
 import { FeedbackPanel } from "./FeedbackPanel";
-import "./conversation.module.css"
+import "./conversation.css"
 
 interface Props {
     threads: ConversationSummary[];

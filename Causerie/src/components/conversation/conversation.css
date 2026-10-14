@@ -1,0 +1,382 @@
+/* TODO: standardize themes with color scheme planning */
+.cw {
+    --cw-background: #171a1f;
+    --cw-panel: #22262d;
+    --cw-border: #525966;
+    --cw-text: #f2f3f5;
+    --cw-muted: #b7bfcb;
+    --cw-accent: #b7ded7;
+
+    display: grid;
+    grid-template-columns:
+        clamp(170px, 16vw, 240px)
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    width: 100%;
+    height: 100dvh;
+    overflow: hidden;
+
+    background: var(--cw-background);
+    color: var(--cw-text);
+}
+
+.cw,
+.cw * {
+    box-sizing: border-box;
+}
+
+.cw h1,
+.cw h2,
+.cw p,
+.cw blockquote {
+    margin: 0;
+}
+
+.cw h1,
+.cw h2 {
+    text-align: left;
+}
+
+.cw h2 {
+    font-size: 1rem;
+}
+
+.cw button,
+.cw textarea {
+    font: inherit;
+    color: inherit;
+}
+
+.cw button {
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--cw-border);
+    border-radius: 8px;
+    background: var(--cw-panel);
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.cw button:hover:not(:disabled) {
+    border-color: var(--cw-accent);
+}
+
+.cw button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cw :focus-visible {
+    outline: 2px solid var(--cw-accent);
+    outline-offset: 3px;
+}
+
+.cw-muted,
+.cw-message-meta,
+.cw-composer small,
+.cw-conversation-header time {
+    color: var(--cw-muted);
+}
+
+.cw-sidebar,
+.cw-practice,
+.cw-conversation {
+    min-width: 0;
+    min-height: 0;
+}
+
+.cw-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border-right: 1px solid var(--cw-border);
+}
+
+.cw-brand {
+    font-size: 1.4rem;
+}
+
+.cw-thread-nav {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+.cw-thread-list,
+.cw-messages,
+.cw-goals {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cw-thread-list {
+    display: grid;
+    gap: 0.6rem;
+}
+
+.cw-thread {
+    width: 100%;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.cw-thread[aria-current="page"],
+.cw-feedback-button[aria-pressed="true"] {
+    border-color: var(--cw-accent);
+    background: #304943;
+}
+
+.cw-sidebar-footer {
+    font-size: 0.8rem;
+    color: var(--cw-muted);
+}
+
+.cw-practice,
+.cw-conversation {
+    display: grid;
+    grid-template-rows:
+        minmax(110px, auto)
+        minmax(0, 1fr)
+        clamp(170px, 23dvh, 220px);
+}
+
+
+.cw-practice {
+    border-right: 1px solid var(--cw-border);
+}
+
+.cw-context,
+.cw-conversation-header {
+    min-height: 110px;
+    padding: 1rem;
+    border-bottom: 1px solid var(--cw-border);
+    overflow-wrap: anywhere;
+}
+
+.cw-context > *,
+.cw-conversation-header > * {
+    margin-bottom: 0.35rem;
+}
+
+.cw-goals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 1rem;
+    font-size: 0.85rem;
+}
+
+.cw-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    min-height: 0;
+    padding: 1rem;
+    overflow: auto;
+}
+
+.cw-status {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--cw-border);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.cw-mascot {
+    display: grid;
+    place-items: center;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+}
+
+.cw-mascot img,
+.cw-mascot canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.cw-mascot img {
+    width: 220px;
+}
+
+.cw-composer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 0;
+    padding: 0.75rem;
+    border-top: 1px solid var(--cw-border);
+}
+
+.cw-composer label {
+    font-size: 0.85rem;
+}
+
+.cw-composer textarea {
+    flex: 1;
+    min-height: 40px;
+    width: 100%;
+    resize: none;
+    padding: 0.65rem;
+    border: 1px solid var(--cw-border);
+    border-radius: 8px;
+    background: var(--cw-panel);
+}
+
+.cw-composer textarea::placeholder {
+    color: var(--cw-muted);
+}
+
+.cw-composer-footer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.6rem;
+}
+
+.cw-composer-footer small:first-child {
+    flex: 1 1 120px;
+}
+
+.cw-composer small {
+    font-size: 0.7rem;
+}
+
+.cw-history {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1rem;
+    scrollbar-gutter: stable;
+}
+
+.cw-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.cw-message {
+    align-self: flex-start;
+    width: 90%;
+    padding: 0.75rem;
+    border: 1px solid var(--cw-border);
+    border-radius: 12px;
+    background: var(--cw-panel);
+}
+
+.cw-message--user {
+    align-self: flex-end;
+    background: #293b3a;
+}
+
+.cw-message-meta {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.cw-message-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.cw-feedback-button {
+    margin-top: 0.75rem;
+    font-size: 0.75rem !important;
+}
+
+.cw-feedback {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1rem;
+    border-top: 1px solid var(--cw-border);
+}
+
+.cw-feedback h2 {
+    margin-bottom: 0.6rem;
+}
+
+.cw-feedback blockquote {
+    margin-bottom: 0.6rem;
+    padding-left: 0.65rem;
+    border-left: 2px solid var(--cw-accent);
+    color: var(--cw-muted);
+}
+
+.cw-feedback p,
+.cw-feedback blockquote {
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.cw-empty {
+    color: var(--cw-muted);
+    text-align: center;
+}
+
+/* Compact three-column desktop layout. */
+@media (min-width: 761px) and (max-width: 1000px) {
+    .cw {
+        grid-template-columns:
+            150px
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+
+    .cw-sidebar {
+        padding: 0.75rem;
+    }
+}
+
+/* Stacked layout for narrow windows or increased browser zoom. */
+@media (max-width: 760px) {
+    .cw {
+        height: auto;
+        min-height: 100dvh;
+        grid-template-columns: minmax(0, 1fr);
+        overflow: visible;
+    }
+
+    .cw-sidebar,
+    .cw-practice {
+        border-right: 0;
+        border-bottom: 1px solid var(--cw-border);
+    }
+
+    .cw-thread-list {
+        display: flex;
+        overflow-x: auto;
+    }
+
+    .cw-thread-list li {
+        flex: 0 0 150px;
+    }
+
+    .cw-sidebar-footer {
+        display: none;
+    }
+
+    .cw-practice {
+        grid-template-rows: auto 240px 190px;
+    }
+
+    .cw-conversation {
+        grid-template-rows:
+            auto
+            minmax(240px, 50dvh)
+            190px;
+    }
+}
+
+/* Keep messages readable on very wide displays. */
+.cw-message {
+    width: min(90%, 65ch);
+}
