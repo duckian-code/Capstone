@@ -14,6 +14,36 @@ export class UserDAO extends BaseDAO {
         return this.write('UPDATE users SET display_name=$1, pronouns=$2, native_language=$3, target_language=$4 WHERE id=$5',
             [user.display_name, user.pronouns, user.native_language, user.target_language, user.id]);
     }
+
+    async createIfMissing(user: User): Promise<User> {
+        await this.write(
+            `INSERT INTO users (
+            id,
+            display_name,
+            pronouns,
+            native_language,
+            target_language
+        )
+        VALUES ($1, $2, $3, $4, $5)
+        ON CONFLICT(id) DO NOTHING`,
+            [
+                user.id,
+                user.display_name,
+                user.pronouns,
+                user.native_language,
+                user.target_language,
+            ],
+        );
+
+        const saved = await this.get(user.id);
+
+        if (!saved) {
+            throw new Error("Unable to load the initialized user.");
+        }
+
+        return saved;
+    }
+
     delete(id: string) { return this.write('DELETE FROM users WHERE id=$1', [id]); }
 }
 export class UserSettingsDAO extends BaseDAO {

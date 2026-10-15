@@ -10,6 +10,7 @@ use serde::Serialize;
 use tauri::ipc::Channel;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
+mod credentials;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 // Messages from Rust to React
