@@ -24,10 +24,16 @@ interface Props {
     onSelectThread: (id: string) => void;
     onSelectMessage: (id: string) => void;
     onSend: (text: string) => boolean;
+    // additional props for accepting operation states
+    sendDisabled: boolean;
+    navigationDisabled: boolean;
+    historyLoading: boolean;
+    historyError: string | null;
+    onRetryHistory: () => void;
 }
 
 export function ConversationWorkspace(props: Props) {
-    const busy = props.status === "waiting" || props.status === "responding";
+    // const busy = props.status === "waiting" || props.status === "responding";
 
     const selectedMessage = props.messages.find(
         (message) => message.id === props.selectedMessageId && message.role === "user"
@@ -35,7 +41,7 @@ export function ConversationWorkspace(props: Props) {
     
     return (
         <main className="cw">
-            <ThreadSidebar threads={props.threads} activeThreadId={props.activeThread.id} disabled={busy} onSelect={props.onSelectThread} />
+            <ThreadSidebar threads={props.threads} activeThreadId={props.activeThread.id} disabled={props.navigationDisabled} onSelect={props.onSelectThread} />
 
             <section className="cw-practice" aria-label="Practice area">
                 <header className="cw-context">
@@ -53,8 +59,7 @@ export function ConversationWorkspace(props: Props) {
                 <MascotStage status={props.status}>
                     {props.mascot}
                 </MascotStage>
-
-                <MessageComposer key={props.activeThread.id} language={props.context.language} busy={busy} onSend={props.onSend}/>
+                <MessageComposer key={props.activeThread.id} language={props.context.language} disabled={props.sendDisabled} onSend={props.onSend}/>
             </section>
             <section className="cw-conversation" aria-labelledby="conversation-title">
                 <header className="cw-conversation-header">
@@ -65,12 +70,26 @@ export function ConversationWorkspace(props: Props) {
                         ).toLocaleDateString()}
                     </time>
                 </header>
-                <MessageHistory
-                    threadId={props.activeThread.id}
-                    messages={props.messages}
-                    selectedMessageId={props.selectedMessageId}
-                    onSelectMessage={props.onSelectMessage}
-                />
+                {props.historyLoading ? (
+                    <div className="cw-history" role="status">
+                        Loading conversation…
+                    </div>
+                ) : props.historyError ? (
+                    <div className="cw-history">
+                        <p role="alert">{props.historyError}</p>
+                        <button type="button" onClick={props.onRetryHistory}>
+                            Retry loading
+                        </button>
+                    </div>
+                ) : (
+                    <MessageHistory
+                        threadId={props.activeThread.id}
+                        messages={props.messages}
+                        selectedMessageId={props.selectedMessageId}
+                        onSelectMessage={props.onSelectMessage}
+                    />
+                )}
+
 
                 <FeedbackPanel message={selectedMessage} />
             </section>

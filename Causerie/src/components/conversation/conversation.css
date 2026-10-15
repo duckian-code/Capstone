@@ -269,7 +269,7 @@
     background: var(--cw-panel);
 }
 
-.cw-message--user {
+.cw-message-user {
     align-self: flex-end;
     background: #293b3a;
 }

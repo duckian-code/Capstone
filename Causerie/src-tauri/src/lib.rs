@@ -43,7 +43,7 @@ impl CommandError {
 }
 
 #[tauri::command]
-async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result<(), CommandError> {
+async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result<String, CommandError> {
     log::info!("OpenAI request started");
 
     let message = message.trim();
@@ -68,12 +68,14 @@ async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result
 
     let mut completed = false;
     let mut received_text = false;
+    let mut full_text = String::new();
 
     while let Some(event) = stream.next().await {
         match event.map_err(|e| CommandError::openai(e.to_string()))? {
             ResponseStreamEvent::OutputTextDelta { delta, .. } => {
                 if !delta.is_empty() {
                     received_text = true;
+                    full_text.push_str(&delta);
 
                     on_event
                         .send(StreamEvent::Chunk { text: delta })
@@ -107,7 +109,7 @@ async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result
         return Err(CommandError::openai("API returned no text!"));
     }
 
-    Ok(())
+    Ok(full_text)
 }
 
 use tauri_plugin_log::{Target, TargetKind};
@@ -119,7 +121,12 @@ pub fn run() {
         description: "mvp_schema",
         sql: include_str!("../migrations/0001_mvp.sql"),
         kind: MigrationKind::Up,
-    }];
+    }, Migration {
+        version: 2,
+        description: "thread_activity",
+        sql: include_str!("../migrations/0002_thread_activity.sql"),
+        kind: MigrationKind::Up,
+    },];
 
     tauri::Builder::default()
         .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())

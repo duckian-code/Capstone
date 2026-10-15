@@ -56,7 +56,9 @@ export function MessageHistory({threadId, messages, selectedMessageId, onSelectM
                                         {message.role === "user" ? "You" : "Mascot"}
                                     </strong>
 
-                                    <time dateTime={timeFormat.format(new Date(message.createdAt))}></time>
+                                    <time dateTime={message.createdAt}>
+                                        {timeFormat.format(new Date(message.createdAt))}
+                                    </time>
                                 </div>
 
                                 <p className="cw-message-text">

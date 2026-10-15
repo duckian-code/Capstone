@@ -3,18 +3,18 @@ import type { FormEvent, KeyboardEvent } from "react";
 
 interface Props {
     language: string;
-    busy: boolean;
+    disabled: boolean;
     onSend: (text: string) => boolean;
 }
 
 // max input length.
 const MAX_LENGTH = 1000;
 
-export function MessageComposer({ language, busy, onSend }: Props) {
+export function MessageComposer({ language, disabled, onSend }: Props) {
     const [draft, setDraft] = useState("");
     const id = useId();
 
-    const canSend = !busy && draft.trim().length > 0;
+    const canSend = !disabled && draft.trim().length > 0;
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -55,7 +55,7 @@ export function MessageComposer({ language, busy, onSend }: Props) {
                     {draft.length}/{MAX_LENGTH}
                 </small>
 
-                <button type="submit" disabled={!canSend}>{busy ? "Replying..." : "Send"}</button>
+                <button type="submit" disabled={!canSend}>{"Send"}</button>
             </div>
         </form>
     )
