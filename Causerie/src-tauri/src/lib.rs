@@ -1,5 +1,3 @@
-use dotenv::dotenv;
-use std::env;
 // use std::process::Command;
 use futures::StreamExt;
 use openai_rust_sdk::{
@@ -44,7 +42,7 @@ impl CommandError {
 }
 
 #[tauri::command]
-async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result<String, CommandError> {
+async fn send_message(app: tauri::AppHandle, message: String, on_event: Channel<StreamEvent>) -> Result<String, CommandError> {
     log::info!("OpenAI request started");
 
     let message = message.trim();
@@ -53,11 +51,11 @@ async fn send_message(message: String, on_event: Channel<StreamEvent>) -> Result
         return Err(CommandError::app("Please enter a message."));
     }
 
-    dotenv().ok();
+    let api_key = credentials::resolve_api_key(app).await
+        .map_err(CommandError::app)?;
 
-    let api_key = env::var("API_KEY").map_err(|_| CommandError::app("API_KEY is not set!"))?;
-
-    let client = OpenAIClient::new(api_key).map_err(|e| CommandError::app(e.to_string()))?;
+    let client = OpenAIClient::new(api_key.to_string())
+        .map_err(|_| CommandError::app("Unable to initialize API client!"))?;
 
     // TODO: make model integration by configuration instead of hardcode
     let request = CreateResponseRequest::new_text("gpt-4o-mini", message);
@@ -130,7 +128,6 @@ pub fn run() {
     },];
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_stronghold::Builder::new(|pass| todo!()).build())
         .plugin(
             tauri_plugin_log::Builder::new()
                 .level(tauri_plugin_log::log::LevelFilter::Debug) // TODO: CHANGE TO Info or Warn for PROD
@@ -148,7 +145,7 @@ pub fn run() {
         )
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![send_message])
+        .invoke_handler(tauri::generate_handler![send_message, credentials::save_openai_api_key, credentials::has_openai_api_key])
         .setup(|app| {
             let local_data_dir = app
                 .path()
@@ -156,11 +153,7 @@ pub fn run() {
 
             std::fs::create_dir_all(&local_data_dir)?;
 
-            let salt_path = local_data_dir.join("stronghold.salt");
-
-            app.handle().plugin(
-                tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build()
-            )?;
+            app.manage(credentials::CredentialStore::new(local_data_dir));
 
             Ok(())
         })

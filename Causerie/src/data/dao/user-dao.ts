@@ -44,6 +44,29 @@ export class UserDAO extends BaseDAO {
         return saved;
     }
 
+    // TODO: If expanding onboarding to include native language, add native language to update
+    async saveProfile(user: User): Promise<User> {
+        await this.write(
+            `INSERT INTO users (id, display_name, pronouns, native_language, target_language)
+                VALUES ($1, $2, $3, $4, $5) ON CONFLICT(id) DO UPDATE SET
+                display_name=excluded.display_name, pronouns=excluded.pronouns, target_language=excluded.target_language`,
+            [
+                user.id,
+                user.display_name,
+                user.pronouns,
+                user.native_language,
+                user.target_language,
+            ],
+        );
+
+        const saved = await this.get(user.id);
+
+        if (!saved) {
+            throw new Error("The saved profile could not be loaded");
+        }
+
+        return saved;
+    }
     delete(id: string) { return this.write('DELETE FROM users WHERE id=$1', [id]); }
 }
 export class UserSettingsDAO extends BaseDAO {
