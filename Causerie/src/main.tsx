@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 
 import App from "./App";
 import { dal } from "./data/dal";
-import { initializeDevSession } from "./services/dev-session";
+// import { initializeDevSession } from "./services/dev-session";
 
 const rootElement = document.getElementById("root");
 
@@ -22,14 +22,18 @@ async function start() {
 
     await dal.initialize();
 
-    const session = await initializeDevSession();
+    // const session = await initializeDevSession();
 
     root.render(
         <React.StrictMode>
-            <App
-                currentUser={session.currentUser}
-                goals={session.goals}
-            />
+            {/*<App*/}
+            {/*    currentUser={session.currentUser}*/}
+            {/*    goals={session.goals}*/}
+            {/*/>*/}
+            <React.StrictMode>
+                <App />
+            </React.StrictMode>
+
         </React.StrictMode>,
     );
 }

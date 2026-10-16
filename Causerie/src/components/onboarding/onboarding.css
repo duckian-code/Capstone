@@ -1,0 +1,107 @@
+.onboarding {
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 4vw, 3rem);
+    box-sizing: border-box;
+    background: #171a1f;
+    color: #f2f3f5;
+}
+
+.onboarding *,
+.onboarding *::before,
+.onboarding *::after {
+    box-sizing: border-box;
+}
+
+.onboarding-card {
+    width: min(100%, 580px);
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    border: 1px solid #525966;
+    border-radius: 20px;
+    background: #22262d;
+}
+
+.onboarding h1 {
+    margin: 0 0 0.75rem;
+    text-align: left;
+}
+
+.onboarding p {
+    line-height: 1.6;
+}
+
+.onboarding-form fieldset {
+    min-width: 0;
+    display: grid;
+    gap: 0.65rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    border: 0;
+}
+
+.onboarding-form legend {
+    padding: 0;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.onboarding-form label:not(:first-of-type) {
+    margin-top: 0.5rem;
+}
+
+.onboarding input,
+.onboarding select,
+.onboarding button {
+    min-height: 44px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #687281;
+    border-radius: 8px;
+    font: inherit;
+    color: #f2f3f5;
+    background: #171a1f;
+    box-shadow: none;
+}
+
+.onboarding input,
+.onboarding select {
+    width: 100%;
+    min-width: 0;
+}
+
+.onboarding button {
+    cursor: pointer;
+}
+
+.onboarding button[type="submit"] {
+    margin-top: 0.5rem;
+    background: #304943;
+    border-color: #b7ded7;
+}
+
+.onboarding-key {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.5rem;
+}
+
+.onboarding-help {
+    margin: 0;
+    color: #b7bfcb;
+    font-size: 0.85rem;
+}
+
+.onboarding :focus-visible {
+    outline: 2px solid #b7ded7;
+    outline-offset: 3px;
+}
+
+.onboarding :disabled {
+    opacity: 0.65;
+    cursor: wait;
+}
+
+.onboarding [role="alert"] {
+    color: #ffd0d0;
+    overflow-wrap: anywhere;
+}
