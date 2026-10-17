@@ -4,7 +4,7 @@ import {useCallback, useState} from "react";
 import {ErrorToast, Toast} from "../ErrorToast.tsx";
 import {ConversationWorkspace} from "./ConversationWorkspace.tsx";
 import {MascotCanvas} from "../MascotCanvas.tsx";
-
+import {ThreadCreationDialog} from "../ThreadCreationDialog.tsx";
 
 interface Props {
     userId: string;
@@ -20,6 +20,32 @@ function ConversationSession({ userId, context }: Props) {
     const conversation = useConversationController(userId);
     const [selectedMessageId, setSelectedMessageId] = useState<string | null>(null);
     const [toast, setToast] = useState<Toast | null>(null);
+    const [creationOpen, setCreationOpen] = useState(false);
+
+    function openCreation() {
+        if (conversation.navigationDisabled) return;
+
+        conversation.clearCreationError();
+        setCreationOpen(true);
+    }
+
+    const creationDialog = creationOpen ? (
+        <ThreadCreationDialog
+            creating={conversation.creatingThread}
+            error={conversation.operationError}
+            onCreate={async (title, prompt) => {
+                const created = await conversation.createThread(title, prompt);
+
+                if (created) {
+                    setSelectedMessageId(null);
+                }
+
+                return created;
+            }}
+            onClose={() => setCreationOpen(false)}
+        />
+    ) : null;
+
     const showError = useCallback((message: string) => {
         setToast({
             id: Date.now(),
@@ -63,13 +89,8 @@ function ConversationSession({ userId, context }: Props) {
                 <h1>Start practicing</h1>
                 <p>Create your first conversation</p>
 
-                {conversation.operationError && (
-                    <p role="alert">{conversation.operationError}</p>
-                )}
-
-                <button type="button" disabled={conversation.creatingThread} onClick={() =>
-                { void conversation.createFirstThread();}}>
-                    {conversation.creatingThread ? "Creating..." : "Start conversation"}
+                <button type="button" disabled={conversation.creatingThread} onClick={openCreation}>
+                        + New thread
                 </button>
             </main>
         );
@@ -134,6 +155,7 @@ function ConversationSession({ userId, context }: Props) {
                 historyLoading={conversation.historyLoading}
                 historyError={conversation.historyError}
                 onRetryHistory={conversation.reloadHistory}
+                onCreateThread={openCreation}
 
                 mascot={
                     <MascotCanvas
@@ -147,6 +169,7 @@ function ConversationSession({ userId, context }: Props) {
                 onSend={conversation.sendMessage}
             />
 
+            {creationDialog}
             <ErrorToast
                 toast={toast}
                 onDismiss={dismissToast}

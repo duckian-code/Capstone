@@ -3,6 +3,7 @@ import type { ConversationMessage } from "../../data/models/conversation-types.t
 
 interface Props {
     threadId: string;
+    prompt: string | null;
     messages: ConversationMessage[];
     selectedMessageId: string | null;
     onSelectMessage: (id: string) => void;
@@ -13,7 +14,7 @@ const timeFormat = new Intl.DateTimeFormat(undefined, {
     minute: "2-digit"
 });
 
-export function MessageHistory({threadId, messages, selectedMessageId, onSelectMessage}: Props) {
+export function MessageHistory({threadId, prompt, messages, selectedMessageId, onSelectMessage}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const followLatest = useRef(true);
 
@@ -43,6 +44,12 @@ export function MessageHistory({threadId, messages, selectedMessageId, onSelectM
                      element.scrollTop -
                      element.clientHeight < 64;
              }}>
+
+            {prompt && (
+                <blockquote className="cw-thread-prompt">
+                    {prompt}
+                </blockquote>
+            )}
 
             {messages.length === 0 ? (
                 <p className="cw-empty">Start the conversation below!</p>

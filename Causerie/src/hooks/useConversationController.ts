@@ -99,6 +99,7 @@ export function useConversationController(userId: string) {
             const summaries = rows.map((thread) => ({
                 id: thread.id,
                 title: thread.title,
+                prompt: thread.topic,
                 createdAt: thread.created_at,
             }));
 
@@ -359,36 +360,52 @@ export function useConversationController(userId: string) {
         return true;
     }
 
-    async function createFirstThread() {
+    async function createThread(rawTitle: string, rawPrompt: string): Promise<boolean> {
+        const title = rawTitle.trim();
+        const prompt = rawPrompt.trim();
+
         if (
             creatingRef.current ||
             turnRef.current ||
             threadsLoading ||
             threadsError ||
-            threads.length > 0
-        ) return;
+            !title ||
+            !prompt
+        ) return false;
 
+        // lock so repeated clicks cannot create dups
         creatingRef.current = true;
         setCreatingThread(true);
         setOperationError(null);
 
         try {
             // TODO: revisit predefined thread
-            const thread = await dal.threads.create(userId, "Conversation practice");
+            const thread = await dal.threads.create(userId, title, prompt);
 
-            if (!mounted.current) return;
+            if (!mounted.current) return false;
 
-            setThreads([{
-                id: thread.id,
-                title: thread.title,
-                createdAt: thread.created_at,
-            }]);
+            setThreads((previous) => [
+                {
+                    id: thread.id,
+                    title: thread.title,
+                    prompt: thread.topic,
+                    createdAt: thread.created_at,
+                },
+                ...previous,
+            ]);
 
+            typewriter.reset();
+            setLocalMessages([]);
+            mascot.send({ type: "REQUEST_CANCELLED"});
             setActiveThreadId(thread.id);
+
+            return true;
         } catch (reason) {
             if (mounted.current) {
                 setOperationError(parseCommandError(reason).message);
             }
+
+            return false;
         } finally {
             creatingRef.current = false;
             if (mounted.current) setCreatingThread(false);
@@ -427,7 +444,8 @@ export function useConversationController(userId: string) {
         reloadThreads: () => setThreadRevision((value) => value + 1),
 
         creatingThread,
-        createFirstThread,
+        createThread,
+        clearCreationError: () => setOperationError(null),
 
         messages,
         historyLoading: history.loading,
@@ -437,8 +455,8 @@ export function useConversationController(userId: string) {
         phase,
         operationError,
         recoveryRequired: phase === "failed",
-        sendDisabled: phase !== "idle" || history.loading || history.error !== null,
-        navigationDisabled: phase !== "idle",
+        sendDisabled: creatingThread || phase !== "idle" || history.loading || history.error !== null,
+        navigationDisabled: creatingThread || phase !== "idle",
 
         mascotState: mascot.state,
         status: statusByMascot[mascot.state],

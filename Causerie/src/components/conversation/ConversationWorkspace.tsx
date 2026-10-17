@@ -30,6 +30,7 @@ interface Props {
     historyLoading: boolean;
     historyError: string | null;
     onRetryHistory: () => void;
+    onCreateThread: () => void;
 }
 
 export function ConversationWorkspace(props: Props) {
@@ -41,7 +42,7 @@ export function ConversationWorkspace(props: Props) {
     
     return (
         <main className="cw">
-            <ThreadSidebar threads={props.threads} activeThreadId={props.activeThread.id} disabled={props.navigationDisabled} onSelect={props.onSelectThread} />
+            <ThreadSidebar threads={props.threads} activeThreadId={props.activeThread.id} disabled={props.navigationDisabled} onSelect={props.onSelectThread} onCreate={props.onCreateThread}/>
 
             <section className="cw-practice" aria-label="Practice area">
                 <header className="cw-context">
@@ -84,6 +85,7 @@ export function ConversationWorkspace(props: Props) {
                 ) : (
                     <MessageHistory
                         threadId={props.activeThread.id}
+                        prompt={props.activeThread.prompt}
                         messages={props.messages}
                         selectedMessageId={props.selectedMessageId}
                         onSelectMessage={props.onSelectMessage}

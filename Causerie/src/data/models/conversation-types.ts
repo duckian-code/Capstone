@@ -16,6 +16,7 @@ export interface ConversationMessage {
 export interface ConversationSummary {
     id: string;
     title: string;
+    prompt: string | null;
     createdAt: string;
 }
 

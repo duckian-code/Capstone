@@ -66,6 +66,12 @@
     cursor: not-allowed;
 }
 
+.cw button.cw-new-thread {
+    background: #d7f5fa;
+    border-color: #58cddd;
+    color: #163b47;
+}
+
 .cw :focus-visible {
     outline: 2px solid var(--cw-accent);
     outline-offset: 3px;
@@ -126,6 +132,98 @@
 .cw-feedback-button[aria-pressed="true"] {
     border-color: var(--cw-accent);
     background: #304943;
+}
+
+.cw-thread-prompt {
+    margin: 0 0 1rem !important;
+    padding: 0.85rem;
+    border: 1px dashed var(--cw-accent);
+    border-radius: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.cw-thread-dialog {
+    box-sizing: border-box;
+    width: min(480px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    padding: 1.5rem;
+    border: 2px solid #58cddd;
+    border-radius: 16px;
+    background: #d7f5fa;
+    color: #163b47;
+    box-shadow: 0 20px 70px rgb(0 0 0 / 40%);
+}
+
+.cw-thread-dialog::backdrop {
+    background: rgb(0 0 0 / 65%);
+}
+
+.cw-thread-dialog form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.cw-thread-dialog h2,
+.cw-thread-dialog p {
+    margin: 0;
+}
+
+.cw-thread-dialog input,
+.cw-thread-dialog textarea {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #398391;
+    border-radius: 8px;
+    background: #fff;
+    color: #163b47;
+    font: inherit;
+}
+
+.cw-thread-dialog input::placeholder,
+.cw-thread-dialog textarea::placeholder {
+    color: #526b73;
+    opacity: 1;
+}
+
+.cw-thread-dialog textarea {
+    resize: vertical;
+}
+
+.cw-thread-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.cw-thread-dialog button {
+    background: #fff;
+    color: #163b47;
+    border: 1px solid #398391;
+}
+
+.cw-thread-dialog button[type="submit"] {
+    background: #163b47;
+    color: #fff;
+}
+
+.cw-thread-dialog :focus-visible {
+    outline: 3px solid #176a8a;
+    outline-offset: 3px;
+}
+
+.cw-thread-dialog button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.cw-thread-error {
+    color: #8c2133;
 }
 
 .cw-sidebar-footer {

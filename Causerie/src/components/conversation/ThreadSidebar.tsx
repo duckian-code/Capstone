@@ -5,12 +5,22 @@ interface Props {
     activeThreadId: string;
     disabled?: boolean;
     onSelect: ( id: string ) => void;
+    onCreate: () => void;
 }
 
-export function ThreadSidebar({threads, activeThreadId, disabled = false, onSelect}: Props) {
+export function ThreadSidebar({threads, activeThreadId, disabled = false, onSelect, onCreate}: Props) {
     return (
         <aside className="cw-sidebar">
             <h1 className="cw-brand">Causerie</h1>
+
+            <button
+                type="button"
+                className="cw-new-thread"
+                disabled={disabled}
+                onClick={onCreate}
+            >
+                + New thread
+            </button>
 
             <nav className="cw-thread-nav" aria-label="Conversations">
                 {threads.length === 0 && (
