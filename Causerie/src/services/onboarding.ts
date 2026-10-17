@@ -39,7 +39,7 @@ export async function completeOnboarding(input: OnboardingInput): Promise<User> 
     await credentials.saveApiKey(apiKey);
 
     try {
-        const user = await.users.saveProfile({
+        const user = await dal.users.saveProfile({
             id: LOCAL_USER_ID,
             display_name: displayName,
             pronouns:

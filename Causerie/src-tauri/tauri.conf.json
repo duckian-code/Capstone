@@ -19,7 +19,9 @@
         "minHeight": 480,
         "resizable": true,
         "maximizable": true,
-        "center": true
+        "center": true,
+        "label": "main",
+        "create": false
       }
 
     ],

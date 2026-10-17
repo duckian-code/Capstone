@@ -171,6 +171,28 @@ impl CredentialStore {
     }
 }
 
+pub fn delete_unlock_keys_for_reset() -> Result<(), String> {
+    // Current account plus dev account
+    let accounts = [KEYRING_ACCOUNT, "causerie"];
+
+    for account in accounts {
+        let entry = Entry::new(KEYRING_SERVICE, account)
+            .map_err(|_| { "Unable to access the OS credential store.".to_string() })?;
+
+        match entry.delete_credential() {
+            Ok(()) | Err(KeyringError::NoEntry) => {}
+
+            Err(_) => {
+                return Err(
+                    "Unable to remove the OS credential. Unlock your credential store and restart to retry reset.".to_string(),
+                );
+            }
+        }
+    }
+
+    Ok(())
+}
+
 #[tauri::command]
 pub async fn save_openai_api_key(
     state: State<'_, CredentialStore>,

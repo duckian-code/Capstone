@@ -1,28 +1,44 @@
-// import { ConversationScreen } from "./components/conversation/ConversationScreen";
-// import type { User } from "./data/models/dao-types";
-//
-// import "./styles/App.css";
-//
-// interface Props {
-//     currentUser: User;
-//     goals: string[];
-// }
-//
-// export default function App({ currentUser, goals }: Props) {
-//     return (
-//         <ConversationScreen
-//             userId={currentUser.id}
-//             context={{
-//                 language: currentUser.target_language ?? "French",
-//                 goals,
-//             }}
-//         />
-//     );
-// }
+import { useAppSession } from "./hooks/useAppSession";
 
 import { OnboardingScreen } from "./components/onboarding/OnboardingScreen";
+import { ConversationScreen } from "./components/conversation/ConversationScreen";
+import { ResetApplicationButton } from "./components/ResetApplicationButton";
+
 import "./styles/App.css";
 
 export default function App() {
-    return <OnboardingScreen />;
+    const { state, reload } = useAppSession();
+
+    return (
+        <>
+            {state.kind === "loading" && (
+                <main className="conversation-placeholder" role="status">
+                    Loading Causerie…
+                </main>
+            )}
+
+            {state.kind === "error" && (
+                <main className="conversation-placeholder">
+                    <h1>Unable to open Causerie</h1>
+                    <p role="alert">{state.message}</p>
+                    <button type="button" onClick={reload}>
+                        Retry
+                    </button>
+                </main>
+            )}
+
+            {state.kind === "onboarding" && (
+                <OnboardingScreen onComplete={reload} />
+            )}
+
+            {state.kind === "ready" && (
+                <ConversationScreen
+                    userId={state.session.user.id}
+                    context={state.session.context}
+                />
+            )}
+
+            <ResetApplicationButton />
+        </>
+    );
 }
