@@ -7,7 +7,11 @@ import { OnboardingForm } from "./OnboardingForm";
 
 import "./onboarding.css";
 
-export function OnboardingScreen() {
+interface Props {
+    onComplete: () => void;
+}
+
+export function OnboardingScreen({ onComplete }: Props) {
     const [savedUser, setSavedUser] = useState<User | null>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
 
@@ -44,18 +48,12 @@ export function OnboardingScreen() {
                             {savedUser.target_language}.
                         </p>
 
-                        <p>
-                            This testing screen will remain here.
-                            Conversation navigation will be connected
-                            separately.
-                        </p>
+                        <p>Your learning space is ready.</p>
 
-                        <button
-                            type="button"
-                            onClick={() => setSavedUser(null)}
-                        >
-                            Test setup again
+                        <button type="button" onClick={onComplete}>
+                            Start practicing
                         </button>
+
                     </>
                 ) : (
                     <>

@@ -39,7 +39,7 @@ export async function completeOnboarding(input: OnboardingInput): Promise<User> 
     await credentials.saveApiKey(apiKey);
 
     try {
-        return await dal.users.saveProfile({
+        const user = await.users.saveProfile({
             id: LOCAL_USER_ID,
             display_name: displayName,
             pronouns:
@@ -51,6 +51,10 @@ export async function completeOnboarding(input: OnboardingInput): Promise<User> 
             native_language: null,
             target_language: input.targetLanguage,
         });
+
+        await dal.appState.completeOnboarding(user.id);
+
+        return user;
     } catch {
         throw new Error(
             "Your API key was saved, but your profile could not be saved. " +
