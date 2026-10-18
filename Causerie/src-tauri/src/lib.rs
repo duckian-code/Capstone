@@ -131,6 +131,11 @@ pub fn run() {
         description: "app_state",
         sql: include_str!("../migrations/0003_app_state.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 4,
+        description: "sticky_details",
+        sql: include_str!("../migrations/0004_sticky_details.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
