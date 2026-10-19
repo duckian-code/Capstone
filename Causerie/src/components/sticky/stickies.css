@@ -1,0 +1,239 @@
+/* Shared highlight palette */
+.sticky-color-red {
+    --sticky-color: #f6a5a5;
+}
+
+.sticky-color-blue {
+    --sticky-color: #a9ccff;
+}
+
+.sticky-color-green {
+    --sticky-color: #b5dfa1;
+}
+
+.sticky-color-yellow {
+    --sticky-color: #f5e493;
+}
+
+.sticky-color-violet {
+    --sticky-color: #d8b4f3;
+}
+
+/* Highlighted message text */
+.sticky-highlight {
+    background: var(--sticky-color);
+    color: #17211b;
+    border-radius: 3px;
+    padding: 0 0.08em;
+    cursor: pointer;
+    user-select: text;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+.sticky-highlight:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+}
+
+.sticky-highlight:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.sticky-selection-action {
+    margin-top: 0.6rem;
+}
+
+.cw .sticky-selection-action button {
+    background: #d6e8b9;
+    border-color: #88aa57;
+    color: #203716;
+}
+
+.sticky-load-error {
+    margin-bottom: 1rem;
+}
+
+/* Editor */
+.sticky-editor {
+    box-sizing: border-box;
+    width: min(440px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    padding: 1.2rem;
+    border: 2px solid #789c43;
+    border-radius: 16px;
+    background: #d6e8b9;
+    color: #203716;
+    box-shadow: 0 20px 70px rgb(0 0 0 / 40%);
+}
+
+.sticky-editor::backdrop {
+    background: rgb(0 0 0 / 35%);
+}
+
+.sticky-editor * {
+    box-sizing: border-box;
+}
+
+.sticky-editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.sticky-editor h2 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.sticky-editor button {
+    padding: 0.5rem 0.7rem;
+    border: 1px solid #627e3b;
+    border-radius: 8px;
+    background: #f8fced;
+    color: #203716;
+    font: inherit;
+    cursor: pointer;
+}
+
+.sticky-editor .sticky-close {
+    padding: 0.2rem 0.65rem;
+    font-size: 1.6rem;
+    line-height: 1.1;
+}
+
+.sticky-editor .sticky-delete {
+    border-color: #9c4747;
+    color: #7e2020;
+}
+
+.sticky-editor > label {
+    display: block;
+    margin: 0.75rem 0 0.35rem;
+    font-weight: 600;
+}
+
+.sticky-editor > input,
+.sticky-editor textarea {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #789c43;
+    border-radius: 8px;
+    background: #fcfff7;
+    color: #203716;
+    font: inherit;
+}
+
+.sticky-editor input::placeholder,
+.sticky-editor textarea::placeholder {
+    color: #627052;
+    opacity: 1;
+}
+
+.sticky-editor textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.sticky-selected-text {
+    max-height: 120px;
+    overflow-y: auto;
+    margin: 1rem 0;
+    padding: 0.6rem 0.8rem;
+    border-left: 3px solid #789c43;
+    background: rgb(255 255 255 / 35%);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.sticky-colors {
+    min-width: 0;
+    margin: 1rem 0 0;
+    padding: 0;
+    border: 0;
+}
+
+.sticky-colors legend {
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+}
+
+.sticky-color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.sticky-color-option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* Hidden visually while preserving native keyboard behavior. */
+.sticky-color-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.sticky-swatch {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border: 1px solid #536047;
+    border-radius: 50%;
+    background: var(--sticky-color);
+    color: #17211b;
+}
+
+.sticky-color-option input:checked + .sticky-swatch::after {
+    content: "✓";
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.sticky-color-option input:focus-visible + .sticky-swatch {
+    outline: 3px solid #315f1d;
+    outline-offset: 3px;
+}
+
+.sticky-editor :focus-visible {
+    outline: 3px solid #315f1d;
+    outline-offset: 3px;
+}
+
+.sticky-editor button:disabled,
+.sticky-editor fieldset:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.sticky-help {
+    margin: 1rem 0 0;
+    font-size: 0.8rem;
+}
+
+.sticky-delete-confirmation,
+.sticky-error {
+    padding: 0.6rem;
+    border-radius: 8px;
+    background: #fff0e8;
+    color: #7e2020;
+}

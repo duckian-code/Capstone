@@ -5,6 +5,7 @@ import {ErrorToast, Toast} from "../ErrorToast.tsx";
 import {ConversationWorkspace} from "./ConversationWorkspace.tsx";
 import {MascotCanvas} from "../MascotCanvas.tsx";
 import {ThreadCreationDialog} from "../ThreadCreationDialog.tsx";
+import {StickyProvider} from "../sticky/StickyProvider.tsx";
 
 interface Props {
     userId: string;
@@ -13,7 +14,11 @@ interface Props {
 
 // remount session if user switching is implemented in the future
 export function ConversationScreen(props: Props) {
-    return <ConversationSession key={props.userId} {...props} />;
+    return (
+        <StickyProvider key={props.userId} userId={props.userId}>
+            <ConversationSession {...props} />
+        </StickyProvider>
+    );
 }
 
 function ConversationSession({ userId, context }: Props) {

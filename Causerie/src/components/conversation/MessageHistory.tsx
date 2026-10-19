@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ConversationMessage } from "../../data/models/conversation-types.ts";
+import { StickyMessageText } from "./StickyMessageText.tsx";
+import { useStickies } from "../../data/stickies.ts";
 
 interface Props {
     threadId: string;
@@ -17,6 +19,8 @@ const timeFormat = new Intl.DateTimeFormat(undefined, {
 export function MessageHistory({threadId, prompt, messages, selectedMessageId, onSelectMessage}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const followLatest = useRef(true);
+    const { loading: stickiesLoading, error: stickiesError, reload: reloadStickies } = useStickies();
+
 
     useEffect(() => {
         followLatest.current = true;
@@ -45,6 +49,25 @@ export function MessageHistory({threadId, prompt, messages, selectedMessageId, o
                      element.clientHeight < 64;
              }}>
 
+            {stickiesLoading && (
+                <p className="cw-muted" role="status">
+                    Loading stickies…
+                </p>
+            )}
+
+            {stickiesError && (
+                <div className="sticky-load-error">
+                    <p role="alert">
+                        Could not load stickies: {stickiesError}
+                    </p>
+
+                    <button type="button" onClick={reloadStickies}>
+                        Retry loading stickies
+                    </button>
+                </div>
+            )}
+
+
             {prompt && (
                 <blockquote className="cw-thread-prompt">
                     {prompt}
@@ -68,9 +91,7 @@ export function MessageHistory({threadId, prompt, messages, selectedMessageId, o
                                     </time>
                                 </div>
 
-                                <p className="cw-message-text">
-                                    {message.content}
-                                </p>
+                                <StickyMessageText text={message.content} />
 
                                 {message.role === "user" && (
                                     <button

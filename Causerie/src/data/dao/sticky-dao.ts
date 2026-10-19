@@ -4,13 +4,9 @@ import type { Sticky, StickyColor } from '../models/dao-types.ts';
 export class StickyDAO extends BaseDAO {
     get(id: string) { return this.one<Sticky>('SELECT * FROM stickies WHERE id=$1', [id]); }
     forUser(userId: string) { return this.all<Sticky>('SELECT * FROM stickies WHERE user_id=$1 ORDER BY created_at DESC', [userId]); }
-    async create(userId: string, selectedText: string, userText: string, title: string, color: StickyColor = "yellow"): Promise<Sticky> {
+    async create(userId: string, selectedText: string, userText: string, title = "", color: StickyColor = "yellow"): Promise<Sticky> {
         const at = nowIso();
-        const sticky: Sticky = { id:newId(), user_id:userId, selected_text:selectedText,
-            user_text:userText, created_at:at, updated_at:at, title, color };
-        await this.write('INSERT INTO stickies (id,user_id,selected_text,user_text,created_at,updated_at, title, color) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)',
-            [sticky.id,sticky.user_id,sticky.selected_text,sticky.user_text,sticky.created_at,sticky.updated_at, sticky.title, sticky.color]);
-        return sticky;
+        return this.save({ id:newId(), user_id:userId, selected_text:selectedText, title, user_text:userText, color, created_at:at, updated_at:at });
     }
     async save(sticky: Sticky): Promise<Sticky> {
         const saved: Sticky = {...sticky, title: sticky.title.trim(), updated_at: nowIso(),};
