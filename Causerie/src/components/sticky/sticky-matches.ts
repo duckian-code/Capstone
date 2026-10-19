@@ -1,4 +1,4 @@
-import type { Sticky } from "../data/models/dao-types";
+import type { Sticky } from "../../data/models/dao-types";
 
 export interface StickyTextPart {
     text: string;

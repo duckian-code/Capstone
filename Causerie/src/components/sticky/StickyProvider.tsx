@@ -20,6 +20,12 @@ interface StickyContextValue {
     openSticky: (sticky: Sticky) => void;
 }
 
+const StickyContext = createContext<StickyContextValue | null>(null);
+
+interface Props {
+    userId: string;
+    children: ReactNode;
+}
 export function StickyProvider({ userId, children }: Props) {
     const [stickies, setStickies] = useState<Sticky[]>([]);
     const [loading, setLoading] = useState(true);
@@ -33,12 +39,15 @@ export function StickyProvider({ userId, children }: Props) {
         setLoading(true);
         setError(null);
 
-        void dal.stickies.forUser(userId).then((rows) => {
-            if (!cancelled) setStickies(rows);
-        }).catch((err: unknown) => {
-            if (!cancelled) setError(parseCommandError(err));
-        }).finally(() => {
-            if (!cancelled) setLoading(false);
+        void dal.stickies.forUser(userId)
+            .then((rows) => {
+                if (!cancelled) setStickies(rows);
+            })
+            .catch((err: unknown) => {
+                if (!cancelled) setError(parseCommandError(err).message);
+            })
+            .finally(() => {
+                if (!cancelled) setLoading(false);
         });
 
         return () => { cancelled = true; };

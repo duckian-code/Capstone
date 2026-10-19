@@ -50,7 +50,7 @@ export function StickyMessageText({ text }: Props) {
         }
     }, []);
 
-    const existing = stickies.some((sticky) => sticky.selectedText === selectedText);
+    const existing = stickies.some((sticky) => sticky.selected_text === selectedText);
 
     return (
         <>

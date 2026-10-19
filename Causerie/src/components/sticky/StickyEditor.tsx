@@ -5,7 +5,7 @@ import type {
     StickyColor,
 } from "../../data/models/dao-types.ts";
 import { parseCommandError } from "../../services/command-error.ts";
-import { STICKY_EXAMPLES } from "../../services/sticky-examples.ts";
+import { STICKY_EXAMPLES } from "./sticky-examples.ts";
 
 interface Props {
     sticky: Sticky;
@@ -33,6 +33,13 @@ export function StickyEditor({ sticky, onSave, onDelete }: Props) {
     const [confirmDelete, setConfirmDelete] = useState(false);
 
     const [example] = useState(() => {
+        if (STICKY_EXAMPLES.length === 0) {
+            return {
+                title: "Give this sticky a title",
+                body: "Write a note about the selected text.",
+            };
+        }
+
         return STICKY_EXAMPLES[Math.floor(Math.random() * STICKY_EXAMPLES.length)];
     });
 

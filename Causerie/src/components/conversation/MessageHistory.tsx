@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ConversationMessage } from "../../data/models/conversation-types.ts";
-import { StickyMessageText } from "./StickyMessageText.tsx";
-import { useStickies } from "../../data/stickies.ts";
+import { StickyMessageText } from "../sticky/StickyMessageText.tsx";
+import { useStickies } from "../sticky/StickyProvider.tsx";
 
 interface Props {
     threadId: string;
