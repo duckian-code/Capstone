@@ -1,4 +1,5 @@
 import type { ConversationSummary } from "../../data/models/conversation-types.ts";
+import { AccountPanel } from "../settings/SettingsMenus.tsx";
 
 interface Props {
     threads: ConversationSummary[];
@@ -48,7 +49,7 @@ export function ThreadSidebar({threads, activeThreadId, disabled = false, onSele
                 </ul>
             </nav>
 
-            <p className="cw-sidebar-footer">Conversation practice</p>
+            <AccountPanel disabled={disabled} />
         </aside>
     )
 }

@@ -67,6 +67,28 @@ export class UserDAO extends BaseDAO {
 
         return saved;
     }
+
+    async saveIdentity(userId: string, displayName: string, pronouns: string, avatarDataUrl: string | null): Promise<void> {
+        const changed = await this.write(
+            `UPDATE users
+            SET display_name=$1,
+                pronouns=$2,
+                avatar_data_url=$3
+            WHERE id=$4`
+        , [displayName, pronouns, avatarDataUrl, userId]
+        );
+        if (changed !== 1) throw new Error("The profile could not be found!");
+    }
+
+    async saveTargetLanguage(userId: string, language: string): Promise<void> {
+        const changed = await this.write(
+            `UPDATE users
+            SET target_language=$1
+            WHERE id=$2`,
+            [language, userId]
+        )
+        if (changed !== 1) throw new Error("The profile could not be found!");
+    }
     delete(id: string) { return this.write('DELETE FROM users WHERE id=$1', [id]); }
 }
 export class UserSettingsDAO extends BaseDAO {

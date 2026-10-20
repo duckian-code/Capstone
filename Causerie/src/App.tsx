@@ -5,9 +5,10 @@ import { ConversationScreen } from "./components/conversation/ConversationScreen
 import { ResetApplicationButton } from "./components/ResetApplicationButton";
 
 import "./styles/App.css";
+import { SettingsProvider } from "./components/settings/SettingsMenus";
 
 export default function App() {
-    const { state, reload } = useAppSession();
+    const { state, reload, updateUser } = useAppSession();
 
     return (
         <>
@@ -32,11 +33,11 @@ export default function App() {
             )}
 
             {state.kind === "ready" && (
-                <ConversationScreen
-                    userId={state.session.user.id}
-                    context={state.session.context}
-                />
+                <SettingsProvider key={state.session.user.id} user={state.session.user} onUserChange={updateUser}>
+                    <ConversationScreen userId={state.session.user.id} context={state.session.context}/>
+                </SettingsProvider>
             )}
+
 
             <ResetApplicationButton />
         </>

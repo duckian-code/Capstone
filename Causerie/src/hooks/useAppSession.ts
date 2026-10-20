@@ -3,6 +3,7 @@ import {
     loadAppSession,
     type AppSession,
 } from "../services/app-session";
+import type { UserChanges } from "../data/models/dao-types.ts";
 
 type SessionState =
     | { kind: "loading" }
@@ -56,8 +57,32 @@ export function useAppSession() {
         };
     }, [revision]);
 
+    const updateUser = useCallback((userId: string, changes: UserChanges) => {
+        setState((previous) => {
+            if (previous.kind !== "ready" || previous.session.user.id !== userId) return previous;
+
+            const user = {
+                ...previous.session.user,
+                ...changes,
+            };
+
+            return {
+                kind: "ready",
+                session: {
+                    ...previous.session,
+                    user,
+                    context: {
+                        ...previous.session.context,
+                        language: user.target_language ?? "French",
+                    }
+                },
+            }
+        })
+    }, [])
+
     return {
         state,
         reload,
+        updateUser,
     };
 }

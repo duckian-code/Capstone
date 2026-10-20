@@ -6,6 +6,7 @@ import {ConversationWorkspace} from "./ConversationWorkspace.tsx";
 import {MascotCanvas} from "../MascotCanvas.tsx";
 import {ThreadCreationDialog} from "../ThreadCreationDialog.tsx";
 import {StickyProvider} from "../sticky/StickyProvider.tsx";
+import { AccountPanel } from "../settings/SettingsMenus.tsx";
 
 interface Props {
     userId: string;
@@ -97,6 +98,10 @@ function ConversationSession({ userId, context }: Props) {
                 <button type="button" disabled={conversation.creatingThread} onClick={openCreation}>
                         + New thread
                 </button>
+
+                <AccountPanel disabled={conversation.creatingThread} />
+
+                {creationDialog}
             </main>
         );
     }

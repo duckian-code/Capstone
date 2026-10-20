@@ -2,7 +2,14 @@
 export interface User {
     id: string; display_name: string | null; pronouns: string | null;
     native_language: string | null; target_language: string | null;
+    avatar_data_url?: string | null;
 }
+export type UserChanges = Partial<Pick<User,
+    | "display_name"
+    | "pronouns"
+    | "target_language"
+    | "avatar_data_url"
+>>;
 export interface UserSettings {
     user_id: string; notifications: number; theme: string; font_size: number;
 }

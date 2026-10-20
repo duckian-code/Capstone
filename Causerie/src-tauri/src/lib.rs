@@ -136,6 +136,11 @@ pub fn run() {
         description: "sticky_details",
         sql: include_str!("../migrations/0004_sticky_details.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 5,
+        description: "thread_activity_details",
+        sql: include_str!("../migrations/0005_profile_avatar.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
