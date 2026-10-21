@@ -817,6 +817,7 @@ dependencies = [
  "openai_rust_sdk",
  "serde",
  "serde_json",
+ "sqlx",
  "tauri",
  "tauri-build",
  "tauri-plugin-log",

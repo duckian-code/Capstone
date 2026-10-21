@@ -1,0 +1,30 @@
+[
+  {
+    "id": "learn_vocabulary",
+    "label": "Learn new vocabulary"
+  },
+  {
+    "id": "improve_grammar",
+    "label": "Improve grammar"
+  },
+  {
+    "id": "use_idioms",
+    "label": "Use idiomatic expressions"
+  },
+  {
+    "id": "use_specific_expressions",
+    "label": "Use more specific/less generic expressions"
+  },
+  {
+    "id": "soften_statements",
+    "label": "Move away from blunt statements/expressions"
+  },
+  {
+    "id": "practice_professional",
+    "label": "Practice professional expressions"
+  },
+  {
+    "id": "practice_casual",
+    "label": "Practice casual expressions"
+  }
+]

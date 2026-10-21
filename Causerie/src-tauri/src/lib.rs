@@ -10,6 +10,7 @@ use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 mod credentials;
 mod factory_reset;
+mod goals;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 // Messages from Rust to React
@@ -140,6 +141,11 @@ pub fn run() {
         version: 5,
         description: "thread_activity_details",
         sql: include_str!("../migrations/0005_profile_avatar.sql"),
+        kind: MigrationKind::Up,
+    }, Migration {
+        version: 6,
+        description: "user_goals",
+        sql: include_str!("../migrations/0006_user_goals.sql"),
         kind: MigrationKind::Up,
     }];
 
