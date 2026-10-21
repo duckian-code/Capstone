@@ -159,11 +159,14 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-        send_message,
-        credentials::save_openai_api_key,
-        credentials::has_openai_api_key,
-        factory_reset::reset_application,
-    ])
+            send_message,
+            credentials::save_openai_api_key,
+            credentials::has_openai_api_key,
+            factory_reset::reset_application,
+            goals::initialize_goal_catalog,
+            goals::get_goal_settings,
+            goals::save_goal_settings,
+        ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
             factory_reset::finish_pending_reset(app.handle())
