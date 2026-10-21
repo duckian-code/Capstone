@@ -11,21 +11,21 @@ jobs:
     defaults:
       run:
         working-directory: Causerie
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-22.04
-            name: linux-x64
-            args: --bundles deb,appimage
-          - os: windows-latest
-            name: windows-x64
-            args: --bundles nsis
-          - os: macos-latest
-            name: macos-universal
-            args: --target universal-apple-darwin --bundles dmg
+#     matrix:
+#       include:
+#         - os: ubuntu-22.04
+#           name: linux-x64
+#           args: --bundles deb,appimage
+#         - os: windows-latest
+#           name: windows-x64
+#           args: --bundles nsis
+#         - os: macos-latest
+#           name: macos-universal
+#           args: --target universal-apple-darwin --bundles dmg
 
     steps:
       - uses: actions/checkout@v7
