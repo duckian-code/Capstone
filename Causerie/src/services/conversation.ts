@@ -8,7 +8,8 @@ type StreamEvent = {
 };
 
 export async function streamReply(
-    message: string,
+    threadId: string,
+    userMessageId: string,
     onChunk: (text: string) => void,
 ): Promise<string> {
     const channel = new Channel<StreamEvent>();
@@ -22,7 +23,8 @@ export async function streamReply(
 
     try {
         return await invoke<string>("send_message", {
-            message,
+            threadId,
+            userMessageId,
             onEvent: channel,
         });
     } finally {

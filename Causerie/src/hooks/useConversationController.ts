@@ -193,7 +193,8 @@ export function useConversationController(userId: string) {
                 let started = false;
 
                 const fullReply = await streamReply(
-                    turn.user.content,
+                    turn.threadId,
+                    turn.user.id,
                     (chunk) => {
                         if (!isCurrent(turn)) return;
 

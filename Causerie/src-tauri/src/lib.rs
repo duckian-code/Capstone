@@ -8,9 +8,14 @@ use serde::Serialize;
 use tauri::ipc::Channel;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
+use openai_rust_sdk::models::responses::message_types::Message as ApiMessage;
+use crate::context::{ContextManager, ConversationRole};
+
 mod credentials;
 mod factory_reset;
+mod database;
 mod goals;
+mod context;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 // Messages from Rust to React
@@ -44,14 +49,38 @@ impl CommandError {
 }
 
 #[tauri::command]
-async fn send_message(app: tauri::AppHandle, message: String, on_event: Channel<StreamEvent>) -> Result<String, CommandError> {
-    log::info!("OpenAI request started");
+async fn send_message(
+    app: tauri::AppHandle,
+    databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
+    thread_id: String,
+    user_message_id: String,
+    on_event: Channel<StreamEvent>
+) -> Result<String, CommandError> {
+    let pool = database::pool(databases.inner()).await?;
 
-    let message = message.trim();
+    let context = ContextManager::for_turn(
+        &pool,
+        &thread_id,
+        &user_message_id,
+    )
+        .await?;
 
-    if message.is_empty() {
-        return Err(CommandError::app("Please enter a message."));
-    }
+    log::debug!(
+        "Prepared {} conversation messages for thread {}",
+        context.messages.len(),
+        context.thread_id,
+    );
+
+    let messages: Vec<ApiMessage> = context
+        .messages
+        .into_iter()
+        .map(|message| match message.role {
+            ConversationRole::User => ApiMessage::user(message.content),
+            ConversationRole::Assistant => {
+                ApiMessage::assistant(message.content)
+            }
+        })
+        .collect();
 
     let api_key = credentials::resolve_api_key(app).await
         .map_err(CommandError::app)?;
@@ -60,7 +89,10 @@ async fn send_message(app: tauri::AppHandle, message: String, on_event: Channel<
         .map_err(|_| CommandError::app("Unable to initialize API client!"))?;
 
     // TODO: make model integration by configuration instead of hardcode
-    let request = CreateResponseRequest::new_text("gpt-4o-mini", message);
+    let request = CreateResponseRequest::new_messages(
+        "gpt-4o-mini",
+        messages,
+    );
 
     let mut stream = client.stream_response_v2(&request).await.map_err(|e| {
         log::error!("OpenAI request failed: {e}");
@@ -166,7 +198,7 @@ pub fn run() {
             goals::initialize_goal_catalog,
             goals::get_goal_settings,
             goals::save_goal_settings,
-        ])
+    ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
             factory_reset::finish_pending_reset(app.handle())

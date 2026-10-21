@@ -3,7 +3,8 @@ use std::collections::HashSet;
 use serde::{Deserialize, Serialize};
 use sqlx::{SqliteConnection, SqlitePool};
 use tauri::{path::BaseDirectory, AppHandle, Manager, State};
-use tauri_plugin_sql::{DbInstances, DbPool};
+use tauri_plugin_sql::{DbInstances};
+use crate::database::pool as database_pool;
 
 use crate::CommandError;
 
@@ -302,16 +303,6 @@ pub(crate) async fn save_for_user(pool: &SqlitePool, user_id: &str, slots: GoalS
     transaction.commit().await.map_err(db_error)?;
 
     Ok(saved)
-}
-
-async fn database_pool(databases: &DbInstances) -> Result<SqlitePool, CommandError> {
-    let databases = databases.0.read().await;
-
-    let Some(DbPool::Sqlite(pool)) = databases.get("sqlite:causerie.db") else {
-        return Err(CommandError::app("The database is not ready."));
-    };
-
-    Ok(pool.clone())
 }
 
 #[tauri::command]
