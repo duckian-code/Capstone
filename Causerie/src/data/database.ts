@@ -1,4 +1,5 @@
 import Database from '@tauri-apps/plugin-sql';
+import { invoke } from '@tauri-apps/api/core';
 
 export const DB_URL = 'sqlite:causerie.db' as const;
 let pending: Promise<Database> | undefined;
@@ -22,4 +23,6 @@ export async function initializeDatabase(): Promise<void> {
     if (result[0]?.foreign_keys !== 1) {
         throw new Error('SQLite foreign-key enforcement is disabled; configure the connection before allowing writes.');
     }
+
+    await invoke<void>('initialize_goal_catalog');
 }

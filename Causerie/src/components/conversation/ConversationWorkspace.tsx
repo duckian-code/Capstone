@@ -51,10 +51,15 @@ export function ConversationWorkspace(props: Props) {
                         {props.context.proficiency ? ` . ${props.context.proficiency}` : ""}
                     </h2>
 
-                    <p className="cw-muted">Learning goals</p>
-                    <ul className="cw-goals">
-                        {props.context.goals.map((goal) => <li key={goal}>{goal}</li>)}
-                    </ul>
+                    {props.context.goals.length > 0 && (
+                        <>
+                            <p className="cw-muted">Learning goals</p>
+
+                            <ul className="cw-goals">
+                                {props.context.goals.map((goal) => <li key={goal}>{goal}</li>)}
+                            </ul>
+                        </>
+                    )}
                 </header>
 
                 <MascotStage status={props.status}>

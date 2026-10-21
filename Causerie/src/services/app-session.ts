@@ -2,21 +2,23 @@ import { dal } from "../data/dal";
 import type { User } from "../data/models/dao-types";
 import type { LearningContext } from "../data/models/conversation-types";
 import { credentials } from "./credentials";
+import { selectedGoalLabels, GoalSettings } from "../data/models/goal-types.ts";
 
 export interface AppSession {
     user: User;
     context: LearningContext;
+    goalSettings: GoalSettings;
 }
 
-const DEFAULT_GOALS = [
-    "Learn new vocabulary",
-    "Improve grammar",
-    "Use idiomatic expressions",
-    "Use more specific/less generic expressions",
-    "Move away from blunt statements/expressions",
-    "Practice professional expressions",
-    "Practice casual expressions",
-];
+// const DEFAULT_GOALS = [
+//     "Learn new vocabulary",
+//     "Improve grammar",
+//     "Use idiomatic expressions",
+//     "Use more specific/less generic expressions",
+//     "Move away from blunt statements/expressions",
+//     "Practice professional expressions",
+//     "Practice casual expressions",
+// ];
 
 export async function loadAppSession(): Promise<AppSession | null> {
     await dal.initialize();
@@ -40,16 +42,14 @@ export async function loadAppSession(): Promise<AppSession | null> {
         return null;
     }
 
-    const savedGoals = await dal.goals.forUser(user.id);
+    const goalSettings = await dal.goals.forUser(user.id);
 
     return {
         user,
+        goalSettings,
         context: {
             language: user.target_language ?? "French",
-            goals:
-                savedGoals.length > 0
-                    ? savedGoals.map((goal) => goal.title)
-                    : [...DEFAULT_GOALS],
+            goals: selectedGoalLabels(goalSettings),
         },
     };
 }

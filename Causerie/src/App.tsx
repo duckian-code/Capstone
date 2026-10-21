@@ -8,7 +8,7 @@ import "./styles/App.css";
 import { SettingsProvider } from "./components/settings/SettingsMenus";
 
 export default function App() {
-    const { state, reload, updateUser } = useAppSession();
+    const { state, reload, updateUser, updateGoals } = useAppSession();
 
     return (
         <>
@@ -33,7 +33,12 @@ export default function App() {
             )}
 
             {state.kind === "ready" && (
-                <SettingsProvider key={state.session.user.id} user={state.session.user} onUserChange={updateUser}>
+                <SettingsProvider
+                    key={state.session.user.id}
+                    user={state.session.user}
+                    onUserChange={updateUser}
+                    goalSettings={state.session.goalSettings}
+                    onGoalsChange={updateGoals}>
                     <ConversationScreen userId={state.session.user.id} context={state.session.context}/>
                 </SettingsProvider>
             )}

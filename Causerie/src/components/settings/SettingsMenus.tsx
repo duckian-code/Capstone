@@ -1,32 +1,16 @@
-import {
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
-import type {
-    FormEvent,
-    ReactNode,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState} from "react";
+import type {FormEvent, ReactNode} from "react";
 import { createPortal } from "react-dom";
 
-import type {
-    User,
-    UserChanges,
-} from "../../data/models/dao-types";
-import {
-    LANGUAGE_OPTIONS,
-    PRONOUN_OPTIONS,
-} from "../../data/models/onboarding-types";
+import type {User, UserChanges} from "../../data/models/dao-types";
+import {LANGUAGE_OPTIONS, PRONOUN_OPTIONS} from "../../data/models/onboarding-types";
 import { dal } from "../../data/dal";
 import { credentials } from "../../services/credentials";
 import { parseCommandError } from "../../services/command-error";
 
-import {
-    SETTINGS_SECTIONS,
-    type SettingsDraft,
-} from "./settings-sections";
+import {SETTINGS_SECTIONS, type SettingsDraft} from "./settings-sections";
+
+import type { GoalSettings } from "../../data/models/goal-types.ts";
 
 import "./settings.css";
 
@@ -44,13 +28,11 @@ interface ProviderProps {
     user: User;
     onUserChange: (userId: string, changes: UserChanges) => void;
     children: ReactNode;
+    goalSettings: GoalSettings;
+    onGoalsChange: (userId: string, settings: GoalSettings) => void;
 }
 
-export function SettingsProvider({
-                                     user,
-                                     onUserChange,
-                                     children,
-                                 }: ProviderProps) {
+export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChange, children}: ProviderProps) {
     const [menu, setMenu] = useState<"profile" | "settings" | null>(
         null,
     );
@@ -82,6 +64,8 @@ export function SettingsProvider({
                     user={user}
                     onSaved={applyChanges}
                     onClose={() => setMenu(null)}
+                    goalSettings={goalSettings}
+                    onGoalsSaved={(settings) => onGoalsChange(user.id, settings)}
                 />
             )}
         </SettingsContext.Provider>
@@ -100,13 +84,7 @@ function useSettings() {
     return context;
 }
 
-function Avatar({
-                    source,
-                    name,
-                }: {
-    source?: string | null;
-    name: string;
-}) {
+function Avatar({source, name}: { source?: string | null; name: string; }) {
     const src = source || DEFAULT_AVATAR_URL;
     const [failed, setFailed] = useState(false);
 
@@ -132,11 +110,7 @@ function Avatar({
     );
 }
 
-export function AccountPanel({
-                                 disabled = false,
-                             }: {
-    disabled?: boolean;
-}) {
+export function AccountPanel({disabled = false}: { disabled?: boolean; }) {
     const { user, openProfile, openSettings } = useSettings();
     const name = user.display_name || "Your profile";
 
@@ -534,19 +508,30 @@ function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
     );
 }
 
-function FullSettingsMenu({ user, onSaved, onClose }: EditorProps) {
+interface FullSettingsProps extends EditorProps {
+    goalSettings: GoalSettings;
+    onGoalsSaved: (settings: GoalSettings) => void;
+}
+
+function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }: FullSettingsProps ) {
     const busyRef = useRef(false);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [saved, setSaved] = useState(false);
     const [activeSection, setActiveSection] = useState(SETTINGS_SECTIONS[0]?.id ?? "");
-
     const [draft, setDraft] = useState<SettingsDraft>({
         targetLanguage: user.target_language ?? "French",
-        apiKey: ""
+        apiKey: "",
+        goalSlots: [...goalSettings.slots]
     });
 
-    const dirty = draft.targetLanguage !== (user.target_language ?? "French") || draft.apiKey.length > 0;
+    const goalsDirty = draft.goalSlots.some(
+        (id, index) => id !== goalSettings.slots[index]);
+
+    const dirty = draft.targetLanguage !== (user.target_language ?? "French")
+        || draft.apiKey.length > 0
+        || goalsDirty
+    ;
 
     async function save(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -578,6 +563,7 @@ function FullSettingsMenu({ user, onSaved, onClose }: EditorProps) {
 
         let languageSaved = false;
         let keyAttempted = false;
+        let goalsSaved = false;
 
         try {
             if (
@@ -590,6 +576,19 @@ function FullSettingsMenu({ user, onSaved, onClose }: EditorProps) {
                 languageSaved = true;
             }
 
+            if (goalsDirty) {
+                const savedGoals = await dal.goals.saveSelection(user.id, draft.goalSlots);
+
+                onGoalsSaved(savedGoals);
+
+                setDraft((previous) => ({
+                    ...previous,
+                    goalSlots: [...savedGoals.slots]
+                }));
+
+                goalsSaved = true;
+            }
+
             if (replacingKey) {
                 keyAttempted = true;
                 await credentials.saveApiKey(apiKey);
@@ -600,7 +599,9 @@ function FullSettingsMenu({ user, onSaved, onClose }: EditorProps) {
             const message = parseCommandError(reason).message;
 
             setError(
-                (languageSaved ? "Your target language was saved. " : "") + message +
+                (languageSaved ? "Your target language was saved. " : "") +
+                (goalsSaved ? "Your learning goals were saved. " : "") +
+                message +
                 (keyAttempted ? " Re-enter the replacement API key to retry." : ""),
             );
         } finally {
@@ -666,6 +667,7 @@ function FullSettingsMenu({ user, onSaved, onClose }: EditorProps) {
                                     <Component
                                         draft={draft}
                                         setDraft={setDraft}
+                                        goalOptions={goalSettings.catalog}
                                     />
                                 </section>
                             ),

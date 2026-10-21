@@ -1,7 +1,7 @@
 CREATE TABLE goal_catalog (
     id TEXT PRIMARY KEY NOT NULL,
     label TEXT NOT NULL,
-    display_order INTEGER NOT NULL UNIQUE (display_order >= 0),
+    display_order INTEGER NOT NULL CHECK (display_order >= 0),
     active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0,1))
 );
 
@@ -13,10 +13,10 @@ CREATE TABLE user_goals (
     UNIQUE (user_id, goal_id)
 );
 
-CREATE TABLE goal_catalog_state(
+CREATE TABLE goal_catalog_state (
     id INTEGER PRIMARY KEY CHECK (id = 1),
     initialized INTEGER NOT NULL DEFAULT 0
-        CHECK (initialized IN (0,1))
+        CHECK (initialized IN (0, 1))
 );
 
 INSERT INTO goal_catalog_state (id, initialized) VALUES (1,0);
