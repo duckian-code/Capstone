@@ -10,7 +10,7 @@ jobs:
   build:
     defaults:
       run:
-        work-directory: Causerie
+        working-directory: Causerie
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     strategy:
