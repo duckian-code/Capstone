@@ -12,6 +12,7 @@ mod corrections;
 mod conversation;
 mod feedback_repository;
 mod feedback;
+mod persistence;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 
@@ -102,6 +103,37 @@ pub fn run() {
             corrections::create_correction,
             corrections::delete_correction,
             feedback::analyze_message,
+            persistence::initialize_database,
+            persistence::get_user,
+            persistence::list_users,
+            persistence::create_user,
+            persistence::update_user,
+            persistence::create_user_if_missing,
+            persistence::save_user_profile,
+            persistence::save_user_identity,
+            persistence::save_user_target_language,
+            persistence::delete_user,
+            persistence::get_user_settings,
+            persistence::save_user_settings,
+            persistence::get_thread,
+            persistence::list_threads,
+            persistence::create_thread,
+            persistence::rename_thread,
+            persistence::set_thread_archived,
+            persistence::delete_thread,
+            persistence::get_thread_history,
+            persistence::get_message,
+            persistence::list_messages,
+            persistence::append_message,
+            persistence::delete_message,
+            persistence::get_sticky,
+            persistence::list_stickies,
+            persistence::create_sticky,
+            persistence::save_sticky,
+            persistence::update_sticky_text,
+            persistence::delete_sticky,
+            persistence::get_app_state,
+            persistence::complete_onboarding,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
