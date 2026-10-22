@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use tauri::{AppHandle, State};
 use tauri_plugin_sql::DbInstances;
+use openai_rust_sdk::models::gpt5::ReasoningConfig;
 
 use crate::{
     context::{ContextManager, TeacherContext},
@@ -169,10 +170,16 @@ pub async fn analyze_message(
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
 
-    // TODO: DECIDE ON BETTER MODEL
-    let request = CreateResponseRequest::new_text("gpt-4o-mini", input)
+    // NOTE: 4o-mini is DEV MODEL
+    // let request = CreateResponseRequest::new_text("gpt-4o-mini", input)
+    //     .with_instructions(instructions.to_owned())
+    //     .with_strict_json_schema("teacher_feedback", schema(&context));
+
+    let mut request = CreateResponseRequest::new_text("gpt-6.1-sol", input)
         .with_instructions(instructions.to_owned())
         .with_strict_json_schema("teacher_feedback", schema(&context));
+
+    request.reasoning = Some(ReasoningConfig::low());
 
     let response = client.create_response_v2(&request).await.map_err(|error| {
         log::error!("Teacher request failed: {error}");
