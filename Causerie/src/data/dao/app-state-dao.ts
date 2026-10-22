@@ -1,4 +1,4 @@
-import { BaseDAO, nowIso } from "./base";
+import { callBackend } from "./base";
 
 export interface AppState {
     id: number;
@@ -6,27 +6,12 @@ export interface AppState {
     onboarding_completed_at: string;
 }
 
-export class AppStateDAO extends BaseDAO {
-    get() {
-        return this.one<AppState>(
-            "SELECT * FROM app_state WHERE id = 1",
-            [],
-        );
+export class AppStateDAO {
+    get(): Promise<AppState | null> {
+        return callBackend("get_app_state");
     }
 
-    async completeOnboarding(userId: string): Promise<void> {
-        await this.write(
-            `INSERT INTO app_state (
-                id,
-                active_user_id,
-                onboarding_completed_at
-            )
-            VALUES (1, $1, $2)
-            ON CONFLICT(id) DO UPDATE SET
-                active_user_id = excluded.active_user_id,
-                onboarding_completed_at =
-                    excluded.onboarding_completed_at`,
-            [userId, nowIso()],
-        );
+    completeOnboarding(userId: string): Promise<void> {
+        return callBackend("complete_onboarding", { userId });
     }
 }

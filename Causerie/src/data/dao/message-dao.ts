@@ -1,30 +1,34 @@
-import { BaseDAO, newId, nowIso } from './base';
-import type { Message, MessageRole } from '../models/dao-types.ts';
+import { callBackend } from "./base";
+import type { Message, MessageRole } from "../models/dao-types";
 
-export class MessageDAO extends BaseDAO {
-    get(id: string) { return this.one<Message>('SELECT * FROM messages WHERE id=$1', [id]); }
-    forThread(threadId: string) {
-        return this.all<Message>('SELECT * FROM messages WHERE thread_id=$1 ORDER BY sequence_no ASC', [threadId]);
+export class MessageDAO {
+    get(id: string): Promise<Message | null> {
+        return callBackend("get_message", { id });
     }
-    // One INSERT calculates the next position atomically in SQLite; unique index protects uniqueness.
-    async append(threadId: string, role: MessageRole, content: string,
-                 responseId: string | null = null, itemId: string | null = null, id: string = newId()): Promise<Message> {
-        const timestamp = nowIso();
-        await this.write(`INSERT INTO messages
-      (id,thread_id,role,content,sequence_no,openai_response_id,openai_item_id,created_at)
-      SELECT $1,$2,$3,$4,COALESCE(MAX(sequence_no)+1,0),$5,$6,$7
-      FROM messages WHERE thread_id=$2 ON CONFLICT(id) DO NOTHING`,
-            [id,threadId,role,content,responseId,itemId,timestamp]);
-        const created = await this.get(id);
-        if (!created) throw new Error('New message not found after insertion');
-        if (
-            created.thread_id !== threadId ||
-            created.role !== role ||
-            created.content !== content ||
-            created.openai_response_id !== responseId ||
-            created.openai_item_id !== itemId
-        ) throw new Error('Message ID already belongs to a different content.');
-        return created;
+
+    forThread(threadId: string): Promise<Message[]> {
+        return callBackend("list_messages", { threadId });
     }
-    delete(id: string) { return this.write('DELETE FROM messages WHERE id=$1', [id]); }
+
+    append(
+        threadId: string,
+        role: MessageRole,
+        content: string,
+        responseId: string | null = null,
+        itemId: string | null = null,
+        id?: string,
+    ): Promise<Message> {
+        return callBackend("append_message", {
+            threadId,
+            role,
+            content,
+            responseId,
+            itemId,
+            id: id ?? null,
+        });
+    }
+
+    delete(id: string): Promise<number> {
+        return callBackend("delete_message", { id });
+    }
 }
