@@ -10,7 +10,7 @@ use crate::CommandError;
 
 pub type GoalSlots = [Option<String>; 3];
 
-#[derive(Serialize)]
+#[derive(Clone, Serialize)]
 pub struct GoalDefinition {
     pub id: String,
     pub label: String,
@@ -323,6 +323,10 @@ pub async fn initialize_goal_catalog(app: AppHandle, databases: State<'_, DbInst
     };
 
     repository::synchronize(&pool, &entries).await
+}
+
+pub(crate) async fn load_for_user_in_transaction(conn: &mut SqliteConnection, user_id: &str) -> Result<GoalSettings, CommandError> {
+    repository::read(conn, user_id).await
 }
 
 #[tauri::command]

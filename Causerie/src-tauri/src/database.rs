@@ -1,3 +1,4 @@
+use log::error;
 use sqlx::SqlitePool;
 use tauri_plugin_sql::{DbInstances, DbPool};
 
@@ -11,4 +12,10 @@ pub(crate) async fn pool(databases: &DbInstances) -> Result<SqlitePool, CommandE
     };
 
     Ok(pool.clone())
+}
+
+pub(crate) fn error(error: sqlx::Error) -> CommandError {
+    log::error!("Database operation failed: {error}");
+
+    CommandError::app("Unable to complete the databse operatoin. Please try again")
 }

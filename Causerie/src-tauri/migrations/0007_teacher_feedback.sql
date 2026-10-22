@@ -1,5 +1,5 @@
 ALTER TABLE message_corrections
-ADD COLUMN goal_id TEXT PREFERENCES goal_catalog(id);
+ADD COLUMN goal_id TEXT REFERENCES goal_catalog(id);
 
 ALTER TABLE message_corrections
     ADD COLUMN origin TEXT NOT NULL DEFAULT 'manual'

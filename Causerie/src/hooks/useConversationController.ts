@@ -183,6 +183,10 @@ export function useConversationController(userId: string) {
                 moveThreadToTop(turn.threadId);
             }
 
+            void dal.feedback.forMessage(turn.threadId, turn.user.id).catch(() => {
+                // feedback panel exposes own error and retry state.
+            });
+
             if (turn.fullReply === null) {
                 typewriter.reset();
                 setPhase("streaming");

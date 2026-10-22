@@ -1,29 +1,19 @@
 // use std::process::Command;
-use futures::StreamExt;
-use openai_rust_sdk::{
-    client::OpenAIClient,
-    models::responses_v2::{CreateResponseRequest, ResponseStreamEvent},
-};
 use serde::Serialize;
-use tauri::ipc::Channel;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
-use openai_rust_sdk::models::responses::message_types::Message as ApiMessage;
-use crate::context::{ContextManager, ConversationRole};
 
 mod credentials;
 mod factory_reset;
 mod database;
 mod goals;
 mod context;
+mod corrections;
+mod conversation;
+mod feedback_repository;
+mod feedback;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
-// Messages from Rust to React
-#[derive(Clone, Serialize)]
-#[serde(tag = "event", content = "data", rename_all = "camelCase")]
-enum StreamEvent {
-    Chunk { text: String },
-}
 
 // Structured errors from Rust to React
 #[derive(Debug, Serialize)]
@@ -48,102 +38,6 @@ impl CommandError {
     }
 }
 
-#[tauri::command]
-async fn send_message(
-    app: tauri::AppHandle,
-    databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
-    thread_id: String,
-    user_message_id: String,
-    on_event: Channel<StreamEvent>
-) -> Result<String, CommandError> {
-    let pool = database::pool(databases.inner()).await?;
-
-    let context = ContextManager::for_turn(
-        &pool,
-        &thread_id,
-        &user_message_id,
-    )
-        .await?;
-
-    log::debug!(
-        "Prepared {} conversation messages for thread {}",
-        context.messages.len(),
-        context.thread_id,
-    );
-
-    let messages: Vec<ApiMessage> = context
-        .messages
-        .into_iter()
-        .map(|message| match message.role {
-            ConversationRole::User => ApiMessage::user(message.content),
-            ConversationRole::Assistant => {
-                ApiMessage::assistant(message.content)
-            }
-        })
-        .collect();
-
-    let api_key = credentials::resolve_api_key(app).await
-        .map_err(CommandError::app)?;
-
-    let client = OpenAIClient::new(api_key.to_string())
-        .map_err(|_| CommandError::app("Unable to initialize API client!"))?;
-
-    // TODO: make model integration by configuration instead of hardcode
-    let request = CreateResponseRequest::new_messages(
-        "gpt-4o-mini",
-        messages,
-    );
-
-    let mut stream = client.stream_response_v2(&request).await.map_err(|e| {
-        log::error!("OpenAI request failed: {e}");
-        CommandError::app(e.to_string())
-    })?;
-
-    let mut completed = false;
-    let mut received_text = false;
-    let mut full_text = String::new();
-
-    while let Some(event) = stream.next().await {
-        match event.map_err(|e| CommandError::openai(e.to_string()))? {
-            ResponseStreamEvent::OutputTextDelta { delta, .. } => {
-                if !delta.is_empty() {
-                    received_text = true;
-                    full_text.push_str(&delta);
-
-                    on_event
-                        .send(StreamEvent::Chunk { text: delta })
-                        .map_err(|e| CommandError::app(e.to_string()))?;
-                }
-            }
-
-            ResponseStreamEvent::ResponseCompleted { .. } => {
-                completed = true;
-            }
-
-            ResponseStreamEvent::StreamError { error, .. } => {
-                return Err(CommandError::openai(
-                    error
-                        .message
-                        .unwrap_or_else(|| "OpenAI stream error".to_string()),
-                ));
-            }
-
-            _ => {}
-        }
-    }
-
-    if !completed {
-        return Err(CommandError::openai(
-            "Response stream ended without completion.",
-        ));
-    }
-
-    if !received_text {
-        return Err(CommandError::openai("API returned no text!"));
-    }
-
-    Ok(full_text)
-}
 
 use tauri_plugin_log::{Target, TargetKind};
 
@@ -179,6 +73,11 @@ pub fn run() {
         description: "user_goals",
         sql: include_str!("../migrations/0006_user_goals.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 7,
+        description: "teacher_feedback",
+        sql: include_str!("../migrations/0007_teacher_feedback.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
@@ -191,13 +90,18 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .invoke_handler(tauri::generate_handler![
-            send_message,
+            conversation::send_message,
             credentials::save_openai_api_key,
             credentials::has_openai_api_key,
             factory_reset::reset_application,
             goals::initialize_goal_catalog,
             goals::get_goal_settings,
             goals::save_goal_settings,
+            corrections::get_correction,
+            corrections::list_corrections,
+            corrections::create_correction,
+            corrections::delete_correction,
+            feedback::analyze_message,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

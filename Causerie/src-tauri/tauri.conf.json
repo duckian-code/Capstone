@@ -39,7 +39,11 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": ["resources/goals.json"]
+    "resources": [
+      "resources/goals.json",
+      "prompts/mascot-system-prompt.txt",
+      "prompts/teacher-system-prompt.txt"
+    ]
   },
   "plugins": {
     "sql": {

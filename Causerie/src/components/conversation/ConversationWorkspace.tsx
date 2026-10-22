@@ -98,7 +98,7 @@ export function ConversationWorkspace(props: Props) {
                 )}
 
 
-                <FeedbackPanel message={selectedMessage} />
+                <FeedbackPanel threadId={props.activeThread.id} message={selectedMessage} />
             </section>
         </main>
     )
