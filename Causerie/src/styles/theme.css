@@ -1,0 +1,588 @@
+:root {
+    color-scheme: dark;
+
+    --color-bg: #353338;
+    --color-sidebar: #403b40;
+    --color-surface: #494249;
+    --color-surface-raised: #524a51;
+    --color-surface-selected: #5e545c;
+    --color-surface-soft: #62565e;
+
+    --color-border: #776971;
+
+    --color-text-primary: #faf2f4;
+    --color-text-secondary: #d4c4c9;
+
+    --color-accent-primary: #e6a6b5;
+    --color-accent-primary-text: #41252e;
+    --color-accent-warm: #f1c899;
+    --color-accent-warm-text: #53311a;
+
+    --color-message-assistant: #564c53;
+    --color-message-user: #946c78;
+    --color-message-user-text: #fff8f9;
+
+    --color-hover: #685b64;
+    --color-pressed: #74636d;
+    --color-disabled-bg: #4a4449;
+    --color-disabled-text: #9f9297;
+
+    --color-overlay: rgba(30, 27, 31, 0.72);
+    --color-shadow: rgba(0, 0, 0, 0.28);
+
+    --color-focus: var(--color-accent-primary);
+    --color-active: var(--color-accent-primary);
+    --color-highlight: var(--color-accent-warm);
+
+    --font-body:
+            "Nunito Sans", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+    --font-brand:
+            "Dancing Script", "Segoe Script", "Apple Chancery",
+            "URW Chancery L", cursive;
+
+    font-family: var(--font-body);
+    color: var(--color-text-primary);
+    background: var(--color-bg);
+}
+
+body {
+    color: var(--color-text-primary);
+    background: var(--color-bg);
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+a,
+a:hover {
+    color: var(--color-accent-primary);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button,
+input,
+select,
+textarea {
+    color: var(--color-text-primary);
+    background: var(--color-surface-raised);
+    border-color: var(--color-border);
+    box-shadow: none;
+}
+
+button:hover:not(:disabled) {
+    background: var(--color-hover);
+    border-color: var(--color-accent-primary);
+}
+
+button:active:not(:disabled) {
+    background: var(--color-pressed);
+}
+
+/* Existing workspace rules can continue using these aliases. */
+.cw {
+    --cw-background: var(--color-bg);
+    --cw-panel: var(--color-surface);
+    --cw-border: var(--color-border);
+    --cw-text: var(--color-text-primary);
+    --cw-muted: var(--color-text-secondary);
+    --cw-accent: var(--color-accent-primary);
+
+    grid-template-rows:
+        minmax(110px, auto)
+        minmax(0, 1fr)
+        clamp(190px, 25dvh, 240px);
+}
+
+/* All three columns use the same header, content, and footer tracks. */
+.cw-sidebar,
+.cw-practice,
+.cw-conversation {
+    display: grid;
+    grid-row: 1 / 4;
+    grid-template-rows: subgrid;
+    gap: 0;
+    min-width: 0;
+    min-height: 0;
+}
+
+.cw-sidebar {
+    grid-column: 1;
+    padding: 0;
+    background: var(--color-sidebar);
+}
+
+.cw-practice {
+    grid-column: 2;
+}
+
+.cw-conversation {
+    grid-column: 3;
+}
+
+.cw-brand-header,
+.cw-context,
+.cw-conversation-header {
+    min-width: 0;
+    min-height: 110px;
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.cw-brand-header {
+    display: flex;
+    align-items: center;
+}
+
+.cw h1.cw-brand {
+    margin: 0;
+    font-family: var(--font-brand);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--color-accent-primary);
+}
+
+.cw-sidebar-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+    min-height: 0;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.cw-sidebar-body > .cw-new-thread {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.cw-thread-nav {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+}
+
+.cw-account-footer,
+.cw-composer,
+.cw-feedback {
+    min-height: 0;
+    padding: 0.85rem;
+    overflow: auto;
+    border-top: 1px solid var(--color-border);
+    background: var(--color-surface);
+}
+
+.cw-account-footer {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* One card, with two independently accessible controls. */
+.account-panel {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface-raised);
+}
+
+.account-panel button.account-profile,
+.account-panel button.account-gear {
+    margin: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-text-primary);
+    box-shadow: none;
+}
+
+.account-panel button.account-profile {
+    flex: 1;
+    min-width: 0;
+    gap: 0.5rem;
+    padding: 0.65rem 0.4rem;
+    border-radius: 11px 0 0 11px;
+}
+
+.account-panel button.account-gear {
+    flex: 0 0 40px;
+    padding: 0.4rem;
+    border-left: 1px solid var(--color-border);
+    border-radius: 0 11px 11px 0;
+    color: var(--color-accent-primary);
+}
+
+.account-panel button:hover:not(:disabled) {
+    background: var(--color-hover);
+}
+
+.account-panel button:focus-visible {
+    outline-offset: -3px;
+}
+
+.account-summary small {
+    color: var(--color-text-secondary);
+    opacity: 1;
+}
+
+.settings-avatar-fallback {
+    background: var(--color-accent-primary);
+    color: var(--color-accent-primary-text);
+}
+
+/* Conversation and learning content. */
+.cw-thread[aria-current="page"],
+.cw-feedback-button[aria-pressed="true"] {
+    background: var(--color-surface-selected);
+    border-color: var(--color-accent-primary);
+}
+
+.cw-message {
+    background: var(--color-message-assistant);
+}
+
+.cw-message-user {
+    background: var(--color-message-user);
+    color: var(--color-message-user-text);
+}
+
+.cw-message-user .cw-message-meta {
+    color: var(--color-message-user-text);
+}
+
+.cw-context h2,
+.cw-feedback h2,
+.cw-composer label {
+    color: var(--color-accent-warm);
+}
+
+.cw-goals {
+    gap: 0.35rem;
+}
+
+.cw-goals li {
+    padding: 0.2rem 0.55rem;
+    border-radius: 6px;
+    background: var(--color-surface-soft);
+    color: var(--color-accent-warm);
+}
+
+.cw-thread-prompt {
+    border-color: var(--color-accent-warm);
+    background: var(--color-surface-soft);
+}
+
+.cw-feedback blockquote {
+    padding: 0.65rem;
+    border-left-color: var(--color-accent-warm);
+    background: var(--color-surface-soft);
+    color: var(--color-text-primary);
+}
+
+.cw-status {
+    background: var(--color-surface-soft);
+    color: var(--color-accent-warm);
+}
+
+/* Application surfaces, including dialogs rendered outside .cw. */
+.conversation-operation,
+.onboarding-card,
+.settings-modal,
+.cw-thread-dialog,
+.dictionary-panel,
+.sticky-editor,
+.error-toast {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.onboarding {
+    background: var(--color-bg);
+    color: var(--color-text-primary);
+}
+
+.settings-navigation {
+    background: var(--color-sidebar);
+}
+
+.settings-navigation button[aria-current="location"] {
+    background: var(--color-surface-selected);
+    border-color: var(--color-accent-primary);
+}
+
+.settings-modal-header,
+.settings-navigation,
+.settings-section + .settings-section,
+.dictionary-panel h2,
+.dictionary-meaning + .dictionary-meaning,
+.dictionary-source {
+    border-color: var(--color-border);
+}
+
+.settings-modal,
+.cw-thread-dialog,
+.dictionary-panel,
+.sticky-editor {
+    box-shadow: 0 20px 70px var(--color-shadow);
+}
+
+.error-toast {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 8px 24px var(--color-shadow);
+}
+
+.settings-modal::backdrop,
+.cw-thread-dialog::backdrop,
+.dictionary-panel::backdrop,
+.sticky-editor::backdrop {
+    background: var(--color-overlay);
+}
+
+/* Shared field and button colours override the old component palettes. */
+.cw textarea,
+.settings-fields input,
+.settings-fields select,
+.cw-thread-dialog input,
+.cw-thread-dialog textarea,
+.onboarding input,
+.onboarding select,
+.sticky-editor > input,
+.sticky-editor textarea {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.settings-modal button,
+.cw-thread-dialog button,
+.dictionary-panel button,
+.sticky-editor button,
+.onboarding button {
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    border-color: var(--color-border);
+}
+
+.settings-help,
+.onboarding-help,
+.dictionary-direction,
+.dictionary-part-of-speech,
+.dictionary-muted,
+.sticky-help {
+    color: var(--color-text-secondary);
+}
+
+input::placeholder,
+textarea::placeholder,
+.settings-fields input::placeholder,
+.cw-thread-dialog input::placeholder,
+.cw-thread-dialog textarea::placeholder,
+.sticky-editor input::placeholder,
+.sticky-editor textarea::placeholder {
+    color: var(--color-text-secondary);
+    opacity: 1;
+}
+
+.settings-save-bar,
+.settings-close-confirmation,
+.sticky-delete-confirmation,
+.sticky-error {
+    background: var(--color-surface-soft);
+    color: var(--color-text-primary);
+    border-color: var(--color-accent-warm);
+}
+
+.settings-error,
+.cw-thread-error,
+.onboarding [role="alert"] {
+    color: var(--color-accent-primary);
+}
+
+.sticky-editor .sticky-delete {
+    color: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+}
+
+.dictionary-toolbar > span,
+.dictionary-meaning h3 {
+    color: var(--color-accent-warm);
+}
+
+.dictionary-meaning blockquote,
+.sticky-selected-text {
+    background: var(--color-surface-soft);
+    color: var(--color-text-primary);
+    border-left-color: var(--color-accent-warm);
+}
+
+/* General hover/pressed states before the specialised action styles. */
+:is(
+    .cw,
+    .settings-modal,
+    .cw-thread-dialog,
+    .dictionary-panel,
+    .sticky-editor,
+    .onboarding
+) button:hover:not(:disabled) {
+    background: var(--color-hover);
+    border-color: var(--color-accent-primary);
+}
+
+:is(
+    .cw,
+    .settings-modal,
+    .cw-thread-dialog,
+    .dictionary-panel,
+    .sticky-editor,
+    .onboarding
+) button:active:not(:disabled) {
+    background: var(--color-pressed);
+}
+
+/* Pink: identity and primary actions. */
+.cw button.cw-new-thread,
+.cw-composer button[type="submit"],
+.settings-save-bar button,
+.cw-thread-dialog button[type="submit"],
+.onboarding button[type="submit"] {
+    background: var(--color-accent-primary);
+    color: var(--color-accent-primary-text);
+    border-color: var(--color-accent-primary);
+    font-weight: 700;
+}
+
+.cw button.cw-new-thread:hover:not(:disabled),
+.cw-composer button[type="submit"]:hover:not(:disabled),
+.settings-save-bar button:hover:not(:disabled),
+.cw-thread-dialog button[type="submit"]:hover:not(:disabled),
+.onboarding button[type="submit"]:hover:not(:disabled) {
+    background: var(--color-accent-primary);
+    color: var(--color-accent-primary-text);
+    box-shadow: inset 0 0 0 2px var(--color-accent-primary-text);
+}
+
+/* Peach: dictionary and annotation actions. */
+.cw .sticky-selection-action button,
+.cw .sticky-selection-action .dictionary-selection-button {
+    background: var(--color-accent-warm);
+    color: var(--color-accent-warm-text);
+    border-color: var(--color-accent-warm);
+}
+
+.cw .sticky-selection-action button:hover:not(:disabled) {
+    background: var(--color-accent-warm);
+    color: var(--color-accent-warm-text);
+    box-shadow: inset 0 0 0 2px var(--color-accent-warm-text);
+}
+
+/* Retain the five named annotation colours as semantic highlights. */
+.sticky-highlight,
+.sticky-swatch {
+    color: var(--color-accent-primary-text);
+}
+
+.sticky-swatch {
+    border-color: var(--color-border);
+}
+
+/* Consistent keyboard focus, including modal controls. */
+:focus-visible,
+.cw :focus-visible,
+.settings-modal :focus-visible,
+.cw-thread-dialog :focus-visible,
+.dictionary-panel :focus-visible,
+.sticky-editor :focus-visible,
+.onboarding :focus-visible,
+.sticky-color-option input:focus-visible + .sticky-swatch {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+/* Keep disabled primary actions consistent with other controls. */
+button:disabled,
+.cw button:disabled,
+.settings-modal button:disabled,
+.cw-thread-dialog button:disabled,
+.dictionary-panel button:disabled,
+.sticky-editor button:disabled,
+.onboarding button:disabled,
+.cw button.cw-new-thread:disabled,
+.cw .sticky-selection-action button:disabled,
+.account-panel button:disabled {
+    background: var(--color-disabled-bg);
+    color: var(--color-disabled-text);
+    border-color: var(--color-border);
+    box-shadow: none;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+@media (min-width: 761px) and (max-width: 1000px) {
+    .cw {
+        grid-template-columns:
+            180px
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+
+    .cw-sidebar {
+        padding: 0;
+    }
+
+    .cw-sidebar-body,
+    .cw-account-footer {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 760px) {
+    .cw {
+        grid-template-rows: auto auto auto;
+    }
+
+    .cw-sidebar,
+    .cw-practice,
+    .cw-conversation {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .cw-sidebar {
+        grid-template-rows: auto auto auto;
+    }
+
+    .cw-brand-header,
+    .cw-context,
+    .cw-conversation-header {
+        min-height: 0;
+    }
+
+    .cw-practice {
+        grid-template-rows: auto 240px minmax(210px, auto);
+    }
+
+    .cw-conversation {
+        grid-template-rows:
+            auto
+            minmax(240px, 50dvh)
+            minmax(190px, auto);
+    }
+
+    .cw-thread-nav {
+        overflow: visible;
+    }
+}
