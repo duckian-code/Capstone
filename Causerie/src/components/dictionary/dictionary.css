@@ -1,0 +1,105 @@
+.dictionary-panel {
+    box-sizing: border-box;
+    width: min(420px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    padding: 1.2rem;
+    border: 2px solid #b437a7;
+    border-radius: 16px;
+    background: #fff4fd;
+    color: #44213f;
+    box-shadow: 0 20px 70px rgb(0 0 0 / 40%);
+    overflow-wrap: anywhere;
+}
+
+.dictionary-panel::backdrop {
+    background: rgb(0 0 0 / 35%);
+}
+
+.dictionary-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.dictionary-toolbar > span {
+    color: #7d2873;
+    font-weight: 600;
+}
+
+.dictionary-panel h2 {
+    margin: 0.8rem 0 0;
+    padding-bottom: 0.65rem;
+    border-bottom: 2px solid #d98fcf;
+    font-size: 1.8rem;
+}
+
+.dictionary-direction,
+.dictionary-part-of-speech,
+.dictionary-muted {
+    color: #73556e;
+}
+
+.dictionary-direction,
+.dictionary-part-of-speech {
+    font-size: 0.9rem;
+}
+
+.dictionary-meaning {
+    padding: 0.5rem 0 1rem;
+}
+
+.dictionary-meaning + .dictionary-meaning {
+    border-top: 1px solid #ddb7d7;
+}
+
+.dictionary-meaning h3 {
+    margin-bottom: 0.4rem;
+}
+
+.dictionary-meaning h4 {
+    margin: 1rem 0 0.5rem;
+}
+
+.dictionary-meaning blockquote {
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    border-left: 3px solid #b437a7;
+    background: #f6e1f2;
+    white-space: pre-wrap;
+}
+
+.dictionary-panel button {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #a65b9d;
+    border-radius: 8px;
+    background: #f3d6ee;
+    color: #44213f;
+    font: inherit;
+    cursor: pointer;
+}
+
+.dictionary-panel :focus-visible {
+    outline: 3px solid #7b2671;
+    outline-offset: 3px;
+}
+
+.dictionary-source {
+    padding-top: 0.75rem;
+    border-top: 1px solid #ddb7d7;
+    font-size: 0.85rem;
+}
+
+/* Share the existing selection-action row with stickies. */
+.sticky-selection-action {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.cw .sticky-selection-action .dictionary-selection-button {
+    background: #f3d6ee;
+    border-color: #b437a7;
+    color: #44213f;
+}

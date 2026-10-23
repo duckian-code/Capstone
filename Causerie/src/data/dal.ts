@@ -9,6 +9,7 @@ import { AppStateDAO } from './dao/app-state-dao';
 import { FeedbackDAO } from './dao/feedback-dao';
 import { callBackend } from './dao/base';
 import type { Message, Thread } from "./models/dao-types";
+import { DictionaryDAO } from "./dao/dictionary-dao";
 
 /**
  *  Frontend persistence facade. SQL executes exclusively in Rust
@@ -24,6 +25,8 @@ export class DataAccessLayer {
     readonly goals = new GoalDAO();
     readonly appState = new AppStateDAO();
     readonly feedback = new FeedbackDAO();
+    readonly dictionary = new DictionaryDAO();
+
     initialize(): Promise<void> { return initializeDatabase(); }
     async getThreadHistory(threadId: string): Promise<{ thread: Thread; messages: Message[] } | null> {
         return callBackend("get_thread_history", { threadId });

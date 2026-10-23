@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useStickies } from "./StickyProvider";
 import { splitStickyText } from "./sticky-matches";
+import { useDictionary } from "../dictionary/DictionaryProvider";
+import { selectedWord } from "../dictionary/selected-word";
 
 interface Props {
     text: string;
@@ -9,6 +11,8 @@ interface Props {
 export function StickyMessageText({ text }: Props) {
     const textRef = useRef<HTMLParagraphElement>(null);
     const [selectedText, setSelectedText] = useState("");
+    const [dictionaryWord, setDictionaryWord] = useState<string | null>(null);
+    const { openWord } = useDictionary();
 
     const {
         stickies,
@@ -30,6 +34,7 @@ export function StickyMessageText({ text }: Props) {
 
             if (!container || !selection || selection.isCollapsed || selection.rangeCount !== 1) {
                 setSelectedText("");
+                setDictionaryWord(null);
                 return;
             }
 
@@ -41,6 +46,7 @@ export function StickyMessageText({ text }: Props) {
             }
 
             setSelectedText(selection.toString().trim());
+            setDictionaryWord(selectedWord(container, range));
         }
 
         document.addEventListener("selectionchange", readSelection);
@@ -112,22 +118,43 @@ export function StickyMessageText({ text }: Props) {
                 })}
             </p>
 
-            {selectedText && !loading && !error && (
+            {selectedText && (
                 <div className="sticky-selection-action">
-                    <button
-                        type="button"
-                        onMouseDown={(event) => {
-                            // Preserve the selection while clicking.
-                            event.preventDefault();
-                        }}
-                        onClick={() => {
-                            openText(selectedText);
-                            window.getSelection()?.removeAllRanges();
-                            setSelectedText("");
-                        }}
-                    >
-                        {existing ? "Edit sticky" : "Create sticky"}
-                    </button>
+                    {!loading && !error && (
+                        <button
+                            type="button"
+                            onMouseDown={(event) => {
+                                // Preserve the selection while clicking.
+                                event.preventDefault();
+                            }}
+                            onClick={() => {
+                                openText(selectedText);
+                                window.getSelection()?.removeAllRanges();
+                                setSelectedText("");
+                                setDictionaryWord(null);
+                            }}
+                        >
+                            {existing ? "Edit sticky" : "Create sticky"}
+                        </button>
+                    )}
+                    {dictionaryWord && (
+                        <button
+                            type="button"
+                            className="dictionary-selection-button"
+                            aria-label={`Translate ${dictionaryWord}`}
+                            onMouseDown={(event) => {
+                                event.preventDefault();
+                            }}
+                            onClick={(event) => {
+                                // Establish a focus-return target before opening the dialog.
+                                event.currentTarget.focus();
+
+                                openWord(dictionaryWord);
+                            }}
+                        >
+                            Translate
+                        </button>
+                    )}
                 </div>
             )}
         </>
