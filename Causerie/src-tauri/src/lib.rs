@@ -13,6 +13,7 @@ mod conversation;
 mod feedback_repository;
 mod feedback;
 mod persistence;
+mod dictionary;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 
@@ -134,6 +135,7 @@ pub fn run() {
             persistence::delete_sticky,
             persistence::get_app_state,
             persistence::complete_onboarding,
+            dictionary::lookup_dictionary,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
@@ -146,6 +148,9 @@ pub fn run() {
             app.manage(credentials::CredentialStore::new(
                 local_data_dir,
             ));
+
+            app.manage(dictionary::DictionaryClient::new()
+                .map_err(std::io::Error::other)?);
 
             // These registrations moved from the outer builder.
             app.handle().plugin(
