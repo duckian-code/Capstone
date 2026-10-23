@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import {
-    loadAppSession,
-    type AppSession,
-} from "../services/app-session";
+import { loadAppSession, type AppSession} from "../services/app-session";
+import { selectedGoalLabels, type GoalSettings } from "../data/models/goal-types.ts";
 import type { UserChanges } from "../data/models/dao-types.ts";
 
 type SessionState =
@@ -80,9 +78,28 @@ export function useAppSession() {
         })
     }, [])
 
+    const updateGoals = useCallback((userId: string, goalSettings: GoalSettings) => {
+        setState((previous) => {
+            if (previous.kind !== "ready" || previous.session.user.id !== userId) return previous;
+
+            return {
+                ...previous,
+                session: {
+                    ...previous.session,
+                    goalSettings,
+                    context: {
+                        ...previous.session.context,
+                        goals: selectedGoalLabels(goalSettings)
+                    }
+                }
+            };
+        });
+    }, []);
+
     return {
         state,
         reload,
         updateUser,
+        updateGoals,
     };
 }

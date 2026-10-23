@@ -6,12 +6,15 @@ import { CorrectionDAO } from './dao/correction-dao';
 import { StickyDAO } from './dao/sticky-dao';
 import { GoalDAO } from './dao/goal-dao';
 import { AppStateDAO } from './dao/app-state-dao';
+import { FeedbackDAO } from './dao/feedback-dao';
+import { callBackend } from './dao/base';
+import type { Message, Thread } from "./models/dao-types";
+import { DictionaryDAO } from "./dao/dictionary-dao";
 
-/** DAL USAGE GUIDE
- * NOTE: DO NOT CHAIN DAL CALLS. MULTITRANSACTION STATEMENTS ARE NOT ATOMIC
- * TODO: implement dedicated Rust Tauri commands with SQLx transactions (FINAL PERSISTENCE TICKET)
- * TODO: persist complete openAI streamed message (FINAL PERSISTENCE TICKET)
-/** Composition root: the UI should consume this, not individual SQL statements. */
+/**
+ *  Frontend persistence facade. SQL executes exclusively in Rust
+ *  All atomic workflows use a dedicated backend transaction
+ */
 export class DataAccessLayer {
     readonly users = new UserDAO();
     readonly settings = new UserSettingsDAO();
@@ -21,12 +24,12 @@ export class DataAccessLayer {
     readonly stickies = new StickyDAO();
     readonly goals = new GoalDAO();
     readonly appState = new AppStateDAO();
+    readonly feedback = new FeedbackDAO();
+    readonly dictionary = new DictionaryDAO();
+
     initialize(): Promise<void> { return initializeDatabase(); }
-    async getThreadHistory(threadId: string) {
-        const thread = await this.threads.get(threadId);
-        if (!thread) return null;
-        const messages = await this.messages.forThread(threadId);
-        return { thread, messages };
+    async getThreadHistory(threadId: string): Promise<{ thread: Thread; messages: Message[] } | null> {
+        return callBackend("get_thread_history", { threadId });
     }
 }
 export const dal = new DataAccessLayer();

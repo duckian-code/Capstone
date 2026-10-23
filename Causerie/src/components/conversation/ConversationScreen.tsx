@@ -7,6 +7,7 @@ import {MascotCanvas} from "../MascotCanvas.tsx";
 import {ThreadCreationDialog} from "../ThreadCreationDialog.tsx";
 import {StickyProvider} from "../sticky/StickyProvider.tsx";
 import { AccountPanel } from "../settings/SettingsMenus.tsx";
+import { DictionaryProvider } from "../dictionary/DictionaryProvider";
 
 interface Props {
     userId: string;
@@ -17,7 +18,9 @@ interface Props {
 export function ConversationScreen(props: Props) {
     return (
         <StickyProvider key={props.userId} userId={props.userId}>
-            <ConversationSession {...props} />
+            <DictionaryProvider key={props.context.language} language={props.context.language}>
+                <ConversationSession {...props} />
+            </DictionaryProvider>
         </StickyProvider>
     );
 }

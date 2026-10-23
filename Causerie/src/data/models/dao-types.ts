@@ -25,7 +25,7 @@ export interface Message {
 export interface MessageCorrection {
     id: string; message_id: string; original_text: string; corrected_text: string;
     explanation: string | null; start_offset: number | null; end_offset: number | null;
-    category: string | null; created_at: string;
+    category: string | null; created_at: string; goal_id: string | null; origin: "manual" | "teacher";
 }
 export interface Sticky {
     id: string; user_id: string; selected_text: string; title: string; user_text: string; color: StickyColor;
@@ -37,6 +37,3 @@ export type StickyColor =
     | "green"
     | "yellow"
     | "violet"
-export interface Goal {
-    id: string; user_id: string; title: string; description: string | null;
-}

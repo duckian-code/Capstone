@@ -1,13 +1,15 @@
-import Database from '@tauri-apps/plugin-sql';
+import { invoke } from '@tauri-apps/api/core';
 
-export const DB_URL = 'sqlite:causerie.db' as const;
-let pending: Promise<Database> | undefined;
+let pending: Promise<void> | undefined;
 
 /** One shared initialization promise. A rejection allows a later retry. */
 /** Concurrent connection requests receive the same initialization promise **/
-export function getDatabase(): Promise<Database> {
+export function getDatabase(): Promise<void> {
     if (!pending) {
-        pending = Database.load(DB_URL).catch((error: unknown) => {
+        pending = (async () => {
+           await invoke<void>("initialize_database");
+           await invoke<void>('initialize_goal_catalog');
+        })().catch((error: unknown) => {
             pending = undefined;
             throw error;
         });
@@ -16,10 +18,5 @@ export function getDatabase(): Promise<Database> {
 }
 
 export async function initializeDatabase(): Promise<void> {
-    const db = await getDatabase();
-    // verify foreign keys per connection
-    const result = await db.select<Array<{ foreign_keys: number }>>('PRAGMA foreign_keys');
-    if (result[0]?.foreign_keys !== 1) {
-        throw new Error('SQLite foreign-key enforcement is disabled; configure the connection before allowing writes.');
-    }
+    return getDatabase();
 }

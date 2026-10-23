@@ -1,102 +1,63 @@
-import { BaseDAO, newId } from './base';
-import type { User, UserSettings } from '../models/dao-types.ts';
+import { callBackend } from "./base";
+import type { User, UserSettings } from "../models/dao-types";
 
-export class UserDAO extends BaseDAO {
-    get(id: string) { return this.one<User>('SELECT * FROM users WHERE id = $1', [id]); }
-    list() { return this.all<User>('SELECT * FROM users ORDER BY display_name'); }
-    async create(fields: Omit<User, 'id'>): Promise<User> {
-        const user: User = { id: newId(), ...fields };
-        await this.write('INSERT INTO users (id, display_name, pronouns, native_language, target_language) VALUES ($1,$2,$3,$4,$5)',
-            [user.id, user.display_name, user.pronouns, user.native_language, user.target_language]);
-        return user;
-    }
-    async update(user: User) {
-        return this.write('UPDATE users SET display_name=$1, pronouns=$2, native_language=$3, target_language=$4 WHERE id=$5',
-            [user.display_name, user.pronouns, user.native_language, user.target_language, user.id]);
+export class UserDAO {
+    get(id: string): Promise<User | null> {
+        return callBackend("get_user", { id });
     }
 
-    async createIfMissing(user: User): Promise<User> {
-        await this.write(
-            `INSERT INTO users (
-            id,
-            display_name,
+    list(): Promise<User[]> {
+        return callBackend("list_users");
+    }
+
+    create(fields: Omit<User, "id">): Promise<User> {
+        return callBackend("create_user", { fields });
+    }
+
+    update(user: User): Promise<number> {
+        return callBackend("update_user", { user });
+    }
+
+    createIfMissing(user: User): Promise<User> {
+        return callBackend("create_user_if_missing", { user });
+    }
+
+    saveProfile(user: User): Promise<User> {
+        return callBackend("save_user_profile", { user });
+    }
+
+    saveIdentity(
+        userId: string,
+        displayName: string,
+        pronouns: string,
+        avatarDataUrl: string | null,
+    ): Promise<void> {
+        return callBackend("save_user_identity", {
+            userId,
+            displayName,
             pronouns,
-            native_language,
-            target_language
-        )
-        VALUES ($1, $2, $3, $4, $5)
-        ON CONFLICT(id) DO NOTHING`,
-            [
-                user.id,
-                user.display_name,
-                user.pronouns,
-                user.native_language,
-                user.target_language,
-            ],
-        );
-
-        const saved = await this.get(user.id);
-
-        if (!saved) {
-            throw new Error("Unable to load the initialized user.");
-        }
-
-        return saved;
+            avatarDataUrl,
+        });
     }
 
-    // TODO: If expanding onboarding to include native language, add native language to update
-    async saveProfile(user: User): Promise<User> {
-        await this.write(
-            `INSERT INTO users (id, display_name, pronouns, native_language, target_language)
-                VALUES ($1, $2, $3, $4, $5) ON CONFLICT(id) DO UPDATE SET
-                display_name=excluded.display_name, pronouns=excluded.pronouns, target_language=excluded.target_language`,
-            [
-                user.id,
-                user.display_name,
-                user.pronouns,
-                user.native_language,
-                user.target_language,
-            ],
-        );
-
-        const saved = await this.get(user.id);
-
-        if (!saved) {
-            throw new Error("The saved profile could not be loaded");
-        }
-
-        return saved;
+    saveTargetLanguage(userId: string, language: string): Promise<void> {
+        return callBackend("save_user_target_language", {
+            userId,
+            language,
+        });
     }
 
-    async saveIdentity(userId: string, displayName: string, pronouns: string, avatarDataUrl: string | null): Promise<void> {
-        const changed = await this.write(
-            `UPDATE users
-            SET display_name=$1,
-                pronouns=$2,
-                avatar_data_url=$3
-            WHERE id=$4`
-        , [displayName, pronouns, avatarDataUrl, userId]
-        );
-        if (changed !== 1) throw new Error("The profile could not be found!");
+    delete(id: string): Promise<number> {
+        return callBackend("delete_user", { id });
     }
-
-    async saveTargetLanguage(userId: string, language: string): Promise<void> {
-        const changed = await this.write(
-            `UPDATE users
-            SET target_language=$1
-            WHERE id=$2`,
-            [language, userId]
-        )
-        if (changed !== 1) throw new Error("The profile could not be found!");
-    }
-    delete(id: string) { return this.write('DELETE FROM users WHERE id=$1', [id]); }
 }
-export class UserSettingsDAO extends BaseDAO {
-    get(userId: string) { return this.one<UserSettings>('SELECT * FROM user_settings WHERE user_id=$1', [userId]); }
-    // Upsert is one atomic statement; no read-then-insert race.
-    async save(value: UserSettings) {
-        await this.write(`INSERT INTO user_settings (user_id, notifications, theme, font_size) VALUES ($1,$2,$3,$4)
-      ON CONFLICT(user_id) DO UPDATE SET notifications=excluded.notifications, theme=excluded.theme, font_size=excluded.font_size`,
-            [value.user_id, value.notifications, value.theme, value.font_size]);
+
+export class UserSettingsDAO {
+    get(userId: string): Promise<UserSettings | null> {
+        return callBackend("get_user_settings", { userId });
+    }
+
+    save(value: UserSettings): Promise<void> {
+        return callBackend("save_user_settings", { value });
     }
 }
