@@ -1,3 +1,19 @@
+.sticky-editor[class*="sticky-color-"] {
+    --color-surface: var(--sticky-color);
+    --color-surface-raised: #ffffff;
+    --color-surface-soft: rgb(255 255 255 / 45%);
+    --color-text-primary: #17211b;
+    --color-text-secondary: #364039;
+    --color-border: #536047;
+    --color-accent-warm: #536047;
+    --color-accent-primary: #7e2020;
+    --color-hover: #f4f4f4;
+    --color-pressed: #e4e4e4;
+
+    background: var(--sticky-color);
+    color: var(--color-text-primary);
+}
+
 /* Shared highlight palette */
 .sticky-color-red {
     --sticky-color: #f6a5a5;
@@ -42,13 +58,27 @@
 }
 
 .sticky-selection-action {
-    margin-top: 0.6rem;
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: calc(100vw - 16px);
+    padding: 0.35rem;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+    box-shadow: 0 4px 16px var(--color-shadow);
 }
 
-.cw .sticky-selection-action button {
-    background: #d6e8b9;
-    border-color: #88aa57;
-    color: #203716;
+.sticky-selection-action button {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-accent-warm);
+    border-radius: 7px;
+    background: var(--color-accent-warm);
+    color: var(--color-accent-warm-text);
+    font: inherit;
+    cursor: pointer;
 }
 
 .sticky-load-error {

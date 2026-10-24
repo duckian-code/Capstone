@@ -106,7 +106,8 @@ export function StickyEditor({ sticky, onSave, onDelete }: Props) {
     return createPortal(
         <dialog
             ref={dialogRef}
-            className="sticky-editor"
+            className={`sticky-editor sticky-color-${color}`}
+
             aria-labelledby="sticky-editor-heading"
             aria-describedby="sticky-editor-help"
             aria-busy={busy}

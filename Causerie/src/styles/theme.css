@@ -484,18 +484,20 @@ textarea::placeholder,
 }
 
 /* Peach: dictionary and annotation actions. */
-.cw .sticky-selection-action button,
-.cw .sticky-selection-action .dictionary-selection-button {
+.sticky-selection-action button,
+.sticky-selection-action .dictionary-selection-button {
     background: var(--color-accent-warm);
     color: var(--color-accent-warm-text);
     border-color: var(--color-accent-warm);
 }
 
-.cw .sticky-selection-action button:hover:not(:disabled) {
+.sticky-selection-action button:hover:not(:disabled) {
     background: var(--color-accent-warm);
     color: var(--color-accent-warm-text);
     box-shadow: inset 0 0 0 2px var(--color-accent-warm-text);
 }
+
+
 
 /* Retain the five named annotation colours as semantic highlights. */
 .sticky-highlight,
@@ -515,6 +517,7 @@ textarea::placeholder,
 .dictionary-panel :focus-visible,
 .sticky-editor :focus-visible,
 .onboarding :focus-visible,
+.sticky-selection-action :focus-visible,
 .sticky-color-option input:focus-visible + .sticky-swatch {
     outline: 2px solid var(--color-focus);
     outline-offset: 3px;
@@ -529,7 +532,7 @@ button:disabled,
 .sticky-editor button:disabled,
 .onboarding button:disabled,
 .cw button.cw-new-thread:disabled,
-.cw .sticky-selection-action button:disabled,
+.sticky-selection-action button:disabled,
 .account-panel button:disabled {
     background: var(--color-disabled-bg);
     color: var(--color-disabled-text);
