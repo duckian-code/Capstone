@@ -55,3 +55,10 @@ lto = true
 opt-level = 3
 panic = "abort"
 strip = true
+
+# Keep Stronghold snapshot key derivation fast in debug builds.
+[profile.dev.package.scrypt]
+opt-level = 3
+
+[profile.dev.package.salsa20]
+opt-level = 3
