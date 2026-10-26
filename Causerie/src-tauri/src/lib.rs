@@ -15,6 +15,7 @@ mod feedback;
 mod persistence;
 mod dictionary;
 mod conversation_memory;
+mod hint;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 
@@ -86,6 +87,11 @@ pub fn run() {
         description: "conversation_summaries",
         sql: include_str!("../migrations/0008_conversation_summaries.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 9,
+        description: "message_hints",
+        sql: include_str!("../migrations/0009_message_hints.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
@@ -142,6 +148,8 @@ pub fn run() {
             persistence::get_app_state,
             persistence::complete_onboarding,
             dictionary::lookup_dictionary,
+            hints::list_message_hints,
+            hints::request_message_hint,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
