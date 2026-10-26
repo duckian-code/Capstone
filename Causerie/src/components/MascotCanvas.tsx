@@ -72,12 +72,28 @@ export function MascotCanvas({ state, onError }: Props ) {
             app.canvas.setAttribute("aria-hidden", "true");
             host!.appendChild(app.canvas);
 
-            const [idleTexture, respondTexture, waitTexture, errorTexture] = await Promise.all([
-                Assets.load<Texture>("/assets/idle.png"),
-                Assets.load<Texture>("/assets/respond.png"),
-                Assets.load<Texture>("/assets/wait.png"),
-                Assets.load<Texture>("/assets/error.png"),
+            // resolve URLs using the browser so Tauri's custom scheme retains its host
+            function loadMascotTexture(filename: string): Promise<Texture> {
+                const url = new URL(
+                    `/assets/${filename}`,
+                    document.baseURI,
+                ).href;
+
+                return Assets.load<Texture>(url);
+            }
+
+            const [
+                idleTexture,
+                respondTexture,
+                waitTexture,
+                errorTexture,
+            ] = await Promise.all([
+                loadMascotTexture("idle.png"),
+                loadMascotTexture("respond.png"),
+                loadMascotTexture("wait.png"),
+                loadMascotTexture("error.png"),
             ]);
+
 
             if (disposed) return;
 
