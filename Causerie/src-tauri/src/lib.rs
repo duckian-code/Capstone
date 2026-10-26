@@ -15,7 +15,7 @@ mod feedback;
 mod persistence;
 mod dictionary;
 mod conversation_memory;
-mod hint;
+mod hints;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 

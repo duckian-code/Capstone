@@ -91,7 +91,12 @@ export function MessageHistory({threadId, prompt, messages, selectedMessageId, o
                                     </time>
                                 </div>
 
-                                <StickyMessageText text={message.content} />
+                                <StickyMessageText
+                                    key={JSON.stringify([message.id, message.content])}
+                                    messageId={message.id}
+                                    text={message.content}
+                                />
+
 
                                 {message.role === "user" && (
                                     <button
