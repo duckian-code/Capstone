@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Info/Database Info.md",
+                "file": "Documentation/Color Guide.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Database Info"
+              "title": "Color Guide"
             }
           }
         ]
@@ -80,7 +80,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "4361f68798d9ad95",
@@ -187,6 +188,8 @@
   },
   "active": "de14ac3474d5ef83",
   "lastOpenFiles": [
+    "Info/Mascot Info.md",
+    "Info/Database Info.md",
     "Info/Commission Info.md",
     "Causerie/src-tauri/target/debug/incremental/causerie-1c4t5h58plz8s/s-hn8tbp4e3j-0rh65ce-1sw1vb5eeiu11rllqw70n2bbg/work-products.bin",
     "Causerie/src-tauri/target/debug/incremental/causerie-1c4t5h58plz8s/s-hn8tbp4e3j-0rh65ce-1sw1vb5eeiu11rllqw70n2bbg/query-cache.bin",
@@ -198,7 +201,6 @@
     "Causerie/src-tauri/target/debug/incremental/causerie-1c4t5h58plz8s/s-hn8tbp4e3j-0rh65ce-1sw1vb5eeiu11rllqw70n2bbg/3qjhlqn904au502ohbacadl9i.o",
     "Causerie/src-tauri/target/debug/incremental/causerie-1c4t5h58plz8s/s-hn8tbp4e3j-0rh65ce-1sw1vb5eeiu11rllqw70n2bbg",
     "Causerie/src-tauri/target/debug/incremental/causerie-1c4t5h58plz8s/s-hn8tbp4e3j-0rh65ce.lock",
-    "Info/Database Info.md",
     "Prototypes/Prototype Notes.md",
     "Info/Overview.md",
     "Causerie/src-tauri/target/debug/build/rust_decimal-37023b9a1db04c49/out/README-lib.md",
