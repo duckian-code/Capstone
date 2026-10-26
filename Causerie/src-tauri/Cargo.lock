@@ -818,6 +818,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "sha2 0.10.9",
  "sqlx",
  "tauri",
  "tauri-build",
@@ -827,6 +828,7 @@ dependencies = [
  "tauri-plugin-single-instance",
  "tauri-plugin-sql",
  "tauri-plugin-stronghold",
+ "tokio",
  "unicode-normalization",
  "zeroize",
 ]

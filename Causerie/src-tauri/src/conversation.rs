@@ -1,18 +1,15 @@
 use futures::StreamExt;
 use openai_rust_sdk::{
     client::OpenAIClient,
-    models::{
-        responses::message_types::Message as ApiMessage,
-        responses_v2::{CreateResponseRequest, ResponseStreamEvent},
-        gpt5::{ ReasoningConfig, ReasoningEffort }
-    },
+    models::responses_v2::ResponseStreamEvent,
 };
-use openai_rust_sdk::constants::endpoints::threads::messages;
+
 use serde::Serialize;
 use tauri::ipc::Channel;
 
 use crate::{
-    context::{ContextManager, ConversationRole},
+    context::ContextManager,
+    conversation_memory,
     credentials,
     database,
     CommandError,
@@ -49,35 +46,19 @@ pub async fn send_message(
         context.thread_id,
     );
 
-    let messages: Vec<ApiMessage> = context
-        .messages
-        .into_iter()
-        .map(|message| match message.role {
-            ConversationRole::User => ApiMessage::user(message.content),
-            ConversationRole::Assistant => {
-                ApiMessage::assistant(message.content)
-            }
-        })
-        .collect();
-
     let api_key = credentials::resolve_api_key(app).await
         .map_err(CommandError::app)?;
 
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client!"))?;
 
-    // NOTE: DEV MODEL 4o-mini
-    // let request = CreateResponseRequest::new_messages(
-    //     "gpt-4o-mini",
-    //     messages,
-    // ).with_instructions(context.system_prompt);
+    let request = conversation_memory::prepare(
+        &client,
+        &pool,
+        &context,
+    )
+        .await?;
 
-    let mut request = CreateResponseRequest::new_messages(
-        "gpt-6-luna",
-        messages
-    ).with_instructions(context.system_prompt);
-
-    request.reasoning = Some(ReasoningConfig::new(ReasoningEffort::None));
 
     let mut stream = client.stream_response_v2(&request).await.map_err(|e| {
         log::error!("OpenAI request failed: {e}");
@@ -101,8 +82,15 @@ pub async fn send_message(
                 }
             }
 
-            ResponseStreamEvent::ResponseCompleted { .. } => {
+            ResponseStreamEvent::ResponseCompleted { response, .. } => {
                 completed = true;
+
+                if let Some(usage) = response.usage {
+                    log::debug!("Conversation usage: input={}, output={}",
+            usage.input_tokens,
+            usage.output_tokens,
+        );
+                }
             }
 
             ResponseStreamEvent::StreamError { error, .. } => {

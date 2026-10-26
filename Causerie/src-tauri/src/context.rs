@@ -4,12 +4,15 @@ use crate::goals::GoalDefinition;
 
 use crate::CommandError;
 
+#[derive(Clone)]
 pub(crate) enum ConversationRole {
     User,
     Assistant,
 }
 
+#[derive(Clone)]
 pub(crate) struct ContextMessage {
+    pub sequence_no: i64,
     pub role: ConversationRole,
     pub content: String,
 }
@@ -133,13 +136,13 @@ impl ContextManager {
 
         // include the saved current message exactly ONCE
         // only ordinary conversation messages participate at this stage
-        let rows = sqlx::query_as::<_, (String, String)>(
-            "SELECT role, content
-             FROM messages
-             WHERE thread_id = ?
-                AND sequence_no <= ?
-                AND role IN ('user', 'assistant')
-             ORDER BY sequence_no ASC",
+        let rows = sqlx::query_as::<_, (i64, String, String)>(
+            "SELECT sequence_no, role, content
+                    FROM messages
+                    WHERE thread_id = ?
+                        AND sequence_no <= ?
+                        AND role IN ('user', 'assistant')
+                    ORDER BY sequence_no ASC",
         )
             .bind(thread_id)
             .bind(sequence_no)
@@ -147,9 +150,10 @@ impl ContextManager {
             .await
             .map_err(database_error)?;
 
+
         let mut messages = Vec::with_capacity(rows.len());
 
-        for (role, content) in rows {
+        for (sequence_no, role, content) in rows {
             let role = match role.as_str() {
                 "user" => ConversationRole::User,
                 "assistant" => ConversationRole::Assistant,
@@ -158,7 +162,7 @@ impl ContextManager {
                 }
             };
 
-            messages.push(ContextMessage { role, content });
+            messages.push(ContextMessage { sequence_no, role, content });
         }
 
         // Release the database transaction before starting the network request.

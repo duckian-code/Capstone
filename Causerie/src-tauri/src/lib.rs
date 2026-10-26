@@ -14,6 +14,7 @@ mod feedback_repository;
 mod feedback;
 mod persistence;
 mod dictionary;
+mod conversation_memory;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 
@@ -79,6 +80,11 @@ pub fn run() {
         version: 7,
         description: "teacher_feedback",
         sql: include_str!("../migrations/0007_teacher_feedback.sql"),
+        kind: MigrationKind::Up,
+    }, Migration {
+        version: 8,
+        description: "conversation_summaries",
+        sql: include_str!("../migrations/0008_conversation_summaries.sql"),
         kind: MigrationKind::Up,
     }];
 
