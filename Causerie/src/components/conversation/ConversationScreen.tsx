@@ -42,8 +42,9 @@ function ConversationSession({ userId, context }: Props) {
         <ThreadCreationDialog
             creating={conversation.creatingThread}
             error={conversation.operationError}
-            onCreate={async (title, prompt) => {
-                const created = await conversation.createThread(title, prompt);
+            onClearError={conversation.clearCreationError}
+            onCreate={async (input) => {
+                const created = await conversation.createThread(input);
 
                 if (created) {
                     setSelectedMessageId(null);

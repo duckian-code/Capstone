@@ -7,6 +7,7 @@ import {useTypewriter} from "./useTypewriter.ts";
 import {dal} from "../data/dal.ts";
 import {parseCommandError} from "../services/command-error.ts";
 import {streamReply} from "../services/conversation.ts";
+import type { ThreadCreationInput } from "../data/models/thread-creation-types";
 
 // HANDLES CONVERSATION FLOW AND INTEGRATION WITH DAL
 
@@ -365,18 +366,17 @@ export function useConversationController(userId: string) {
         return true;
     }
 
-    async function createThread(rawTitle: string, rawPrompt: string): Promise<boolean> {
-        const title = rawTitle.trim();
-        const prompt = rawPrompt.trim();
-
+    async function createThread(input: ThreadCreationInput): Promise<boolean> {
         if (
             creatingRef.current ||
             turnRef.current ||
             threadsLoading ||
-            threadsError ||
-            !title ||
-            !prompt
+            threadsError
         ) return false;
+
+        if ( input.mode === "custom" && (!input.title.trim() || !input.prompt.trim())) {
+            return false;
+        }
 
         // lock so repeated clicks cannot create dups
         creatingRef.current = true;
@@ -385,7 +385,9 @@ export function useConversationController(userId: string) {
 
         try {
             // TODO: revisit predefined thread
-            const thread = await dal.threads.create(userId, title, prompt);
+            const thread = input.mode === "generated"
+                ? await dal.threads.createGenerated(userId, input.topicId, input.requestId)
+                : await dal.threads.create(userId, input.title.trim(), input.prompt.trim());
 
             if (!mounted.current) return false;
 
@@ -396,7 +398,7 @@ export function useConversationController(userId: string) {
                     prompt: thread.topic,
                     createdAt: thread.created_at,
                 },
-                ...previous,
+                ...previous.filter((item) => item.id !== thread.id),
             ]);
 
             typewriter.reset();
