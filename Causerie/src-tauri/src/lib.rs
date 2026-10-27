@@ -16,6 +16,8 @@ mod persistence;
 mod dictionary;
 mod conversation_memory;
 mod hints;
+mod thread_topics;
+mod thread_starters;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 
@@ -150,6 +152,8 @@ pub fn run() {
             dictionary::lookup_dictionary,
             hints::list_message_hints,
             hints::request_message_hint,
+            thread_topics::list_thread_topics,
+            thread_starters::create_generated_thread,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
