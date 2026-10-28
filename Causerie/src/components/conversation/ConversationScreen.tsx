@@ -3,7 +3,7 @@ import {useConversationController} from "../../hooks/useConversationController.t
 import {useCallback, useState} from "react";
 import {ErrorToast, Toast} from "../ErrorToast.tsx";
 import {ConversationWorkspace} from "./ConversationWorkspace.tsx";
-import {MascotCanvas} from "../MascotCanvas.tsx";
+import {MascotCanvas} from "../mascot/MascotCanvas.tsx";
 import {ThreadCreationDialog} from "../ThreadCreationDialog.tsx";
 import {StickyProvider} from "../sticky/StickyProvider.tsx";
 import { AccountPanel } from "../settings/SettingsMenus.tsx";

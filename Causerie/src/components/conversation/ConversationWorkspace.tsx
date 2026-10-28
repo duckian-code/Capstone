@@ -7,10 +7,11 @@ import type {
 } from "../../data/models/conversation-types";
 
 import { ThreadSidebar } from "./ThreadSidebar";
-import { MascotStage } from "./MascotStage";
+import { MascotStage } from "../mascot/MascotStage.tsx";
 import { MessageComposer } from "./MessageComposer";
 import { MessageHistory } from "./MessageHistory";
 import { FeedbackPanel } from "./FeedbackPanel";
+import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types";
 import "./conversation.css"
 
 interface Props {
@@ -39,7 +40,24 @@ export function ConversationWorkspace(props: Props) {
     const selectedMessage = props.messages.find(
         (message) => message.id === props.selectedMessageId && message.role === "user"
     ) ?? null;
-    
+
+    let latestAssistantMessage: ConversationMessage | null = null;
+
+    if (!props.historyLoading && !props.historyError) {
+        for (let index = props.messages.length - 1; index >= 0; index--) {
+            const message = props.messages[index];
+
+            if (message.role === "assistant") {
+                latestAssistantMessage = message;
+                break;
+            }
+        }
+    }
+
+    const languageCode = LANGUAGE_OPTIONS.find(
+        (option) => option.value === props.context.language,
+    )?.code;
+
     return (
         <main className="cw">
             <ThreadSidebar threads={props.threads} activeThreadId={props.activeThread.id} disabled={props.navigationDisabled} onSelect={props.onSelectThread} onCreate={props.onCreateThread}/>
@@ -62,9 +80,17 @@ export function ConversationWorkspace(props: Props) {
                     )}
                 </header>
 
-                <MascotStage status={props.status}>
+                <MascotStage
+                    threadId={props.activeThread.id}
+                    status={props.status}
+                    message={latestAssistantMessage}
+                    historyUnavailable={
+                        props.historyLoading || Boolean(props.historyError)
+                    }
+                    languageCode={languageCode}>
                     {props.mascot}
                 </MascotStage>
+
                 <MessageComposer key={props.activeThread.id} language={props.context.language} disabled={props.sendDisabled} onSend={props.onSend}/>
             </section>
             <section className="cw-conversation" aria-labelledby="conversation-title">

@@ -3,7 +3,7 @@
 import {Application, Assets, Sprite} from "pixi.js";
 import {useEffect, useRef} from "react";
 import type { Texture } from "pixi.js";
-import type { MascotState } from "../state/mascotMachine.ts";
+import type { MascotState } from "../../state/mascotMachine.ts";
 
 Assets.setPreferences({
     preferWorkers: false,
