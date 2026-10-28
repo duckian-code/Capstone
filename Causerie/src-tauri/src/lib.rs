@@ -18,6 +18,7 @@ mod conversation_memory;
 mod hints;
 mod thread_topics;
 mod thread_starters;
+mod languages;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 

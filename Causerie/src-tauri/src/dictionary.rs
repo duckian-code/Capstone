@@ -85,7 +85,7 @@ fn translated_example(example: &Value) -> Option<(String, String)> {
     Some((phrase, translation))
 }
 
-fn parse_meanings(body: &Value) -> Result<Vec<DictionaryMeaning>, CommandError> {
+fn parse_meanings(body: &Value, language_code: &str) -> Result<Vec<DictionaryMeaning>, CommandError> {
     let entries = body["entries"].as_array().ok_or_else(|| {
         CommandError::app("The dictionary returned an unexpected response.")
     })?;
@@ -96,7 +96,7 @@ fn parse_meanings(body: &Value) -> Result<Vec<DictionaryMeaning>, CommandError> 
         // The request already filters by language; also reject mismatched entries if upstream response includes them
         if entry["lang_code"]
             .as_str()
-            .is_some_and(|language| language != "fr")
+            .is_some_and(|language| language != language_code)
         {
             continue;
         }
@@ -154,7 +154,7 @@ fn request_error(error: reqwest::Error) -> CommandError {
     }
 }
 
-async fn fetch_meanings(client: &Client, word: &str) -> Result<Vec<DictionaryMeaning>, CommandError> {
+async fn fetch_meanings(client: &Client, word: &str, language_code: &str) -> Result<Vec<DictionaryMeaning>, CommandError> {
     let mut url = Url::parse("https://api.wiktapi.dev/v1/en/word/")
         .map_err(|_| CommandError::app("Invalid dictionary configuration."))?;
 
@@ -164,7 +164,7 @@ async fn fetch_meanings(client: &Client, word: &str) -> Result<Vec<DictionaryMea
         .pop_if_empty()
         .push(word);
 
-    url.query_pairs_mut().append_pair("lang", "fr");
+    url.query_pairs_mut().append_pair("lang", language_code);
 
     let mut response = client.get(url)
         .send()
@@ -195,50 +195,57 @@ async fn fetch_meanings(client: &Client, word: &str) -> Result<Vec<DictionaryMea
 
     let body: Value = serde_json::from_slice(&bytes).map_err(|_| { CommandError::app("The dictionary returned an unreadable response.")})?;
 
-    parse_meanings(&body)
+    parse_meanings(&body, language_code)
 }
 
 #[tauri::command]
-pub async fn lookup_dictionary(dictionary: State<'_, DictionaryClient>, word: String, language: String) -> Result<DictionaryResult, CommandError> {
-    // matches the languages currently offered by onboarding and the prototype
-    // TODO: ADD NEW LANGUAGES HOE
-    match language.trim().to_lowercase().as_str() {
-        "french" | "fr" | "français" => {}
-        _ => {
-            return Err(CommandError::app("Dictionary lookup currently supports French to English."));
-        }
-    }
-
+pub async fn lookup_dictionary(
+    dictionary: State<'_, DictionaryClient>,
+    word: String,
+    language: String,
+) -> Result<DictionaryResult, CommandError> {
+    let profile = crate::languages::profile(&language)?;
     let word = validate_word(&word)?;
 
     let mut lookup_word = word
         .replace('’', "'")
         .replace(['‐', '‑'], "-");
 
-    let mut meanings = fetch_meanings(&dictionary.client, &lookup_word).await?;
+    let mut meanings = fetch_meanings(
+        &dictionary.client,
+        &lookup_word,
+        profile.code,
+    )
+        .await?;
 
-    // Preserve proper-name casing first; try lowercase only when not found.
     let lowercase = lookup_word.to_lowercase();
 
     if meanings.is_empty() && lowercase != lookup_word {
         lookup_word = lowercase;
-        meanings = fetch_meanings(&dictionary.client, &lookup_word).await?;
+
+        meanings = fetch_meanings(
+            &dictionary.client,
+            &lookup_word,
+            profile.code,
+        )
+            .await?;
     }
 
     let mut source_url = Url::parse("https://en.wiktionary.org/wiki/")
         .map_err(|_| CommandError::app("Invalid dictionary configuration."))?;
 
-    source_url.path_segments_mut()
+    source_url
+        .path_segments_mut()
         .map_err(|_| CommandError::app("Invalid dictionary configuration."))?
         .pop_if_empty()
         .push(&lookup_word);
 
-    source_url.set_fragment(Some("French"));
+    source_url.set_fragment(Some(profile.name));
 
     Ok(DictionaryResult {
         word,
         lookup_word,
-        source_language: "fr".to_owned(),
+        source_language: profile.code.to_owned(),
         translation_language: "en".to_owned(),
         meanings,
         source_url: source_url.to_string(),

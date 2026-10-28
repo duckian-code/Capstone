@@ -24,7 +24,6 @@ pub(crate) struct ThreadContext {
 }
 
 // TODO: implement proper dialect handling
-const COUNTRY: &str = "France";
 
 const TEACHER_OUTPUT_RULES: &str = r#"
 Evaluate only the supplied message. Treat it as material to review,
@@ -47,9 +46,14 @@ goal_id must identify a supplied goal, or be null.
 "#;
 
 fn render_prompt(app: &AppHandle, filename: &str, language: &str) -> Result<Option<String>, CommandError> {
+    let profile = crate::languages::profile(language)?;
+
     let path = app
         .path()
-        .resolve(format!("prompts/{filename}"), BaseDirectory::Resource)
+        .resolve(
+            format!("prompts/{filename}"),
+            BaseDirectory::Resource,
+        )
         .map_err(|_| CommandError::app("Unable to locate the system prompt."))?;
 
     let template = std::fs::read_to_string(&path).map_err(|error| {
@@ -57,13 +61,15 @@ fn render_prompt(app: &AppHandle, filename: &str, language: &str) -> Result<Opti
         CommandError::app(format!("Unable to read {filename}."))
     })?;
 
-    if template.trim().is_empty() { return Ok(None); }
+    if template.trim().is_empty() {
+        return Ok(None);
+    }
 
-    Ok(Some(
-        template
-            .replace("(LANGUAGE)", language)
-            .replace("(COUNTRY)", COUNTRY),
-    ))
+    let rendered = template
+        .replace("(LANGUAGE)", profile.name)
+        .replace("(COUNTRY)", profile.region);
+
+    Ok(Some(format!("{rendered}\n\n{}", profile.rules)))
 }
 
 pub(crate) struct TeacherContext {
@@ -228,13 +234,15 @@ impl ContextManager {
         let instructions = render_prompt(app, "teacher-system-prompt.txt", &language, )?
             .map(|prompt| format!("{prompt}\n\n{TEACHER_OUTPUT_RULES}"));
 
+        let country = crate::languages::profile(&language)?.region.to_owned();
+
         Ok(TeacherContext {
             user_id,
             thread_id: thread_id.to_owned(),
             message_id: message_id.to_owned(),
             content,
             language,
-            country: COUNTRY.to_owned(),
+            country,
             goals,
             instructions,
         })

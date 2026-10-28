@@ -156,12 +156,16 @@ pub async fn request_message_hint(app: AppHandle, dbs: State<'_, DbInstances>, r
         return Err(CommandError::app("Keep your question under 1000 characters."));
     }
 
+    let language_profile = crate::languages::profile(&target_language)?;
+
     let input = json!({
         "message": content,
         "selection": request.selected_text,
         "user_request": user_request,
         "target_language": target_language,
         "native_language": native_language,
+        "target_dialect": language_profile.region,
+        "dialect_guidance": language_profile.rules,
     }).to_string();
 
     let api_key = credentials::resolve_api_key(app)
@@ -172,7 +176,10 @@ pub async fn request_message_hint(app: AppHandle, dbs: State<'_, DbInstances>, r
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
 
     let mut ai_request = CreateResponseRequest::new_text("gpt-6.1-sol", input)
-        .with_instructions(INSTRUCTIONS.to_owned())
+        .with_instructions(format!(
+            "{INSTRUCTIONS}\n\n{}",
+            language_profile.rules,
+        ))
         .with_strict_json_schema(
             "phrase_hint",
             json!({

@@ -157,6 +157,8 @@ pub async fn create_generated_thread(
     getrandom::getrandom(&mut randomness)
         .map_err(|_| CommandError::app("Unable to randomize the scenario."))?;
 
+    let language_profile = crate::languages::profile(&language)?;
+
     let input = json!({
         "target_language": language,
         "topic": title,
@@ -166,6 +168,7 @@ pub async fn create_generated_thread(
             "angle": ANGLES[usize::from(randomness[1]) % 8],
         },
         "recent_openings": recent_openings,
+        "target_dialect": language_profile.region,
     })
         .to_string();
 
@@ -177,7 +180,10 @@ pub async fn create_generated_thread(
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
 
     let mut request = CreateResponseRequest::new_text("gpt-6-luna", input)
-        .with_instructions(INSTRUCTIONS)
+        .with_instructions(format!(
+            "{INSTRUCTIONS}\n\n{}",
+            language_profile.rules,
+        ))
         .with_temperature(1.2);
 
     request.reasoning = Some(ReasoningConfig::new(ReasoningEffort::None));
@@ -189,9 +195,7 @@ pub async fn create_generated_thread(
         .await
         .map_err(|error| {
             log::error!("Thread opening request failed: {error}");
-            CommandError::openai(
-                "Could not generate the opening. Please try again.",
-            )
+            CommandError::openai("Could not generate the opening. Please try again.")
         })?;
 
     if response.status != ResponseStatus::Completed
@@ -201,17 +205,13 @@ pub async fn create_generated_thread(
         .flat_map(|item| item.content.iter())
         .any(|part| part.part_type == "refusal")
     {
-        return Err(CommandError::openai(
-            "The opening was not completed. Please try again.",
-        ));
+        return Err(CommandError::openai("The opening was not completed. Please try again."));
     }
 
     let opening = response.output_text().trim().to_owned();
 
     if opening.is_empty() || opening.chars().count() > 2000 {
-        return Err(CommandError::openai(
-            "The generated opening was invalid. Please try again.",
-        ));
+        return Err(CommandError::openai("The generated opening was invalid. Please try again."));
     }
 
     let mut transaction = pool.begin().await.map_err(database::error)?;
