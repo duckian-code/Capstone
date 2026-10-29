@@ -402,13 +402,27 @@ pub async fn create_thread(databases: State<'_, DbInstances>, user_id: String, t
 }
 
 #[tauri::command]
-pub async fn rename_thread(databases: State<'_, DbInstances>, id: String, title: String) -> Result<u64, CommandError> {
+pub async fn rename_thread(databases: State<'_, DbInstances>, id: String, title: String, ) -> Result<u64, CommandError> {
+    let title = title.trim();
+
+    // Match the frontend's UTF-16 length limit.
+    if title.is_empty() || title.encode_utf16().count() > 100 {
+        return Err(CommandError::app(
+            "Enter a thread name between 1 and 100 characters.",
+        ));
+    }
+
     let pool = database::pool(databases.inner()).await?;
 
     Ok(sqlx::query(
         "UPDATE threads
-         SET title = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
-         WHERE id = ?",
+         SET title = ?,
+             updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+         WHERE id = ?
+           AND archived_at IS NULL
+           AND user_id = (
+               SELECT active_user_id FROM app_state WHERE id = 1
+           )",
     )
         .bind(title)
         .bind(id)
@@ -417,6 +431,7 @@ pub async fn rename_thread(databases: State<'_, DbInstances>, id: String, title:
         .map_err(db_error)?
         .rows_affected())
 }
+
 
 #[tauri::command]
 pub async fn set_thread_archived(databases: State<'_, DbInstances>, id: String, archived: bool) -> Result<u64, CommandError> {
@@ -443,13 +458,20 @@ pub async fn set_thread_archived(databases: State<'_, DbInstances>, id: String, 
 pub async fn delete_thread(databases: State<'_, DbInstances>, id: String) -> Result<u64, CommandError> {
     let pool = database::pool(databases.inner()).await?;
 
-    Ok(sqlx::query("DELETE FROM threads WHERE id = ?")
+    Ok(sqlx::query(
+        "DELETE FROM threads
+         WHERE id = ?
+           AND user_id = (
+               SELECT active_user_id FROM app_state WHERE id = 1
+           )",
+    )
         .bind(id)
         .execute(&pool)
         .await
         .map_err(db_error)?
         .rows_affected())
 }
+
 
 #[tauri::command]
 pub async fn get_thread_history(databases: State<'_, DbInstances>, thread_id: String) -> Result<Option<ThreadHistory>, CommandError> {

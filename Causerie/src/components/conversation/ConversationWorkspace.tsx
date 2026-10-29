@@ -12,6 +12,7 @@ import { MessageComposer } from "./MessageComposer";
 import { MessageHistory } from "./MessageHistory";
 import { FeedbackPanel } from "./FeedbackPanel";
 import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types";
+import { ThreadActions } from "./ThreadActions";
 import "./conversation.css"
 
 interface Props {
@@ -32,6 +33,8 @@ interface Props {
     historyError: string | null;
     onRetryHistory: () => void;
     onCreateThread: () => void;
+    onRenameThread: (id: string, title: string) => Promise<void>;
+    onDeleteThread: (id: string) => Promise<void>;
 }
 
 export function ConversationWorkspace(props: Props) {
@@ -95,7 +98,17 @@ export function ConversationWorkspace(props: Props) {
             </section>
             <section className="cw-conversation" aria-labelledby="conversation-title">
                 <header className="cw-conversation-header">
-                    <h2 id="conversation-title">{props.activeThread.title}</h2>
+                    <div className="cw-thread-heading">
+                        <h2 id="conversation-title">{props.activeThread.title}</h2>
+
+                        <ThreadActions
+                            key={props.activeThread.id}
+                            thread={props.activeThread}
+                            disabled={props.navigationDisabled}
+                            onRename={props.onRenameThread}
+                            onDelete={props.onDeleteThread}
+                        />
+                    </div>
                     <time dateTime={props.activeThread.createdAt}>
                         {new Date(
                             props.activeThread.createdAt,

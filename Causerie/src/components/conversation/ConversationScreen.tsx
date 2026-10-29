@@ -99,9 +99,10 @@ function ConversationSession({ userId, context }: Props) {
                 <h1>Start practicing</h1>
                 <p>Create your first conversation</p>
 
-                <button type="button" disabled={conversation.creatingThread} onClick={openCreation}>
-                        + New thread
+                <button type="button" data-thread-action-focus disabled={conversation.creatingThread} onClick={openCreation}>
+                    + New thread
                 </button>
+
 
                 <AccountPanel disabled={conversation.creatingThread} />
 
@@ -170,6 +171,16 @@ function ConversationSession({ userId, context }: Props) {
                 historyError={conversation.historyError}
                 onRetryHistory={conversation.reloadHistory}
                 onCreateThread={openCreation}
+                onRenameThread={conversation.renameThread}
+                onDeleteThread={async (id) => {
+                    const deletingActive = conversation.activeThread?.id === id;
+
+                    await conversation.deleteThread(id);
+
+                    if (deletingActive) {
+                        setSelectedMessageId(null);
+                    }
+                }}
 
                 mascot={
                     <MascotCanvas

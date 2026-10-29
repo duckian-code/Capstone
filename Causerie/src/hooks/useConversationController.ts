@@ -65,6 +65,9 @@ export function useConversationController(userId: string) {
     const history = useThreadHistory(activeThreadId);
     const mascot = useMascot();
 
+    const [changingThread, setChangingThread] = useState(false);
+    const changingThreadRef = useRef(false);
+
     function finishTurn() {
         const turn = turnRef.current;
 
@@ -419,6 +422,80 @@ export function useConversationController(userId: string) {
         }
     }
 
+    async function changeThread(id: string, requestedTitle: string | null): Promise<void> {
+        if (
+            changingThreadRef.current ||
+            creatingRef.current ||
+            turnRef.current ||
+            threadsLoading ||
+            threadsError
+        ) {
+            throw new Error("Finish the current operation before changing a thread.");
+        }
+
+        const thread = threads.find((item) => item.id === id);
+
+        if (!thread) {
+            throw new Error("This thread is no longer available.");
+        }
+
+        const title = requestedTitle?.trim() ?? null;
+
+        if (title !== null && (!title || title.length > 100)) {
+            throw new Error("Enter a thread name between 1 and 100 characters.");
+        }
+
+        changingThreadRef.current = true;
+        setChangingThread(true);
+
+        try {
+            if (title !== null) {
+                const updated = await dal.threads.rename(id, title);
+
+                if (updated !== 1) {
+                    throw new Error("The thread could not be renamed. Reload and retry.");
+                }
+
+                if (!mounted.current) return;
+
+                // Renaming updates the backend activity timestamp.
+                setThreads((previous) => {
+                    const existing = previous.find((item) => item.id === id);
+                    if (!existing) return previous;
+
+                    return [
+                        { ...existing, title },
+                        ...previous.filter((item) => item.id !== id),
+                    ];
+                });
+            } else {
+                await dal.threads.delete(id);
+
+                if (!mounted.current) return;
+
+                const remaining = threads.filter((item) => item.id !== id);
+
+                setThreads((previous) =>
+                    previous.filter((item) => item.id !== id),
+                );
+
+                if (activeThreadId === id) {
+                    typewriter.reset();
+                    setLocalMessages([]);
+                    setOperationError(null);
+                    mascot.send({ type: "REQUEST_CANCELLED" });
+                    setActiveThreadId(remaining[0]?.id ?? null);
+                }
+            }
+        } finally {
+            changingThreadRef.current = false;
+
+            if (mounted.current) {
+                setChangingThread(false);
+            }
+        }
+    }
+
     const merged = new Map(
         history.messages.map((message) => [message.id, message])
     );
@@ -462,8 +539,17 @@ export function useConversationController(userId: string) {
         phase,
         operationError,
         recoveryRequired: phase === "failed",
-        sendDisabled: creatingThread || phase !== "idle" || history.loading || history.error !== null,
-        navigationDisabled: creatingThread || phase !== "idle",
+        sendDisabled:
+            creatingThread ||
+            changingThread ||
+            phase !== "idle" ||
+            history.loading ||
+            history.error !== null,
+
+        navigationDisabled:
+            creatingThread ||
+            changingThread ||
+            phase !== "idle",
 
         mascotState: mascot.state,
         status: statusByMascot[mascot.state],
@@ -471,6 +557,9 @@ export function useConversationController(userId: string) {
         sendMessage,
         selectThread,
         retryTurn,
-        leaveRecovery
+        leaveRecovery,
+
+        renameThread: (id: string, title: string) => changeThread(id, title),
+        deleteThread: (id: string) => changeThread(id, null),
     };
 }
