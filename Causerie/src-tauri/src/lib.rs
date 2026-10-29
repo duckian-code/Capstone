@@ -19,8 +19,11 @@ mod hints;
 mod thread_topics;
 mod thread_starters;
 mod languages;
+mod reminder_scheduler;
+mod reminders;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
+pub use reminders::handle_cli as handle_reminder_cli;
 
 // Structured errors from Rust to React
 #[derive(Debug, Serialize)]
@@ -95,6 +98,11 @@ pub fn run() {
         description: "message_hints",
         sql: include_str!("../migrations/0009_message_hints.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 10,
+        description: "practice_reminders",
+        sql: include_str!("../migrations/0010_practice_reminders.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
@@ -106,6 +114,7 @@ pub fn run() {
         }))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_notification::init())
         .invoke_handler(tauri::generate_handler![
             conversation::send_message,
             credentials::save_openai_api_key,
@@ -155,6 +164,8 @@ pub fn run() {
             hints::request_message_hint,
             thread_topics::list_thread_topics,
             thread_starters::create_generated_thread,
+            reminders::get_practice_reminders,
+            reminders::save_practice_reminders,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

@@ -12,6 +12,12 @@ import {SETTINGS_SECTIONS, type SettingsDraft} from "./settings-sections";
 
 import type { GoalSettings } from "../../data/models/goal-types.ts";
 
+import {
+    reminders,
+    remindersEqual,
+    type ReminderSettings,
+} from "../../services/reminders";
+
 import "./settings.css";
 
 const DEFAULT_AVATAR_URL = "/images/default-avatar.png";
@@ -522,8 +528,56 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     const [draft, setDraft] = useState<SettingsDraft>({
         targetLanguage: user.target_language ?? "French",
         apiKey: "",
-        goalSlots: [...goalSettings.slots]
+        goalSlots: [...goalSettings.slots],
+        reminders: null,
     });
+
+    const [savedReminders, setSavedReminders] =
+        useState<ReminderSettings | null>(null);
+
+    const [remindersLoading, setRemindersLoading] = useState(true);
+    const [remindersLoadError, setRemindersLoadError] =
+        useState<string | null>(null);
+    const [remindersDeliveryError, setRemindersDeliveryError] =
+        useState<string | null>(null);
+    const [remindersRevision, setRemindersRevision] = useState(0);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        setRemindersLoading(true);
+        setRemindersLoadError(null);
+
+        void reminders.get(user.id)
+            .then((result) => {
+                if (cancelled) return;
+
+                setSavedReminders(result.settings);
+                setRemindersDeliveryError(result.last_error);
+
+                setDraft((previous) => ({
+                    ...previous,
+                    reminders: result.settings,
+                }));
+            })
+            .catch((reason: unknown) => {
+                if (!cancelled) {
+                    setRemindersLoadError(parseCommandError(reason).message);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) setRemindersLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [user.id, remindersRevision]);
+
+    const remindersDirty =
+        draft.reminders !== null &&
+        savedReminders !== null &&
+        !remindersEqual(draft.reminders, savedReminders);
 
     const goalsDirty = draft.goalSlots.some(
         (id, index) => id !== goalSettings.slots[index]);
@@ -531,11 +585,13 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     const dirty = draft.targetLanguage !== (user.target_language ?? "French")
         || draft.apiKey.length > 0
         || goalsDirty
+        || remindersDirty
     ;
 
     async function save(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
+        if (busyRef.current || remindersLoading || !dirty) return;
         if (busyRef.current || !dirty) return;
 
         if (!LANGUAGE_OPTIONS.some(
@@ -564,6 +620,7 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
         let languageSaved = false;
         let keyAttempted = false;
         let goalsSaved = false;
+        let remindersSaved = false;
 
         try {
             if (
@@ -589,6 +646,20 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                 goalsSaved = true;
             }
 
+            if (remindersDirty && draft.reminders) {
+                const result = await reminders.save(user.id, draft.reminders);
+
+                setSavedReminders(result.settings);
+                setRemindersDeliveryError(result.last_error);
+
+                setDraft((previous) => ({
+                    ...previous,
+                    reminders: result.settings,
+                }));
+
+                remindersSaved = true;
+            }
+
             if (replacingKey) {
                 keyAttempted = true;
                 await credentials.saveApiKey(apiKey);
@@ -601,6 +672,7 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
             setError(
                 (languageSaved ? "Your target language was saved. " : "") +
                 (goalsSaved ? "Your learning goals were saved. " : "") +
+                (remindersSaved ? "Your practice reminders were saved. " : "") +
                 message +
                 (keyAttempted ? " Re-enter the replacement API key to retry." : ""),
             );
@@ -676,12 +748,33 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                         {dirty && (
                             <div className="settings-save-bar">
                                 <span>You have unsaved changes.</span>
-                                <button type="submit">
+                                <button type="submit" disabled={remindersLoading}>
                                     {busy ? "Saving…" : "Save changes"}
                                 </button>
                             </div>
                         )}
                     </fieldset>
+
+                    {remindersLoadError && (
+                        <div className="settings-error">
+                            <p role="alert">
+                                Could not load reminder settings: {remindersLoadError}
+                            </p>
+                            <button
+                                type="button"
+                                disabled={busy || remindersLoading}
+                                onClick={() => setRemindersRevision((value) => value + 1)}
+                            >
+                                Retry loading reminders
+                            </button>
+                        </div>
+                    )}
+
+                    {remindersDeliveryError && (
+                        <p className="settings-error" role="alert">
+                            The last reminder operation failed: {remindersDeliveryError}
+                        </p>
+                    )}
 
                     {error && (
                         <p className="settings-error" role="alert">

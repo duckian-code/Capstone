@@ -1000,3 +1000,24 @@ button:disabled,
         animation: none;
     }
 }
+
+.settings-fields .settings-reminder-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    cursor: pointer;
+}
+
+.settings-fields .settings-reminder-toggle input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+    accent-color: var(--color-accent-primary);
+}
+
+.settings-fields input[type="time"],
+.settings-fields input[type="date"] {
+    color-scheme: dark;
+}

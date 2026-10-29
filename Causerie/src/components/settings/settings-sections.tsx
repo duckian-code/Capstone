@@ -2,11 +2,13 @@ import { ComponentType, Dispatch, SetStateAction } from "react";
 import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types.ts";
 import { Fragment } from "react";
 import type { GoalDefinition, GoalSlots } from "../../data/models/goal-types.ts";
+import type { ReminderSettings } from "../../services/reminders";
 
 export interface SettingsDraft {
     targetLanguage: string;
     apiKey: string;
     goalSlots: GoalSlots;
+    reminders: ReminderSettings | null;
 }
 
 export interface SettingsSectionProps {
@@ -152,6 +154,90 @@ function GoalsSection({draft, setDraft, goalOptions}: SettingsSectionProps) {
     );
 }
 
+function RemindersSection({ draft, setDraft }: SettingsSectionProps) {
+    const settings = draft.reminders;
+
+    if (!settings) {
+        return (
+            <p className="settings-help">
+                Reminder settings have not loaded yet.
+            </p>
+        );
+    }
+
+    function update(patch: Partial<ReminderSettings>) {
+        setDraft((previous) => ({
+            ...previous,
+            reminders: previous.reminders
+                ? { ...previous.reminders, ...patch }
+                : null,
+        }));
+    }
+
+    return (
+        <div className="settings-fields">
+            <label className="settings-reminder-toggle">
+                <input
+                    type="checkbox"
+                    checked={settings.enabled}
+                    onChange={(event) => update({
+                        enabled: event.currentTarget.checked,
+                    })}
+                />
+                Remind me to practice with Dot
+            </label>
+
+            <label htmlFor="reminder-interval">Remind me every</label>
+            <select
+                id="reminder-interval"
+                disabled={!settings.enabled}
+                value={settings.every_days}
+                onChange={(event) => update({
+                    every_days: Number(event.currentTarget.value),
+                })}
+            >
+                {Array.from({ length: 30 }, (_, index) => index + 1).map(
+                    (days) => (
+                        <option key={days} value={days}>
+                            {days === 1 ? "Day" : `${days} days`}
+                        </option>
+                    ),
+                )}
+            </select>
+
+            <label htmlFor="reminder-time">Local time</label>
+            <input
+                id="reminder-time"
+                type="time"
+                required={settings.enabled}
+                disabled={!settings.enabled}
+                value={settings.at_time}
+                onChange={(event) => update({
+                    at_time: event.currentTarget.value,
+                })}
+            />
+
+            <label htmlFor="reminder-start">Starting on</label>
+            <input
+                id="reminder-start"
+                type="date"
+                required={settings.enabled}
+                disabled={!settings.enabled}
+                value={settings.start_date}
+                onChange={(event) => update({
+                    start_date: event.currentTarget.value,
+                })}
+            />
+
+            <p className="settings-help">
+                Dot will send a short message in your learning language,
+                even when Causerie is closed. Reminders follow this
+                computer’s local time while you’re signed in.
+            </p>
+        </div>
+    );
+}
+
 export const SETTINGS_SECTIONS: SettingsSectionDefinition[] = [
     {
         id: "onboarding",
@@ -162,5 +248,10 @@ export const SETTINGS_SECTIONS: SettingsSectionDefinition[] = [
         id: "goals",
         label: "Learning goals",
         Component: GoalsSection,
-    }
+    },
+    {
+        id: "reminders",
+        label: "Practice reminders",
+        Component: RemindersSection,
+    },
 ]

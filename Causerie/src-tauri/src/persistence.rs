@@ -100,6 +100,11 @@ pub async fn initialize_database(databases: State<'_, DbInstances>) -> Result<()
         ));
     }
 
+    if let Err(error) = crate::reminders::reconcile(&pool).await {
+        // A scheduler problem must not prevent using the application
+        log::warn!("Unable to reconcile practice reminders: {error}");
+    }
+
     Ok(())
 }
 
