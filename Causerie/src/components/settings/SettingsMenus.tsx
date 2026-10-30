@@ -19,6 +19,10 @@ import {
 } from "../../services/reminders";
 
 import "./settings.css";
+import {
+    proficiency,
+    type ProficiencyLevel,
+} from "../../services/proficiency";
 
 const DEFAULT_AVATAR_URL = "/images/default-avatar.png";
 
@@ -530,6 +534,7 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
         apiKey: "",
         goalSlots: [...goalSettings.slots],
         reminders: null,
+        proficiency: null,
     });
 
     const [savedReminders, setSavedReminders] =
@@ -541,6 +546,51 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     const [remindersDeliveryError, setRemindersDeliveryError] =
         useState<string | null>(null);
     const [remindersRevision, setRemindersRevision] = useState(0);
+
+    const [savedProficiency, setSavedProficiency] =
+        useState<ProficiencyLevel | null>(null);
+
+    const [proficiencyLoading, setProficiencyLoading] = useState(true);
+    const [proficiencyError, setProficiencyError] =
+        useState<string | null>(null);
+    const [proficiencyRevision, setProficiencyRevision] = useState(0);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        setProficiencyLoading(true);
+        setProficiencyError(null);
+
+        void proficiency.get(user.id)
+            .then((level) => {
+                if (cancelled) return;
+
+                setSavedProficiency(level);
+                setDraft((previous) => ({
+                    ...previous,
+                    proficiency: level,
+                }));
+            })
+            .catch((reason: unknown) => {
+                if (!cancelled) {
+                    setProficiencyError(parseCommandError(reason).message);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setProficiencyLoading(false);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [user.id, proficiencyRevision]);
+
+    const proficiencyDirty =
+        draft.proficiency !== null &&
+        savedProficiency !== null &&
+        draft.proficiency !== savedProficiency;
 
     useEffect(() => {
         let cancelled = false;
@@ -586,13 +636,19 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
         || draft.apiKey.length > 0
         || goalsDirty
         || remindersDirty
+        || proficiencyDirty
     ;
 
     async function save(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (busyRef.current || remindersLoading || !dirty) return;
-        if (busyRef.current || !dirty) return;
+        if (
+            busyRef.current
+            || remindersLoading
+            || proficiencyLoading
+            || !dirty
+        ) return;
+
 
         if (!LANGUAGE_OPTIONS.some(
             (option) => option.value === draft.targetLanguage,
@@ -621,6 +677,7 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
         let keyAttempted = false;
         let goalsSaved = false;
         let remindersSaved = false;
+        let proficiencySaved = false;
 
         try {
             if (
@@ -660,6 +717,18 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                 remindersSaved = true;
             }
 
+            if (proficiencyDirty && draft.proficiency) {
+                const level = await proficiency.save(user.id, draft.proficiency);
+
+                setSavedProficiency(level);
+                setDraft((previous) => ({
+                    ...previous,
+                    proficiency: level,
+                }));
+
+                proficiencySaved = true;
+            }
+
             if (replacingKey) {
                 keyAttempted = true;
                 await credentials.saveApiKey(apiKey);
@@ -673,6 +742,7 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                 (languageSaved ? "Your target language was saved. " : "") +
                 (goalsSaved ? "Your learning goals were saved. " : "") +
                 (remindersSaved ? "Your practice reminders were saved. " : "") +
+                (proficiencySaved ? "Your speaking level was saved. " : "") +
                 message +
                 (keyAttempted ? " Re-enter the replacement API key to retry." : ""),
             );
@@ -748,7 +818,7 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                         {dirty && (
                             <div className="settings-save-bar">
                                 <span>You have unsaved changes.</span>
-                                <button type="submit" disabled={remindersLoading}>
+                                <button type="submit" disabled={remindersLoading || proficiencyLoading}>
                                     {busy ? "Saving…" : "Save changes"}
                                 </button>
                             </div>
@@ -774,6 +844,24 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                         <p className="settings-error" role="alert">
                             The last reminder operation failed: {remindersDeliveryError}
                         </p>
+                    )}
+
+                    {proficiencyError && (
+                        <div className="settings-error">
+                            <p role="alert">
+                                Could not load the speaking level: {proficiencyError}
+                            </p>
+
+                            <button
+                                type="button"
+                                disabled={busy || proficiencyLoading}
+                                onClick={() => {
+                                    setProficiencyRevision((value) => value + 1);
+                                }}
+                            >
+                                Retry loading speaking level
+                            </button>
+                        </div>
                     )}
 
                     {error && (

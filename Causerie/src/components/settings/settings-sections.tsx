@@ -3,12 +3,18 @@ import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types.ts";
 import { Fragment } from "react";
 import type { GoalDefinition, GoalSlots } from "../../data/models/goal-types.ts";
 import type { ReminderSettings } from "../../services/reminders";
+import {
+    PROFICIENCY_LEVELS,
+    isProficiencyLevel,
+    type ProficiencyLevel,
+} from "../../services/proficiency";
 
 export interface SettingsDraft {
     targetLanguage: string;
     apiKey: string;
     goalSlots: GoalSlots;
     reminders: ReminderSettings | null;
+    proficiency: ProficiencyLevel | null;
 }
 
 export interface SettingsSectionProps {
@@ -238,11 +244,61 @@ function RemindersSection({ draft, setDraft }: SettingsSectionProps) {
     );
 }
 
+function SpeakingLevelSection({ draft, setDraft }: SettingsSectionProps) {
+    if (draft.proficiency === null) {
+        return (
+            <p className="settings-help">
+                Speaking-level settings have not loaded yet.
+            </p>
+        );
+    }
+
+    return (
+        <div className="settings-fields">
+            <label htmlFor="settings-speaking-level">
+                Dot’s speaking level
+            </label>
+
+            <select
+                id="settings-speaking-level"
+                value={draft.proficiency}
+                aria-describedby="settings-speaking-level-help"
+                onChange={(event) => {
+                    const level = event.currentTarget.value;
+                    if (!isProficiencyLevel(level)) return;
+
+                    setDraft((previous) => ({
+                        ...previous,
+                        proficiency: level,
+                    }));
+                }}
+            >
+                {PROFICIENCY_LEVELS.map((level) => (
+                    <option key={level} value={level}>
+                        {level}
+                    </option>
+                ))}
+            </select>
+
+            <p id="settings-speaking-level-help" className="settings-help">
+                Dot will mostly speak at this level, with an occasional
+                small challenge from the next level. At C2, challenges
+                stay within C2. Changes apply to new replies.
+            </p>
+        </div>
+    );
+}
+
 export const SETTINGS_SECTIONS: SettingsSectionDefinition[] = [
     {
         id: "onboarding",
         label: "Onboarding",
         Component: OnboardingSection,
+    },
+    {
+        id: "speaking-level",
+        label: "Speaking level",
+        Component: SpeakingLevelSection,
     },
     {
         id: "goals",

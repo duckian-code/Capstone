@@ -21,6 +21,7 @@ mod thread_starters;
 mod languages;
 mod reminder_scheduler;
 mod reminders;
+mod proficiency;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 pub use reminders::handle_cli as handle_reminder_cli;
@@ -103,6 +104,11 @@ pub fn run() {
         description: "practice_reminders",
         sql: include_str!("../migrations/0010_practice_reminders.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 11,
+        description: "user_proficiency",
+        sql: include_str!("../migrations/0011_user_proficiency.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
@@ -166,6 +172,8 @@ pub fn run() {
             thread_starters::create_generated_thread,
             reminders::get_practice_reminders,
             reminders::save_practice_reminders,
+            proficiency::get_proficiency,
+            proficiency::save_proficiency,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

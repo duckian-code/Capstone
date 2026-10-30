@@ -95,22 +95,25 @@ impl ContextManager {
     pub(crate) async fn for_turn(app: &AppHandle, pool: &SqlitePool, thread_id: &str, user_message_id: &str) -> Result<ThreadContext, CommandError> {
         let mut transaction = pool.begin().await.map_err(database_error)?;
 
-        // resolve ownership from the persisted active profile
-        let language: Option<String> = sqlx::query_scalar(
-            "SELECT COALESCE(NULLIF(TRIM(u.target_language), ''), 'French')
-             FROM threads t
-             JOIN users u ON u.id = t.user_id
-             JOIN app_state s
-                ON s.id = 1 AND s.active_user_id = u.id
-             WHERE t.id = ? AND t.archived_at IS NULL",
+        let profile: Option<(String, String)> = sqlx::query_as(
+            "SELECT
+        u.id,
+        COALESCE(NULLIF(TRIM(u.target_language), ''), 'French')
+     FROM threads t
+     JOIN users u ON u.id = t.user_id
+     JOIN app_state s
+        ON s.id = 1 AND s.active_user_id = u.id
+     WHERE t.id = ? AND t.archived_at IS NULL",
         )
             .bind(thread_id)
             .fetch_optional(&mut *transaction)
             .await
             .map_err(database_error)?;
 
-        let Some(language) = language else {
-            return Err(CommandError::app("This conversation is unavailable for the active profile."));
+        let Some((user_id, language)) = profile else {
+            return Err(CommandError::app(
+                "This conversation is unavailable for the active profile.",
+            ));
         };
 
         // requested message must be the latest conversational message
@@ -174,8 +177,21 @@ impl ContextManager {
         // Release the database transaction before starting the network request.
         transaction.commit().await.map_err(database_error)?;
 
-        let system_prompt = render_prompt(app, "mascot-system-prompt.txt", &language)?
-            .ok_or_else(|| { CommandError::app("The mascot prompt has not been configured.") })?;
+        let level = crate::proficiency::load_for_user(pool, &user_id).await?;
+
+        let base_prompt = render_prompt(
+            app,
+            "mascot-system-prompt.txt",
+            &language,
+        )?
+            .ok_or_else(|| {
+                CommandError::app("The mascot prompt has not been configured.")
+            })?;
+
+        let system_prompt = format!(
+            "{base_prompt}\n\n{}",
+            crate::proficiency::instructions(&level)?,
+        );
 
         Ok(ThreadContext {
             thread_id: thread_id.to_owned(),
