@@ -35,13 +35,20 @@ interface Props {
     onCreateThread: () => void;
     onRenameThread: (id: string, title: string) => Promise<void>;
     onDeleteThread: (id: string) => Promise<void>;
+    canCancel: boolean;
+    cancelling: boolean;
+    onCancel: () => Promise<string | null>;
+    pendingUserMessageId?: string;
 }
 
 export function ConversationWorkspace(props: Props) {
     // const busy = props.status === "waiting" || props.status === "responding";
 
     const selectedMessage = props.messages.find(
-        (message) => message.id === props.selectedMessageId && message.role === "user"
+        (message) =>
+            message.id === props.selectedMessageId &&
+            message.id !== props.pendingUserMessageId &&
+            message.role === "user",
     ) ?? null;
 
     let latestAssistantMessage: ConversationMessage | null = null;
@@ -94,7 +101,15 @@ export function ConversationWorkspace(props: Props) {
                     {props.mascot}
                 </MascotStage>
 
-                <MessageComposer key={props.activeThread.id} language={props.context.language} disabled={props.sendDisabled} onSend={props.onSend}/>
+                <MessageComposer
+                    key={props.activeThread.id}
+                    language={props.context.language}
+                    disabled={props.sendDisabled}
+                    canCancel={props.canCancel}
+                    cancelling={props.cancelling}
+                    onSend={props.onSend}
+                    onCancel={props.onCancel}
+                />
             </section>
             <section className="cw-conversation" aria-labelledby="conversation-title">
                 <header className="cw-conversation-header">

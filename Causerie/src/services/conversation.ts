@@ -31,3 +31,19 @@ export async function streamReply(
         acceptingChunks = false;
     }
 }
+
+export function cancelReply(threadId: string, userMessageId: string): Promise<void> {
+    return invoke("cancel_message", {
+        threadId,
+        userMessageId,
+    });
+}
+
+export function discardCancelledTurn(threadId: string, userMessageId: string, assistantMessageId: string): Promise<void> {
+    return invoke("discard_cancelled_turn", {
+        threadId,
+        userMessageId,
+        assistantMessageId,
+    });
+}
+

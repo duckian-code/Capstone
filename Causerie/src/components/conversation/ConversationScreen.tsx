@@ -118,12 +118,19 @@ function ConversationSession({ userId, context }: Props) {
         "saving-reply": "Saving the reply…",
         animating: "Displaying the reply…",
         failed: "",
+        cancelling: "Cancelling your message…",
+        "cancel-failed": "",
     }[conversation.phase];
 
     return (
         <div className="conversation-screen">
             <div className="conversation-operation">
                 <p role="status">{progressText}</p>
+                {conversation.cancellationFailed && (
+                    <p role="alert">
+                        {conversation.operationError} Click Cancel again to retry cleanup.
+                    </p>
+                )}
 
                 {conversation.recoveryRequired && (
                     <div>
@@ -192,6 +199,14 @@ function ConversationSession({ userId, context }: Props) {
                 onSelectThread={selectThread}
                 onSelectMessage={setSelectedMessageId}
                 onSend={conversation.sendMessage}
+
+                canCancel={conversation.canCancel}
+                cancelling={conversation.cancelling}
+                pendingUserMessageId={conversation.pendingUserMessageId}
+                onCancel={async () => {
+                    setSelectedMessageId(null);
+                    return conversation.cancelTurn();
+                }}
             />
 
             {creationDialog}

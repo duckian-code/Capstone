@@ -6,8 +6,8 @@ import {useMascot} from "./useMascot.ts";
 import {useTypewriter} from "./useTypewriter.ts";
 import {dal} from "../data/dal.ts";
 import {parseCommandError} from "../services/command-error.ts";
-import {streamReply} from "../services/conversation.ts";
 import type { ThreadCreationInput } from "../data/models/thread-creation-types";
+import { streamReply, cancelReply, discardCancelledTurn } from "../services/conversation.ts";
 
 // HANDLES CONVERSATION FLOW AND INTEGRATION WITH DAL
 
@@ -17,7 +17,9 @@ type Phase =
     | "streaming"
     | "saving-reply"
     | "animating"
-    | "failed";
+    | "failed"
+    | "cancelling"
+    | "cancel-failed";
 
 interface PendingTurn {
     threadId: string;
@@ -26,6 +28,8 @@ interface PendingTurn {
     userSaved: boolean;
     fullReply: string | null;
     replySaved: boolean;
+    originalDraft: string;
+    cancelled: boolean;
 }
 
 function toDisplayMessage(message: Message): ConversationMessage {
@@ -61,6 +65,8 @@ export function useConversationController(userId: string) {
     const turnRef = useRef<PendingTurn | null>(null);
     // runningRef implementation enforces synchronous retry lock. Buffer layer so you're not just relying on react state
     const runningRef = useRef(false);
+    const inFlightRef = useRef<Promise<void> | null>(null);
+    const cancellingRef = useRef(false);
 
     const history = useThreadHistory(activeThreadId);
     const mascot = useMascot();
@@ -71,11 +77,15 @@ export function useConversationController(userId: string) {
     function finishTurn() {
         const turn = turnRef.current;
 
-        if (!mounted.current || !turn?.replySaved) return;
+        if (!mounted.current || !turn?.replySaved || turn.cancelled) return;
 
         turnRef.current = null;
         setPhase("idle");
         setOperationError(null);
+
+        void dal.feedback.forMessage(turn.threadId, turn.user.id).catch(() => {
+            // feedback panel exposes own error and retry state.
+        });
 
         mascot.send({ type: "STREAM_DONE" })
     }
@@ -129,7 +139,7 @@ export function useConversationController(userId: string) {
     }, [userId, threadRevision]);
 
     function isCurrent(turn: PendingTurn) {
-        return mounted.current && turnRef.current === turn;
+        return (mounted.current && turnRef.current === turn && !turn.cancelled);
     }
 
     function putMessage(message: ConversationMessage) {
@@ -159,7 +169,7 @@ export function useConversationController(userId: string) {
     }
 
     async function runTurn(turn: PendingTurn) {
-        if (runningRef.current) return;
+        if (runningRef.current || !isCurrent(turn)) return;
         runningRef.current = true;
 
         // save retry already has its full response
@@ -186,10 +196,6 @@ export function useConversationController(userId: string) {
                 putMessage(turn.user);
                 moveThreadToTop(turn.threadId);
             }
-
-            void dal.feedback.forMessage(turn.threadId, turn.user.id).catch(() => {
-                // feedback panel exposes own error and retry state.
-            });
 
             if (turn.fullReply === null) {
                 typewriter.reset();
@@ -273,6 +279,10 @@ export function useConversationController(userId: string) {
         }
     }
 
+    function startTurn(turn: PendingTurn) {
+        inFlightRef.current = runTurn(turn);
+    }
+
     function sendMessage(rawText: string): boolean {
         const text = rawText.trim();
 
@@ -286,7 +296,10 @@ export function useConversationController(userId: string) {
             history.loading ||
             history.error ||
             creatingRef.current ||
-            turnRef.current
+            turnRef.current ||
+            changingThreadRef.current ||
+            runningRef.current ||
+            cancellingRef.current
         ) {
             return false;
         }
@@ -295,6 +308,8 @@ export function useConversationController(userId: string) {
 
         const turn: PendingTurn = {
             threadId: activeThreadId,
+            originalDraft: rawText,
+            cancelled: false,
             user: {
                 id: crypto.randomUUID(),
                 role: "user",
@@ -318,8 +333,55 @@ export function useConversationController(userId: string) {
         setOperationError(null);
         putMessage(turn.user);
 
-        void runTurn(turn);
+        startTurn(turn);
         return true;
+    }
+
+    async function cancelTurn(): Promise<string | null> {
+        const turn = turnRef.current;
+
+        if (!turn || cancellingRef.current) return null;
+
+        // sync guard: ignore late chunks and stpo next save step
+        turn.cancelled = true;
+
+        typewriter.reset();
+        setPhase("cancelling");
+        setOperationError(null);
+        mascot.send({ type: "REQUEST_CANCELLED" });
+
+        try {
+            await cancelReply(turn.threadId, turn.user.id);
+
+            // user/assistant INSERT may be happening, settle first before deleting messages
+            await inFlightRef.current;
+
+            await discardCancelledTurn(turn.threadId, turn.user.id, turn.assistant.id);
+
+            if (!mounted.current || turnRef.current !== turn) return null;
+
+            setLocalMessages((previous) =>
+                previous.filter((message) =>
+                    message.id !== turn.user.id && message.id !== turn.assistant.id));
+
+            turnRef.current = null;
+            inFlightRef.current = null;
+
+            setOperationError(null);
+            setPhase("idle");
+            history.reload();
+
+            return turn.originalDraft;
+        } catch (reason) {
+            if (mounted.current && turnRef.current === turn) {
+                setOperationError(`Cancellation could not finish: ${parseCommandError(reason).message}`);
+                setPhase("cancel-failed");
+            }
+
+            return null;
+        } finally {
+            cancellingRef.current = false;
+        }
     }
 
     function retryTurn() {
@@ -332,7 +394,7 @@ export function useConversationController(userId: string) {
         setOperationError(null);
 
         // TODO: retry-lock addition
-        void runTurn(turn);
+        startTurn(turn);
     }
 
     function leaveRecovery() {
@@ -509,8 +571,24 @@ export function useConversationController(userId: string) {
         phase === "saving-reply" ||
         phase === "animating" ? turnRef.current?.assistant.id : undefined;
 
-    const messages = [...merged.values()].map((message) =>
-    message.id === animateId ? { ...message, content: typewriter.displayed} : message );
+    const cancelledTurn = turnRef.current?.cancelled
+        ? turnRef.current
+        : null;
+
+    const messages = [...merged.values()]
+        .filter(
+            (message) =>
+                !cancelledTurn ||
+                (
+                    message.id !== cancelledTurn.user.id &&
+                    message.id !== cancelledTurn.assistant.id
+                ),
+        )
+        .map((message) =>
+            message.id === animateId
+                ? { ...message, content: typewriter.displayed }
+                : message,
+        );
 
     // TODO: standardize state machine and front-end states - make this redundant
     const statusByMascot = {
@@ -561,5 +639,11 @@ export function useConversationController(userId: string) {
 
         renameThread: (id: string, title: string) => changeThread(id, title),
         deleteThread: (id: string) => changeThread(id, null),
+
+        cancelTurn,
+        canCancel: turnRef.current !== null && phase !== "cancelling",
+        cancelling: phase === "cancelling",
+        cancellationFailed: phase === "cancel-failed",
+        pendingUserMessageId: turnRef.current?.user.id,
     };
 }
