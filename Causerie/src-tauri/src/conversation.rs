@@ -22,8 +22,7 @@ pub enum StreamEvent {
     Chunk { text: String },
 }
 
-#[tauri::command]
-pub async fn send_message(
+async fn send_message_inner(
     app: tauri::AppHandle,
     databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
     thread_id: String,
@@ -118,3 +117,24 @@ pub async fn send_message(
     Ok(full_text)
 }
 
+#[tauri::command]
+pub async fn send_message(
+    app: tauri::AppHandle,
+    databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
+    thread_id: String,
+    user_message_id: String,
+    on_event: Channel<StreamEvent>,
+) -> Result<String, CommandError> {
+    crate::turn_cancellations::run(
+        &thread_id,
+        &user_message_id,
+        send_message_inner(
+            app,
+            databases,
+            thread_id.clone(),
+            user_message_id.clone(),
+            on_event,
+        ),
+    )
+        .await
+}

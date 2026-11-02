@@ -13,7 +13,7 @@ export function ThreadSidebar({threads, activeThreadId, disabled = false, onSele
     return (
         <aside className="cw-sidebar">
             <header className="cw-brand-header">
-                <h1 className="cw-brand">Causerie</h1>
+                <h1 className="cw-brand" tabIndex={-1}>Causerie</h1>
             </header>
 
             <div className="cw-sidebar-body">

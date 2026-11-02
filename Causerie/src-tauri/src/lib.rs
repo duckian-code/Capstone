@@ -180,6 +180,10 @@ pub fn run() {
             reminders::save_practice_reminders,
             proficiency::get_proficiency,
             proficiency::save_proficiency,
+            feedback::list_feedback_states,
+            feedback::mark_feedback_read,
+            turn_cancellations::cancel_message,
+            turn_cancellations::discard_cancelled_turn,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

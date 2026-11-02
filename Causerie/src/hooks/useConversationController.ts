@@ -342,6 +342,8 @@ export function useConversationController(userId: string) {
 
         if (!turn || cancellingRef.current) return null;
 
+        cancellingRef.current = true;
+
         // sync guard: ignore late chunks and stpo next save step
         turn.cancelled = true;
 

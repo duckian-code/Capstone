@@ -5,9 +5,13 @@ import type { ConversationMessage } from "../../data/models/conversation-types";
 import type { TeacherResult } from "../../data/models/feedback-types";
 import { parseCommandError } from "../../services/command-error";
 
+import { hasUsefulFeedback } from "../../services/feedback-state";
+
 interface Props {
     threadId: string;
     message: ConversationMessage | null;
+    visible?: boolean;
+    onRead?: (messageId: string) => void;
 }
 
 type FeedbackState =
@@ -15,12 +19,11 @@ type FeedbackState =
     | { kind: "error"; message: string }
     | { kind: "loaded"; result: TeacherResult };
 
-function FeedbackDetails({
-                             threadId,
-                             messageId,
-                         }: {
+function FeedbackDetails({ threadId, messageId, visible, onRead }: {
     threadId: string;
     messageId: string;
+    visible: boolean;
+    onRead?: (messageId: string) => void;
 }) {
     const [revision, setRevision] = useState(0);
     const [state, setState] = useState<FeedbackState>({
@@ -55,6 +58,25 @@ function FeedbackDetails({
     function retry() {
         setRevision((value) => value + 1);
     }
+
+    useEffect(() => {
+        if (
+            !visible ||
+            state.kind !== "loaded" ||
+            state.result.status !== "ready"
+        ) return;
+
+        const feedback = state.result.feedback;
+
+        if (
+            hasUsefulFeedback(
+                feedback.summary,
+                feedback.corrections.length,
+            )
+        ) {
+            onRead?.(messageId);
+        }
+    }, [visible, state, messageId, onRead]);
 
     if (state.kind === "loading") {
         return <p role="status">Checking your message…</p>;
@@ -117,7 +139,7 @@ function FeedbackDetails({
     );
 }
 
-export function FeedbackPanel({ threadId, message }: Props) {
+export function FeedbackPanel({ threadId, message, visible = true, onRead }: Props) {
     return (
         <section
             id="conversation-feedback"
@@ -135,6 +157,8 @@ export function FeedbackPanel({ threadId, message }: Props) {
                             key={`${threadId}:${message.id}`}
                             threadId={threadId}
                             messageId={message.id}
+                            visible={visible}
+                            onRead={onRead}
                         />
                     </>
                 ) : (
