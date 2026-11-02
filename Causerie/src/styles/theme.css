@@ -1070,3 +1070,39 @@ button:disabled,
     color: var(--color-disabled-text);
     border-color: var(--color-border);
 }
+
+/* Independent sidebar layout. */
+.cw-sidebar {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.cw-brand-header {
+    min-height: 0;
+    justify-content: center;
+    padding: 1rem;
+    border-bottom: 0;
+    background: transparent;
+}
+
+.cw h1.cw-brand {
+    width: 100%;
+    text-align: center;
+}
+
+.cw-account-footer {
+    align-items: flex-end;
+    border-top: 0;
+    background: transparent;
+}
+
+/* Avoid an empty status strip above the workspace when idle. */
+.conversation-operation:has(> p:only-child:empty) {
+    display: none;
+}
+
+/* Preserve the existing stacked layout in narrow windows. */
+@media (max-width: 760px) {
+    .cw-sidebar {
+        grid-template-rows: auto auto auto;
+    }
+}

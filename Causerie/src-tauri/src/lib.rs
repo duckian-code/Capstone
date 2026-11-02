@@ -22,6 +22,7 @@ mod languages;
 mod reminder_scheduler;
 mod reminders;
 mod proficiency;
+mod turn_cancellations;
 // use tauri::utils::config::CustomSignCommandConfig::Command;
 
 pub use reminders::handle_cli as handle_reminder_cli;
@@ -108,6 +109,11 @@ pub fn run() {
         version: 11,
         description: "user_proficiency",
         sql: include_str!("../migrations/0011_user_proficiency.sql"),
+        kind: MigrationKind::Up,
+    }, Migration {
+        version: 12,
+        description: "feedback_read",
+        sql: include_str!("../migrations/0012_feedback_read.sql"),
         kind: MigrationKind::Up,
     }];
 
