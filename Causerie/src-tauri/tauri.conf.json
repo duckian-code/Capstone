@@ -15,7 +15,7 @@
         "title": "Causerie",
         "width": 1280,
         "height": 800,
-        "minWidth": 640,
+        "minWidth": 360,
         "minHeight": 480,
         "resizable": true,
         "maximizable": true,

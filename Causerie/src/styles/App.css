@@ -128,7 +128,7 @@ body,
   padding: 2rem;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
   .conversation-screen {
     height: auto;
     min-height: 100dvh;

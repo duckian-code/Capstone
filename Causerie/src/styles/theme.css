@@ -542,7 +542,7 @@ button:disabled,
     cursor: not-allowed;
 }
 
-@media (min-width: 761px) and (max-width: 1000px) {
+@media (min-width: 1001px) and (max-width: 1200px) {
     .cw {
         grid-template-columns:
             180px
@@ -560,7 +560,7 @@ button:disabled,
     }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
     .cw {
         grid-template-rows: auto auto auto;
     }
@@ -974,7 +974,7 @@ button:disabled,
 }
 
 /* Give speech room above the composer on narrow screens. */
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
     .cw .cw-practice {
         grid-template-rows:
             auto
@@ -1101,7 +1101,7 @@ button:disabled,
 }
 
 /* Preserve the existing stacked layout in narrow windows. */
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
     .cw-sidebar {
         grid-template-rows: auto auto auto;
     }
@@ -1137,7 +1137,7 @@ button:disabled,
     grid-template-columns: minmax(170px, 280px) minmax(0, 1fr);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
     .conversation-screen {
         height: 100dvh;
         min-height: 0;
@@ -1438,4 +1438,78 @@ button:disabled,
     height: 100%;
     min-height: 0;
     align-self: stretch;
+}
+
+/* Keep desktop content columns comfortably readable. */
+@media (min-width: 1001px) {
+    .cw:not(.cw-empty-workspace) {
+        grid-template-columns:
+            clamp(180px, 16vw, 240px)
+            minmax(360px, 1fr)
+            minmax(360px, 1fr);
+    }
+}
+
+/* Wrap narrow-screen controls instead of compressing them. */
+@media (max-width: 1000px) {
+    .cw > .cw-mobile-toolbar {
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .cw-mobile-toolbar > button {
+        flex: 0 0 auto;
+    }
+
+    .cw-mobile-toolbar .cw-mobile-title {
+        flex: 1 1 160px;
+        min-width: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-overflow: clip;
+    }
+
+    .cw-mobile-toolbar nav {
+        flex: 0 1 auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-left: auto;
+        max-width: 100%;
+    }
+
+    .cw-mobile-toolbar nav button {
+        flex: 0 0 auto;
+    }
+
+    .cw-thread-actions,
+    .cw-composer-footer {
+        flex-wrap: wrap;
+    }
+
+    .cw-thread-actions button,
+    .cw-composer-footer button {
+        flex-shrink: 0;
+        min-height: 44px;
+    }
+
+    .cw-thread,
+    .cw-thread-heading h2,
+    .cw-context h2,
+    .cw-goals li {
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* Give navigation its own row on phone-sized windows. */
+@media (max-width: 480px) {
+    .cw-mobile-toolbar nav {
+        flex-basis: 100%;
+        justify-content: flex-end;
+    }
+
+    .cw-composer-footer small:first-child {
+        flex-basis: 100%;
+    }
 }

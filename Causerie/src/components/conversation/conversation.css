@@ -421,7 +421,7 @@
 }
 
 /* Compact three-column desktop layout. */
-@media (min-width: 761px) and (max-width: 1000px) {
+@media (min-width: 1001px) and (max-width: 1200px) {
     .cw {
         grid-template-columns:
             150px
@@ -435,7 +435,7 @@
 }
 
 /* Stacked layout for narrow windows or increased browser zoom. */
-@media (max-width: 760px) {
+@media (max-width: 1000px) {
     .cw {
         height: auto;
         min-height: 100dvh;
