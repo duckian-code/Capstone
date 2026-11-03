@@ -8,6 +8,9 @@ import {dal} from "../data/dal.ts";
 import {parseCommandError} from "../services/command-error.ts";
 import type { ThreadCreationInput } from "../data/models/thread-creation-types";
 import { streamReply, cancelReply, discardCancelledTurn } from "../services/conversation.ts";
+import { loadPendingTurn, savePendingTurn, removePendingTurn } from "../services/pending-turn";
+import type { PendingTurn } from "../services/pending-turn";
+import { reportIssue } from "../services/recovery";
 
 // HANDLES CONVERSATION FLOW AND INTEGRATION WITH DAL
 
@@ -21,16 +24,6 @@ type Phase =
     | "cancelling"
     | "cancel-failed";
 
-interface PendingTurn {
-    threadId: string;
-    user: ConversationMessage;
-    assistant: ConversationMessage;
-    userSaved: boolean;
-    fullReply: string | null;
-    replySaved: boolean;
-    originalDraft: string;
-    cancelled: boolean;
-}
 
 function toDisplayMessage(message: Message): ConversationMessage {
     if (message.role !== "user" && message.role !== "assistant") {
@@ -74,10 +67,22 @@ export function useConversationController(userId: string) {
     const [changingThread, setChangingThread] = useState(false);
     const changingThreadRef = useRef(false);
 
+    const recoveryChecked = useRef(false);
+
+
     function finishTurn() {
         const turn = turnRef.current;
 
         if (!mounted.current || !turn?.replySaved || turn.cancelled) return;
+
+        try {
+            removePendingTurn(userId);
+        } catch (reason) {
+            setOperationError(parseCommandError(reason).message);
+            setPhase("failed");
+            mascot.send({ type: "REQUEST_FAILED" });
+            return;
+        }
 
         turnRef.current = null;
         setPhase("idle");
@@ -118,6 +123,49 @@ export function useConversationController(userId: string) {
             }));
 
             setThreads(summaries);
+
+            if (!recoveryChecked.current && !turnRef.current) {
+                const recovered = loadPendingTurn(userId);
+
+                if (recovered) {
+                    if (!summaries.some((thread) => thread.id === recovered.threadId)) {
+                        throw new Error(
+                            "Saved unfinished work belongs to an unavailable thread. " +
+                            "Its recovery record has been retained.",
+                        );
+                    }
+
+                    turnRef.current = recovered;
+                    setActiveThreadId(recovered.threadId);
+
+                    setLocalMessages([
+                        recovered.user,
+                        ...(recovered.fullReply !== null
+                            ? [{
+                                ...recovered.assistant,
+                                content: recovered.fullReply,
+                            }]
+                            : []),
+                    ]);
+
+                    setPhase(recovered.cancelled ? "cancel-failed" : "failed");
+                    setOperationError(
+                        "An unfinished conversation was restored. Retry or cancel it.",
+                    );
+
+                    reportIssue("conversation_recovery", {
+                        kind: "app",
+                        code: "interrupted_work",
+                        message: "An unfinished conversation was restored.",
+                    });
+
+                    recoveryChecked.current = true;
+                    return;
+                }
+
+                recoveryChecked.current = true;
+            }
+
             setActiveThreadId((previous) =>
                 summaries.some((thread) => thread.id === previous)
                     ? previous
@@ -192,6 +240,7 @@ export function useConversationController(userId: string) {
 
                 turn.userSaved = true;
                 turn.user = toDisplayMessage(saved);
+                savePendingTurn(userId, turn);
 
                 putMessage(turn.user);
                 moveThreadToTop(turn.threadId);
@@ -228,6 +277,8 @@ export function useConversationController(userId: string) {
                     ...turn.assistant,
                     content: fullReply,
                 };
+                // Preserve the complete reply before attempting its database save
+                savePendingTurn(userId, turn);
 
                 putMessage(turn.assistant);
             }
@@ -248,6 +299,7 @@ export function useConversationController(userId: string) {
 
                 turn.replySaved = true;
                 turn.assistant = toDisplayMessage(saved);
+                savePendingTurn(userId, turn);
                 putMessage(turn.assistant);
             }
 
@@ -280,7 +332,14 @@ export function useConversationController(userId: string) {
     }
 
     function startTurn(turn: PendingTurn) {
-        inFlightRef.current = runTurn(turn);
+        try {
+            // Save IDs and the original draft before any network or DB work
+            savePendingTurn(userId, turn);
+            inFlightRef.current = runTurn(turn);
+        } catch (reason) {
+            setOperationError(parseCommandError(reason).message);
+            setPhase("failed");
+        }
     }
 
     function sendMessage(rawText: string): boolean {
@@ -353,12 +412,16 @@ export function useConversationController(userId: string) {
         mascot.send({ type: "REQUEST_CANCELLED" });
 
         try {
+            savePendingTurn(userId, turn);
+
             await cancelReply(turn.threadId, turn.user.id);
 
             // user/assistant INSERT may be happening, settle first before deleting messages
             await inFlightRef.current;
 
             await discardCancelledTurn(turn.threadId, turn.user.id, turn.assistant.id);
+
+            removePendingTurn(userId);
 
             if (!mounted.current || turnRef.current !== turn) return null;
 

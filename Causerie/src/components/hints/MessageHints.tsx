@@ -7,6 +7,7 @@ import {
 } from "../../data/dao/hint-dao";
 import { parseCommandError } from "../../services/command-error";
 import "./hints.css";
+import { useStoredText } from "../../hooks/useStoredText";
 
 // TODO: Language specific examples
 const EXAMPLES = [
@@ -126,7 +127,11 @@ function HintDialog({
     const dialogRef = useRef<HTMLDialogElement>(null);
     const alive = useRef(false);
     const pending = useRef(false);
-    const [question, setQuestion] = useState("");
+    const selectionKey = panel.kind === "request"
+        ? `${panel.selection.start_offset}:${panel.selection.end_offset}`
+        : "saved";
+
+    const [question, setQuestion] = useStoredText(`causerie:hint-draft:v1:${messageId}:${selectionKey}`);
     const [example, setExample] = useState(0);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -180,6 +185,7 @@ function HintDialog({
             if (alive.current) {
                 onSaved(hint);
                 setResult(hint);
+                setQuestion("");
             }
         } catch (cause: unknown) {
             if (alive.current) {

@@ -1,5 +1,5 @@
 import { useAppSession } from "./hooks/useAppSession";
-
+import { RecoveryCenter } from "./components/RecoveryCenter";
 import { OnboardingScreen } from "./components/onboarding/OnboardingScreen";
 import { ConversationScreen } from "./components/conversation/ConversationScreen";
 // import { ResetApplicationButton } from "./components/ResetApplicationButton";
@@ -44,7 +44,7 @@ export default function App() {
             )}
 
 
-            {/*<ResetApplicationButton />*/}
+            <RecoveryCenter />
         </>
     );
 }

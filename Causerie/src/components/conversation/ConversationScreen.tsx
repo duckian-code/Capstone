@@ -158,15 +158,11 @@ function ConversationSession({ userId, context }: Props) {
                             Retry
                         </button>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setSelectedMessageId(null);
-                                conversation.leaveRecovery();
-                            }}
-                        >
-                            Discard unsaved content and reload history
-                        </button>
+                        <p>
+                            Retry continues the unfinished step.
+                            Use Cancel in the composer to remove this pending turn
+                            and return your original text for editing.
+                        </p>
                     </div>
                 )}
             </div>

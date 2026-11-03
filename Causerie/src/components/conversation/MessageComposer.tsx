@@ -1,5 +1,6 @@
 import { useId, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
+import { useStoredText } from "../../hooks/useStoredText";
 
 interface Props {
     language: string;
@@ -8,13 +9,14 @@ interface Props {
     cancelling: boolean;
     onSend: (text: string) => boolean;
     onCancel: () => Promise<string | null>;
+    draftKey: string;
 }
 
 // max input length.
 const MAX_LENGTH = 1000;
 
-export function MessageComposer({ language, disabled, canCancel, cancelling, onSend, onCancel }: Props) {
-    const [draft, setDraft] = useState("");
+export function MessageComposer({ language, disabled, canCancel, cancelling, onSend, onCancel, draftKey }: Props) {
+    const [draft, setDraft] = useStoredText(draftKey);
     const [restoring, setRestoring] = useState(false);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);

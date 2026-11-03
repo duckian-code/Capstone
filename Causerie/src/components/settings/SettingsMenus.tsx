@@ -48,6 +48,24 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
         null,
     );
 
+    useEffect(() => {
+        function openApiSettings() {
+            setMenu("settings");
+        }
+
+        window.addEventListener(
+            "causerie:open-api-settings",
+            openApiSettings,
+        );
+
+        return () => {
+            window.removeEventListener(
+                "causerie:open-api-settings",
+                openApiSettings,
+            );
+        };
+    }, []);
+
     function applyChanges(changes: UserChanges) {
         onUserChange(user.id, changes);
     }
@@ -530,6 +548,23 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     const [error, setError] = useState<string | null>(null);
     const [saved, setSaved] = useState(false);
     const [activeSection, setActiveSection] = useState(SETTINGS_SECTIONS[0]?.id ?? "");
+    useEffect(() => {
+        function selectApiSettings() {
+            setActiveSection("onboarding");
+        }
+
+        window.addEventListener(
+            "causerie:open-api-settings",
+            selectApiSettings,
+        );
+
+        return () => {
+            window.removeEventListener(
+                "causerie:open-api-settings",
+                selectApiSettings,
+            );
+        };
+    }, []);
     const [draft, setDraft] = useState<SettingsDraft>({
         targetLanguage: user.target_language ?? "French",
         apiKey: "",

@@ -1,4 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from "../../services/recovery";
 import { getDatabase } from "../database";
 
 export interface HintSelection {

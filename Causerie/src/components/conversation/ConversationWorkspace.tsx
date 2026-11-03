@@ -256,6 +256,7 @@ export function ConversationWorkspace(props: Props) {
                     cancelling={props.cancelling}
                     onSend={props.onSend}
                     onCancel={props.onCancel}
+                    draftKey={`causerie:draft:v1:${props.activeThread.id}`}
                 />
             </section>
 

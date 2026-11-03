@@ -1513,3 +1513,82 @@ button:disabled,
         flex-basis: 100%;
     }
 }
+
+.recovery-dialog {
+    box-sizing: border-box;
+    width: min(540px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 1.25rem;
+    overflow: auto;
+    border: 1px solid var(--color-accent-primary);
+    border-radius: 16px;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    overflow-wrap: anywhere;
+}
+
+.recovery-dialog::backdrop {
+    background: rgb(0 0 0 / 40%);
+}
+
+.recovery-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.recovery-header h2 {
+    margin: 0;
+}
+
+.recovery-item {
+    margin-block: 1rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.recovery-item h3 {
+    margin: 0;
+}
+
+.recovery-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.recovery-dialog button,
+.recovery-launcher {
+    min-height: 44px;
+    border: 1px solid var(--color-accent-primary);
+    border-radius: 8px;
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    font: inherit;
+    cursor: pointer;
+}
+
+.recovery-dialog pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 0.8rem;
+}
+
+.recovery-launcher {
+    position: fixed;
+    right: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 1200;
+    padding: 0.65rem 1rem;
+    box-shadow: 0 6px 20px rgb(0 0 0 / 25%);
+}
+
+.recovery-dialog :focus-visible,
+.recovery-launcher:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 3px;
+}

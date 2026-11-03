@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from "../services/recovery";
 
 export function ResetApplicationButton() {
     const dialogRef = useRef<HTMLDialogElement>(null);
