@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useStickies } from "./StickyProvider";
-import { splitStickyText } from "./sticky-matches";
+import { AnnotationChooser } from "./AnnotationChooser";
+import type { AnnotationChoice } from "./AnnotationChooser";
 import { useDictionary } from "../dictionary/DictionaryProvider";
 import { selectedWord } from "../dictionary/selected-word";
 import { createPortal } from "react-dom";
@@ -28,6 +29,8 @@ export function StickyMessageText({ text, messageId }: Props) {
     const { hints, openRequest, openSaved, ui: hintUI, } = useMessageHints(messageId, text);
     const [hintSelection, setHintSelection] = useState<HintSelection | null>(null);
 
+    const [chooser, setChooser] = useState<AnnotationChoice[] | null>(null);
+
     const {
         stickies,
         loading,
@@ -36,45 +39,90 @@ export function StickyMessageText({ text, messageId }: Props) {
         openSticky,
     } = useStickies();
 
-    const parts = useMemo(
-        () => splitStickyText(text, stickies),
-        [text, stickies],
-    );
-
     const annotatedParts = useMemo(() => {
-        return parts.flatMap((part) => {
-            const end = part.start + part.text.length;
-            const boundaries = new Set([part.start, end]);
+        // Find every sticky occurrence, including overlapping occurrences
+        const stickyMatches = stickies
+            .filter((sticky) => sticky.selected_text.length > 0)
+            .flatMap((sticky) => {
+                const matches: {
+                    start: number;
+                    end: number;
+                    sticky: typeof sticky;
+                }[] = [];
 
-            for (const hint of hints) {
-                if (
-                    hint.start_offset < end &&
-                    hint.end_offset > part.start
-                ) {
-                    boundaries.add(Math.max(part.start, hint.start_offset));
-                    boundaries.add(Math.min(end, hint.end_offset));
+                let from = 0;
+
+                while (from < text.length) {
+                    const start = text.indexOf(sticky.selected_text, from);
+                    if (start === -1) break;
+
+                    matches.push({
+                        start,
+                        end: start + sticky.selected_text.length,
+                        sticky,
+                    });
+
+                    from = start + 1;
                 }
-            }
 
-            const sorted = [...boundaries].sort((a, b) => a - b);
-
-            return sorted.slice(0, -1).map((start, index) => {
-                const segmentEnd = sorted[index + 1];
-
-                return {
-                    start,
-                    text: text.slice(start, segmentEnd),
-                    sticky: part.sticky,
-                    hints: hints.filter(
-                        (hint) =>
-                            hint.start_offset <= start &&
-                            hint.end_offset >= segmentEnd,
-                    ),
-                };
+                return matches;
             });
-        });
-    }, [parts, hints, text]);
 
+        const messageHints = hints.filter(
+            (hint) =>
+                hint.message_id === messageId &&
+                hint.message_text === text &&
+                hint.start_offset >= 0 &&
+                hint.end_offset > hint.start_offset &&
+                hint.end_offset <= text.length &&
+                text.slice(hint.start_offset, hint.end_offset) ===
+                hint.selected_text,
+        );
+
+        const boundaries = new Set<number>([0, text.length]);
+
+        for (const match of stickyMatches) {
+            boundaries.add(match.start);
+            boundaries.add(match.end);
+        }
+
+        for (const hint of messageHints) {
+            boundaries.add(hint.start_offset);
+            boundaries.add(hint.end_offset);
+        }
+
+        const sorted = [...boundaries].sort((a, b) => a - b);
+
+        return sorted.slice(0, -1).map((start, index) => {
+            const end = sorted[index + 1];
+
+            const coveringStickies = stickyMatches
+                .filter((match) => match.start <= start && match.end >= end)
+                .map((match) => match.sticky);
+
+            // A sticky may overlap itself... show it only once in the chooser
+            const uniqueStickies = [
+                ...new Map(
+                    coveringStickies.map((sticky) => [sticky.id, sticky]),
+                ).values(),
+            ].sort(
+                (a, b) =>
+                    b.selected_text.length - a.selected_text.length ||
+                    a.id.localeCompare(b.id),
+            );
+
+            return {
+                start,
+                text: text.slice(start, end),
+                stickies: uniqueStickies,
+                hints: messageHints.filter(
+                    (hint) =>
+                        hint.start_offset <= start &&
+                        hint.end_offset >= end,
+                ),
+            };
+        });
+    }, [text, messageId, stickies, hints]);
 
     useEffect(() => {
         function clearSelection() {
@@ -197,26 +245,51 @@ export function StickyMessageText({ text, messageId }: Props) {
         <>
             <p ref={textRef} className="cw-message-text" tabIndex={-1}>
                 {annotatedParts.map((part) => {
-                    const sticky = part.sticky;
+                    const sticky = part.stickies[0];
                     const hasHints = part.hints.length > 0;
 
                     if (!sticky && !hasHints) {
                         return <span key={part.start}>{part.text}</span>;
                     }
 
-                    const stickyTitle = sticky?.title.trim() || "Untitled sticky";
+                    const choices: AnnotationChoice[] = [
+                        ...part.stickies.map((item): AnnotationChoice => ({
+                            id: `sticky:${item.id}`,
+                            kind: "Sticky",
+                            phrase: item.selected_text,
+                            preview: [
+                                item.title.trim(),
+                                item.user_text.trim(),
+                            ].filter(Boolean).join(" — ") || "Open saved sticky",
+                            open: () => openSticky(item),
+                        })),
 
-                    const label = hasHints
-                        ? `Open ${part.hints.length === 1 ? "hint" : "hints"}`
-                        : `Open sticky: ${stickyTitle}`;
+                        ...part.hints.map((hint): AnnotationChoice => ({
+                            id: `hint:${hint.id}`,
+                            kind: "Hint",
+                            phrase: hint.selected_text,
+                            preview: hint.user_request?.trim() ||
+                                hint.hint.trim() ||
+                                "Open saved hint",
+                            open: () => openSaved([hint]),
+                        })),
+                    ];
+
+                    const multiple = choices.length > 1;
+
+                    const label = multiple
+                        ? `Choose annotation: ${choices.length} available`
+                        : choices[0].kind === "Sticky"
+                            ? `Open sticky: ${sticky?.title.trim() || "Untitled sticky"}`
+                            : "Open hint";
 
                     function openAnnotation() {
                         textRef.current?.focus({ preventScroll: true });
 
-                        if (hasHints) {
-                            openSaved(part.hints);
-                        } else if (sticky) {
-                            openSticky(sticky);
+                        if (multiple) {
+                            setChooser(choices);
+                        } else {
+                            choices[0].open();
                         }
                     }
 
@@ -232,23 +305,27 @@ export function StickyMessageText({ text, messageId }: Props) {
                             role="button"
                             tabIndex={0}
                             aria-label={label}
-                            title={
-                                hasHints && sticky
-                                    ? `${label}. Select text to edit its sticky.`
-                                    : label
-                            }
+                            aria-haspopup="dialog"
+                            title={label}
                             onClick={() => {
                                 const selection = window.getSelection();
 
+                                // Dragging to select text must not open an annotation.
                                 if (selection && !selection.isCollapsed) return;
 
                                 openAnnotation();
                             }}
                             onKeyDown={(event) => {
-                                if (event.key === "Enter" || event.key === " ") {
-                                    event.preventDefault();
-                                    openAnnotation();
-                                }
+                                if (
+                                    event.key !== "Enter" &&
+                                    event.key !== " "
+                                ) return;
+
+                                const selection = window.getSelection();
+                                if (selection && !selection.isCollapsed) return;
+
+                                event.preventDefault();
+                                openAnnotation();
                             }}
                         >
             {part.text}
@@ -256,6 +333,17 @@ export function StickyMessageText({ text, messageId }: Props) {
                     );
                 })}
             </p>
+
+            {chooser && (
+                <AnnotationChooser
+                    choices={chooser}
+                    onDismiss={() => setChooser(null)}
+                    onChoose={(choice) => {
+                        setChooser(null);
+                        choice.open();
+                    }}
+                />
+            )}
 
             {hintUI}
 

@@ -1319,3 +1319,104 @@ button:disabled,
         border-top: 0;
     }
 }
+
+.annotation-chooser {
+    box-sizing: border-box;
+    width: min(420px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 1rem;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    box-shadow: 0 16px 48px rgb(0 0 0 / 35%);
+}
+
+.annotation-chooser::backdrop {
+    background: rgb(0 0 0 / 35%);
+}
+
+.annotation-chooser-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.annotation-chooser-header h2 {
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.annotation-chooser-help {
+    margin: 0.5rem 0 1rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.annotation-chooser-list {
+    display: grid;
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.annotation-chooser button {
+    box-sizing: border-box;
+    min-height: 44px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+    font: inherit;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+.annotation-chooser-close {
+    flex: 0 0 44px;
+    padding: 0.35rem;
+}
+
+.annotation-chooser .annotation-chooser-option {
+    display: grid;
+    gap: 0.35rem;
+    width: 100%;
+    padding: 0.85rem;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.annotation-chooser-kind {
+    color: var(--color-accent-primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.annotation-chooser-phrase {
+    white-space: pre-wrap;
+    font-weight: 600;
+}
+
+.annotation-chooser-preview {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.annotation-chooser button:hover {
+    background: var(--color-hover);
+    border-color: var(--color-accent-primary);
+}
+
+.annotation-chooser button:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 3px;
+}
