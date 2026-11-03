@@ -942,7 +942,7 @@ button:disabled,
     border-radius: 14px;
 }
 
-.mascot-speech-scroll p {
+.mascot-speech-scroll > p {
     margin: 0;
     white-space: pre-wrap;
     overflow-wrap: anywhere;

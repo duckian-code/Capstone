@@ -3,6 +3,7 @@ import type {
     ConversationMessage,
     ConversationStatus,
 } from "../../data/models/conversation-types";
+import { StickyMessageText } from "../sticky/StickyMessageText";
 
 interface Props {
     message: ConversationMessage | null;
@@ -24,6 +25,12 @@ export function MascotSpeech({ message, status, unavailable, languageCode }: Pro
 
     const text = visible ? message!.content : retainedText;
     const messageId = message?.id ?? null;
+
+    // Enable annotations once the reply has finished and been saved
+    const annotationsReady =
+        visible &&
+        status === "idle" &&
+        message !== null;
 
     useEffect(() => {
         if (visible && message) {
@@ -77,7 +84,15 @@ export function MascotSpeech({ message, status, unavailable, languageCode }: Pro
                             element.clientHeight < 40;
                     }}
                 >
-                    <p>{text}</p>
+                    {annotationsReady && message ? (
+                        <StickyMessageText
+                            key={message.id}
+                            messageId={message.id}
+                            text={message.content}
+                        />
+                    ) : (
+                        <p>{text}</p>
+                    )}
                 </div>
             </section>
 

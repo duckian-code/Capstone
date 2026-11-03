@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
     hintDAO,
+    subscribeToHintChanges,
     type HintSelection,
     type MessageHint,
 } from "../../data/dao/hint-dao";
@@ -32,6 +33,13 @@ export function useMessageHints(messageId: string, messageText: string) {
     const [loadError, setLoadError] = useState<string | null>(null);
     const [attempt, setAttempt] = useState(0);
     const [panel, setPanel] = useState<Panel | null>(null);
+    useEffect(() => {
+        return subscribeToHintChanges((changedMessageId) => {
+            if (changedMessageId === messageId) {
+                setAttempt((value) => value + 1);
+            }
+        });
+    }, [messageId]);
 
     useEffect(() => {
         let cancelled = false;

@@ -22,6 +22,18 @@ export interface HintRequest extends HintSelection {
     user_request: string | null;
 }
 
+type HintChangeListener = (messageId: string) => void;
+
+const hintChangeListeners = new Set<HintChangeListener>();
+
+export function subscribeToHintChanges(listener: HintChangeListener,): () => void {
+    hintChangeListeners.add(listener);
+
+    return () => {
+        hintChangeListeners.delete(listener);
+    };
+}
+
 export const hintDAO = {
     async list(messageId: string): Promise<MessageHint[]> {
         await getDatabase();
@@ -32,6 +44,16 @@ export const hintDAO = {
     async request(request: HintRequest): Promise<MessageHint> {
         await getDatabase();
 
-        return invoke<MessageHint>("request_message_hint", { request });
+        const saved = await invoke<MessageHint>(
+            "request_message_hint",
+            { request },
+        );
+
+        // refresh every mounted display of this particular message
+        for (const listener of hintChangeListeners) {
+            listener(saved.message_id);
+        }
+
+        return saved;
     },
 }
