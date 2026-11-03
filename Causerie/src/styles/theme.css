@@ -1420,3 +1420,22 @@ button:disabled,
     outline: 2px solid var(--color-accent-primary);
     outline-offset: 3px;
 }
+
+/* Fill the window even when the status bar is hidden or absent. */
+.conversation-screen {
+    height: 100dvh;
+    min-height: 0;
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
+}
+
+.conversation-screen > .conversation-operation {
+    grid-row: 1;
+}
+
+.conversation-screen > .cw {
+    grid-row: 2;
+    height: 100%;
+    min-height: 0;
+    align-self: stretch;
+}

@@ -50,8 +50,13 @@ export function OnboardingScreen({ onComplete }: Props) {
 
                         <p>Your learning space is ready.</p>
 
+                        <p>
+                            Your first conversation with Dot is ready.
+                            She’ll introduce herself and kick off your learning.
+                        </p>
+
                         <button type="button" onClick={onComplete}>
-                            Start practicing
+                            Meet Dot
                         </button>
 
                     </>
