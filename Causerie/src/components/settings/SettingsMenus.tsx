@@ -23,6 +23,7 @@ import {
     proficiency,
     type ProficiencyLevel,
 } from "../../services/proficiency";
+import { ResetApplicationButton } from "../ResetApplicationButton";
 
 const DEFAULT_AVATAR_URL = "/images/default-avatar.png";
 
@@ -824,6 +825,8 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                             </div>
                         )}
                     </fieldset>
+
+                    <ResetApplicationButton />
 
                     {remindersLoadError && (
                         <div className="settings-error">
