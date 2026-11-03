@@ -16,6 +16,5 @@ pub(crate) async fn pool(databases: &DbInstances) -> Result<SqlitePool, CommandE
 
 pub(crate) fn error(error: sqlx::Error) -> CommandError {
     log::error!("Database operation failed: {error}");
-
-    CommandError::app("Unable to complete the databse operatoin. Please try again")
+    CommandError::coded("storage_failure")
 }

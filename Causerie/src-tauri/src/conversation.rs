@@ -45,8 +45,7 @@ async fn send_message_inner(
         context.thread_id,
     );
 
-    let api_key = credentials::resolve_api_key(app).await
-        .map_err(CommandError::app)?;
+    let api_key = credentials::resolve_api_key(app).await?;
 
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client!"))?;
@@ -59,17 +58,14 @@ async fn send_message_inner(
         .await?;
 
 
-    let mut stream = client.stream_response_v2(&request).await.map_err(|e| {
-        log::error!("OpenAI request failed: {e}");
-        CommandError::app(e.to_string())
-    })?;
+    let mut stream = client.stream_response_v2(&request).await.map_err(CommandError::sdk)?;
 
     let mut completed = false;
     let mut received_text = false;
     let mut full_text = String::new();
 
     while let Some(event) = stream.next().await {
-        match event.map_err(|e| CommandError::openai(e.to_string()))? {
+        match event.map_err(CommandError::sdk)? {
             ResponseStreamEvent::OutputTextDelta { delta, .. } => {
                 if !delta.is_empty() {
                     received_text = true;
@@ -93,11 +89,15 @@ async fn send_message_inner(
             }
 
             ResponseStreamEvent::StreamError { error, .. } => {
-                return Err(CommandError::openai(
-                    error
-                        .message
-                        .unwrap_or_else(|| "OpenAI stream error".to_string()),
-                ));
+                return Err(CommandError::response(&error));
+            }
+
+            ResponseStreamEvent::ResponseFailed { response, .. } => {
+                return Err(
+                    response.error.as_ref()
+                        .map(CommandError::response)
+                        .unwrap_or_else(|| CommandError::coded("api_failure")),
+                );
             }
 
             _ => {}

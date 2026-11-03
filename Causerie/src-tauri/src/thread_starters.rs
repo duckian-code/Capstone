@@ -174,9 +174,7 @@ pub async fn create_generated_thread(
     })
         .to_string();
 
-    let api_key = credentials::resolve_api_key(app)
-        .await
-        .map_err(CommandError::app)?;
+    let api_key = credentials::resolve_api_key(app).await?;
 
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
@@ -198,10 +196,11 @@ pub async fn create_generated_thread(
     let response = client
         .create_response_v2(&request)
         .await
-        .map_err(|error| {
-            log::error!("Thread opening request failed: {error}");
-            CommandError::openai("Could not generate the opening. Please try again.")
-        })?;
+        .map_err(CommandError::sdk)?;
+
+    if let Some(error) = response.error.as_ref() {
+        return Err(CommandError::response(error));
+    }
 
     if response.status != ResponseStatus::Completed
         || response

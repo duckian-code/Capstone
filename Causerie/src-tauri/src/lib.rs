@@ -1,5 +1,4 @@
 // use std::process::Command;
-use serde::Serialize;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
@@ -23,33 +22,10 @@ mod reminder_scheduler;
 mod reminders;
 mod proficiency;
 mod turn_cancellations;
-// use tauri::utils::config::CustomSignCommandConfig::Command;
+mod app_error;
+use app_error::CommandError;
 
 pub use reminders::handle_cli as handle_reminder_cli;
-
-// Structured errors from Rust to React
-#[derive(Debug, Serialize)]
-struct CommandError {
-    kind: &'static str,
-    message: String,
-}
-// IMPL SEPARATES OPENAI ERRORS (delivered to mascot) from APP ERRORS (delivered via toast)
-impl CommandError {
-    fn app(message: impl Into<String>) -> Self {
-        Self {
-            kind: "app",
-            message: message.into(),
-        }
-    }
-
-    fn openai(message: impl Into<String>) -> Self {
-        Self {
-            kind: "openai",
-            message: message.into(),
-        }
-    }
-}
-
 
 use tauri_plugin_log::{Target, TargetKind};
 

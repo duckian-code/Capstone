@@ -163,9 +163,7 @@ pub async fn analyze_message(
         "goals": &context.goals
     }).to_string();
 
-    let api_key = credentials::resolve_api_key(app)
-        .await
-        .map_err(CommandError::app)?;
+    let api_key = credentials::resolve_api_key(app).await?;
 
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
@@ -181,13 +179,11 @@ pub async fn analyze_message(
 
     request.reasoning = Some(ReasoningConfig::low());
 
-    let response = client.create_response_v2(&request).await.map_err(|error| {
-        log::error!("Teacher request failed: {error}");
+    let response = client.create_response_v2(&request).await.map_err(CommandError::sdk)?;
 
-        CommandError::openai(
-            "The teacher request failed. Please retry feedback.",
-        )
-    })?;
+    if let Some(error) = response.error.as_ref() {
+        return Err(CommandError::response(error));
+    }
 
     if response.status != ResponseStatus::Completed {
         return Err(CommandError::openai(

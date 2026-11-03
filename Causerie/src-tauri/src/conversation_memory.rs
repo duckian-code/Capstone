@@ -157,9 +157,7 @@ async fn count(client: &OpenAIClient, request: &CreateResponseRequest) -> Result
         .count_input_tokens(request)
         .await
         .map(|result| result.input_tokens)
-        .map_err(|_| {
-            CommandError::openai("Unable to check the conversation token budget. Please retry.")
-        })
+        .map_err(CommandError::sdk)
 }
 
 // a retained suffix beings with user message. Newest message is never removed, and normal user/assistant exchange stay together
@@ -172,7 +170,7 @@ async fn summarize(client: &OpenAIClient, request: &CreateResponseRequest) -> Re
     let response = client
         .create_response_v2(request)
         .await
-        .map_err(|_| CommandError::openai("Conversation summarization failed."))?;
+        .map_err(CommandError::sdk)?;
 
     if let Some(usage) = &response.usage {
         log::debug!(
@@ -180,6 +178,10 @@ async fn summarize(client: &OpenAIClient, request: &CreateResponseRequest) -> Re
             usage.input_tokens,
             usage.output_tokens,
         );
+    }
+
+    if let Some(error) = response.error.as_ref() {
+        return Err(CommandError::response(error));
     }
 
     if response.status != ResponseStatus::Completed {
@@ -378,6 +380,20 @@ pub(crate) async fn prepare(client: &OpenAIClient, pool: &SqlitePool, context: &
                 save_summary(pool, context, end, &updated).await?;
                 summary = updated;
                 start = end;
+            }
+            Err(error) if matches!(
+            error.code,
+                "api_key_missing"
+                | "api_key_invalid"
+                | "api_authentication"
+                | "api_access_denied"
+                | "api_credits_exhausted"
+                | "api_spend_limit"
+                | "api_quota_exceeded"
+                | "api_rate_limited"
+                | "api_limit_unknown"
+            ) => {
+                return Err(error);
             }
             Err(_) => {
                 log::warn!(

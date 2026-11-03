@@ -33,7 +33,7 @@ where
 
         match requests.get(&key) {
             Some(None) => {
-                return Err(CommandError::app("Message cancelled."));
+                return Err(CommandError::coded("request_cancelled"));
             }
             Some(Some(_)) => {
                 return Err(CommandError::app("This message is already running."));
@@ -57,7 +57,7 @@ where
         }
     }
 
-    result.map_err(|_| CommandError::app("Message cancelled."))?
+    result.map_err(|_| CommandError::coded("request_cancelled"))?
 }
 
 async fn require_active_thread(

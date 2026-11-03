@@ -169,8 +169,7 @@ pub async fn request_message_hint(app: AppHandle, dbs: State<'_, DbInstances>, r
     }).to_string();
 
     let api_key = credentials::resolve_api_key(app)
-        .await
-        .map_err(CommandError::app)?;
+        .await?;
 
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
@@ -197,10 +196,11 @@ pub async fn request_message_hint(app: AppHandle, dbs: State<'_, DbInstances>, r
     let response = client
         .create_response_v2(&ai_request)
         .await
-        .map_err(|error| {
-            log::error!("Hint request failed: {error}");
-            CommandError::openai("The teacher could not provide a hint. Please retry.")
-        })?;
+        .map_err(CommandError::sdk)?;
+
+    if let Some(error) = response.error.as_ref() {
+        return Err(CommandError::response(error));
+    }
 
     if response.status != ResponseStatus::Completed
         || response

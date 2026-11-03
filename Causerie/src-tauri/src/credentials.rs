@@ -226,10 +226,20 @@ pub async fn has_openai_api_key(state: State<'_, CredentialStore>) -> Result<boo
 }
 
 // internal rust resolver
-pub async fn resolve_api_key(app: tauri::AppHandle) -> Result<Zeroizing<String>, String> {
+pub async fn resolve_api_key( app: tauri::AppHandle ) -> Result<Zeroizing<String>, crate::CommandError> {
     let store = app.state::<CredentialStore>().inner().clone();
 
     tauri::async_runtime::spawn_blocking(move || {
-        store.read_api_key()?.ok_or_else(|| "No API key configured. Complete onboarding.".to_string())
-    }).await.map_err(|_| "Credential storage operation failed!".to_string())?
+        let key = store
+            .read_api_key()
+            .map_err(|_| {
+                crate::CommandError::coded("credential_store_unavailable")
+            })?;
+
+        key.ok_or_else(|| crate::CommandError::coded("api_key_missing"))
+    })
+        .await
+        .map_err(|_| {
+            crate::CommandError::coded("credential_store_unavailable")
+        })?
 }
