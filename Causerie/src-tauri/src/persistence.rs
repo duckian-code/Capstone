@@ -826,7 +826,7 @@ pub async fn complete_onboarding(databases: State<'_, DbInstances>, user_id: Str
     // FIX SPANISH THREAD START AND VERIY FRENCH
     let (title, topic, greeting) = match language_profile.code {
         "fr" => (
-            "Faisons Connaissance!",
+            "Bienvenue à Causerie!",
             "Une première conversation avec Dot pour faire connaissance.",
             "Salut ! Moi, c’est Dot, ta partenaire de conversation numérique. \
              On va pratiquer le français ensemble, à ton rythme. \
@@ -834,7 +834,7 @@ pub async fn complete_onboarding(databases: State<'_, DbInstances>, user_id: Str
              Qu’est-ce que tu aimerais pouvoir faire en français ?",
         ),
         "es" => (
-            "Vamos a conocernos",
+            "Bienvenidos a Causerie!",
             "Una primera conversación con Dot para conocernos.",
             "¡Hola! Soy Dot, tu compañera digital de conversación. \
              Vamos a practicar español a tu ritmo. \
