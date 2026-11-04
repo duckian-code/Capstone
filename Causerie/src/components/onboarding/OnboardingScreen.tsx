@@ -44,8 +44,8 @@ export function OnboardingScreen({ onComplete }: Props) {
 
                         <p>
                             Your profile and API key have been saved.
-                            Your target language is{" "}
-                            {savedUser.target_language}.
+                            Your target language is{" "}<u>
+                            {savedUser.target_language}.</u>
                         </p>
 
                         <p>Your learning space is ready.</p>
