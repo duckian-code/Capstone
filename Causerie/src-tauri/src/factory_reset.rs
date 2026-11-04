@@ -97,10 +97,18 @@ pub fn finish_pending_reset(app: &AppHandle) -> Result<(), String> {
 }
 
 #[tauri::command]
-pub async fn reset_application(app: AppHandle, confirmation: String, ) -> Result<(), String> {
+pub async fn reset_application(app: AppHandle,
+                               databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
+                               confirmation: String, ) -> Result<(), String> {
     if confirmation != "RESET" {
         return Err("Type RESET to confirm.".to_string());
     }
+
+    let pool = crate::database::pool(databases.inner())
+        .await
+        .map_err(|error| error.message)?;
+
+    crate::reminders::disable_for_reset(&pool).await?;
 
     let marker = marker_path(&app)?;
 

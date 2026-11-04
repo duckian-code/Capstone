@@ -12,7 +12,18 @@ import {SETTINGS_SECTIONS, type SettingsDraft} from "./settings-sections";
 
 import type { GoalSettings } from "../../data/models/goal-types.ts";
 
+import {
+    reminders,
+    remindersEqual,
+    type ReminderSettings,
+} from "../../services/reminders";
+
 import "./settings.css";
+import {
+    proficiency,
+    type ProficiencyLevel,
+} from "../../services/proficiency";
+import { ResetApplicationButton } from "../ResetApplicationButton";
 
 const DEFAULT_AVATAR_URL = "/images/default-avatar.png";
 
@@ -36,6 +47,24 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
     const [menu, setMenu] = useState<"profile" | "settings" | null>(
         null,
     );
+
+    useEffect(() => {
+        function openApiSettings() {
+            setMenu("settings");
+        }
+
+        window.addEventListener(
+            "causerie:open-api-settings",
+            openApiSettings,
+        );
+
+        return () => {
+            window.removeEventListener(
+                "causerie:open-api-settings",
+                openApiSettings,
+            );
+        };
+    }, []);
 
     function applyChanges(changes: UserChanges) {
         onUserChange(user.id, changes);
@@ -519,11 +548,122 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     const [error, setError] = useState<string | null>(null);
     const [saved, setSaved] = useState(false);
     const [activeSection, setActiveSection] = useState(SETTINGS_SECTIONS[0]?.id ?? "");
+    useEffect(() => {
+        function selectApiSettings() {
+            setActiveSection("onboarding");
+        }
+
+        window.addEventListener(
+            "causerie:open-api-settings",
+            selectApiSettings,
+        );
+
+        return () => {
+            window.removeEventListener(
+                "causerie:open-api-settings",
+                selectApiSettings,
+            );
+        };
+    }, []);
     const [draft, setDraft] = useState<SettingsDraft>({
         targetLanguage: user.target_language ?? "French",
         apiKey: "",
-        goalSlots: [...goalSettings.slots]
+        goalSlots: [...goalSettings.slots],
+        reminders: null,
+        proficiency: null,
     });
+
+    const [savedReminders, setSavedReminders] =
+        useState<ReminderSettings | null>(null);
+
+    const [remindersLoading, setRemindersLoading] = useState(true);
+    const [remindersLoadError, setRemindersLoadError] =
+        useState<string | null>(null);
+    const [remindersDeliveryError, setRemindersDeliveryError] =
+        useState<string | null>(null);
+    const [remindersRevision, setRemindersRevision] = useState(0);
+
+    const [savedProficiency, setSavedProficiency] =
+        useState<ProficiencyLevel | null>(null);
+
+    const [proficiencyLoading, setProficiencyLoading] = useState(true);
+    const [proficiencyError, setProficiencyError] =
+        useState<string | null>(null);
+    const [proficiencyRevision, setProficiencyRevision] = useState(0);
+
+    useEffect(() => {
+        let cancelled = false;
+
+        setProficiencyLoading(true);
+        setProficiencyError(null);
+
+        void proficiency.get(user.id)
+            .then((level) => {
+                if (cancelled) return;
+
+                setSavedProficiency(level);
+                setDraft((previous) => ({
+                    ...previous,
+                    proficiency: level,
+                }));
+            })
+            .catch((reason: unknown) => {
+                if (!cancelled) {
+                    setProficiencyError(parseCommandError(reason).message);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) {
+                    setProficiencyLoading(false);
+                }
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [user.id, proficiencyRevision]);
+
+    const proficiencyDirty =
+        draft.proficiency !== null &&
+        savedProficiency !== null &&
+        draft.proficiency !== savedProficiency;
+
+    useEffect(() => {
+        let cancelled = false;
+
+        setRemindersLoading(true);
+        setRemindersLoadError(null);
+
+        void reminders.get(user.id)
+            .then((result) => {
+                if (cancelled) return;
+
+                setSavedReminders(result.settings);
+                setRemindersDeliveryError(result.last_error);
+
+                setDraft((previous) => ({
+                    ...previous,
+                    reminders: result.settings,
+                }));
+            })
+            .catch((reason: unknown) => {
+                if (!cancelled) {
+                    setRemindersLoadError(parseCommandError(reason).message);
+                }
+            })
+            .finally(() => {
+                if (!cancelled) setRemindersLoading(false);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [user.id, remindersRevision]);
+
+    const remindersDirty =
+        draft.reminders !== null &&
+        savedReminders !== null &&
+        !remindersEqual(draft.reminders, savedReminders);
 
     const goalsDirty = draft.goalSlots.some(
         (id, index) => id !== goalSettings.slots[index]);
@@ -531,12 +671,20 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     const dirty = draft.targetLanguage !== (user.target_language ?? "French")
         || draft.apiKey.length > 0
         || goalsDirty
+        || remindersDirty
+        || proficiencyDirty
     ;
 
     async function save(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
-        if (busyRef.current || !dirty) return;
+        if (
+            busyRef.current
+            || remindersLoading
+            || proficiencyLoading
+            || !dirty
+        ) return;
+
 
         if (!LANGUAGE_OPTIONS.some(
             (option) => option.value === draft.targetLanguage,
@@ -564,6 +712,8 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
         let languageSaved = false;
         let keyAttempted = false;
         let goalsSaved = false;
+        let remindersSaved = false;
+        let proficiencySaved = false;
 
         try {
             if (
@@ -589,6 +739,32 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                 goalsSaved = true;
             }
 
+            if (remindersDirty && draft.reminders) {
+                const result = await reminders.save(user.id, draft.reminders);
+
+                setSavedReminders(result.settings);
+                setRemindersDeliveryError(result.last_error);
+
+                setDraft((previous) => ({
+                    ...previous,
+                    reminders: result.settings,
+                }));
+
+                remindersSaved = true;
+            }
+
+            if (proficiencyDirty && draft.proficiency) {
+                const level = await proficiency.save(user.id, draft.proficiency);
+
+                setSavedProficiency(level);
+                setDraft((previous) => ({
+                    ...previous,
+                    proficiency: level,
+                }));
+
+                proficiencySaved = true;
+            }
+
             if (replacingKey) {
                 keyAttempted = true;
                 await credentials.saveApiKey(apiKey);
@@ -601,6 +777,8 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
             setError(
                 (languageSaved ? "Your target language was saved. " : "") +
                 (goalsSaved ? "Your learning goals were saved. " : "") +
+                (remindersSaved ? "Your practice reminders were saved. " : "") +
+                (proficiencySaved ? "Your speaking level was saved. " : "") +
                 message +
                 (keyAttempted ? " Re-enter the replacement API key to retry." : ""),
             );
@@ -676,12 +854,53 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                         {dirty && (
                             <div className="settings-save-bar">
                                 <span>You have unsaved changes.</span>
-                                <button type="submit">
+                                <button type="submit" disabled={remindersLoading || proficiencyLoading}>
                                     {busy ? "Saving…" : "Save changes"}
                                 </button>
                             </div>
                         )}
                     </fieldset>
+
+                    <ResetApplicationButton />
+
+                    {remindersLoadError && (
+                        <div className="settings-error">
+                            <p role="alert">
+                                Could not load reminder settings: {remindersLoadError}
+                            </p>
+                            <button
+                                type="button"
+                                disabled={busy || remindersLoading}
+                                onClick={() => setRemindersRevision((value) => value + 1)}
+                            >
+                                Retry loading reminders
+                            </button>
+                        </div>
+                    )}
+
+                    {remindersDeliveryError && (
+                        <p className="settings-error" role="alert">
+                            The last reminder operation failed: {remindersDeliveryError}
+                        </p>
+                    )}
+
+                    {proficiencyError && (
+                        <div className="settings-error">
+                            <p role="alert">
+                                Could not load the speaking level: {proficiencyError}
+                            </p>
+
+                            <button
+                                type="button"
+                                disabled={busy || proficiencyLoading}
+                                onClick={() => {
+                                    setProficiencyRevision((value) => value + 1);
+                                }}
+                            >
+                                Retry loading speaking level
+                            </button>
+                        </div>
+                    )}
 
                     {error && (
                         <p className="settings-error" role="alert">

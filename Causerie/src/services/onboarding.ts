@@ -57,7 +57,8 @@ export async function completeOnboarding(input: OnboardingInput): Promise<User> 
         return user;
     } catch {
         throw new Error(
-            "Your API key was saved, but your profile could not be saved. " +
+            "Your API key was saved, but setup could not finish. " +
+            "Your profile or introductory conversation may not be ready. " +
             "Retry to finish setup.",
         );
     }

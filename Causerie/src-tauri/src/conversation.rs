@@ -22,8 +22,7 @@ pub enum StreamEvent {
     Chunk { text: String },
 }
 
-#[tauri::command]
-pub async fn send_message(
+async fn send_message_inner(
     app: tauri::AppHandle,
     databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
     thread_id: String,
@@ -46,8 +45,7 @@ pub async fn send_message(
         context.thread_id,
     );
 
-    let api_key = credentials::resolve_api_key(app).await
-        .map_err(CommandError::app)?;
+    let api_key = credentials::resolve_api_key(app).await?;
 
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client!"))?;
@@ -60,17 +58,14 @@ pub async fn send_message(
         .await?;
 
 
-    let mut stream = client.stream_response_v2(&request).await.map_err(|e| {
-        log::error!("OpenAI request failed: {e}");
-        CommandError::app(e.to_string())
-    })?;
+    let mut stream = client.stream_response_v2(&request).await.map_err(CommandError::sdk)?;
 
     let mut completed = false;
     let mut received_text = false;
     let mut full_text = String::new();
 
     while let Some(event) = stream.next().await {
-        match event.map_err(|e| CommandError::openai(e.to_string()))? {
+        match event.map_err(CommandError::sdk)? {
             ResponseStreamEvent::OutputTextDelta { delta, .. } => {
                 if !delta.is_empty() {
                     received_text = true;
@@ -94,11 +89,15 @@ pub async fn send_message(
             }
 
             ResponseStreamEvent::StreamError { error, .. } => {
-                return Err(CommandError::openai(
-                    error
-                        .message
-                        .unwrap_or_else(|| "OpenAI stream error".to_string()),
-                ));
+                return Err(CommandError::response(&error));
+            }
+
+            ResponseStreamEvent::ResponseFailed { response, .. } => {
+                return Err(
+                    response.error.as_ref()
+                        .map(CommandError::response)
+                        .unwrap_or_else(|| CommandError::coded("api_failure")),
+                );
             }
 
             _ => {}
@@ -118,3 +117,24 @@ pub async fn send_message(
     Ok(full_text)
 }
 
+#[tauri::command]
+pub async fn send_message(
+    app: tauri::AppHandle,
+    databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
+    thread_id: String,
+    user_message_id: String,
+    on_event: Channel<StreamEvent>,
+) -> Result<String, CommandError> {
+    crate::turn_cancellations::run(
+        &thread_id,
+        &user_message_id,
+        send_message_inner(
+            app,
+            databases,
+            thread_id.clone(),
+            user_message_id.clone(),
+            on_event,
+        ),
+    )
+        .await
+}

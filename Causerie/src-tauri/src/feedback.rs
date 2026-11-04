@@ -163,9 +163,7 @@ pub async fn analyze_message(
         "goals": &context.goals
     }).to_string();
 
-    let api_key = credentials::resolve_api_key(app)
-        .await
-        .map_err(CommandError::app)?;
+    let api_key = credentials::resolve_api_key(app).await?;
 
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
@@ -181,13 +179,11 @@ pub async fn analyze_message(
 
     request.reasoning = Some(ReasoningConfig::low());
 
-    let response = client.create_response_v2(&request).await.map_err(|error| {
-        log::error!("Teacher request failed: {error}");
+    let response = client.create_response_v2(&request).await.map_err(CommandError::sdk)?;
 
-        CommandError::openai(
-            "The teacher request failed. Please retry feedback.",
-        )
-    })?;
+    if let Some(error) = response.error.as_ref() {
+        return Err(CommandError::response(error));
+    }
 
     if response.status != ResponseStatus::Completed {
         return Err(CommandError::openai(
@@ -223,3 +219,78 @@ pub async fn analyze_message(
     Ok(TeacherResult::Ready { feedback })
 }
 
+#[derive(Serialize, sqlx::FromRow)]
+pub struct FeedbackStateRow {
+    message_id: String,
+    summary: String,
+    correction_count: i64,
+    read_at: Option<String>,
+}
+
+// reads existing feedback only; never starts AI req
+#[tauri::command]
+pub async fn list_feedback_states( databases: State<'_, DbInstances>, thread_id: String ) -> Result<Vec<FeedbackStateRow>, CommandError> {
+    let pool = database::pool(databases.inner()).await?;
+
+    sqlx::query_as::<_, FeedbackStateRow>(
+        "SELECT
+            f.message_id,
+            f.summary,
+            f.read_at,
+            (
+                SELECT COUNT(*)
+                FROM message_corrections c
+                WHERE c.message_id = f.message_id
+                  AND c.origin = 'teacher'
+            ) AS correction_count
+         FROM message_feedback f
+         JOIN messages m ON m.id = f.message_id
+         JOIN threads t ON t.id = m.thread_id
+         JOIN app_state s
+           ON s.id = 1 AND s.active_user_id = t.user_id
+         WHERE t.id = ?
+           AND t.archived_at IS NULL
+           AND m.content = f.source_content",
+    )
+        .bind(thread_id)
+        .fetch_all(&pool)
+        .await
+        .map_err(database::error)
+}
+
+#[tauri::command]
+pub async fn mark_feedback_read( databases: State<'_, DbInstances>, thread_id: String, message_id: String ) -> Result<(), CommandError> {
+    let pool = database::pool(databases.inner()).await?;
+
+    let changed = sqlx::query(
+        "UPDATE message_feedback
+         SET read_at = COALESCE(
+             read_at,
+             strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+         )
+         WHERE message_id = ?
+           AND EXISTS (
+               SELECT 1
+               FROM messages m
+               JOIN threads t ON t.id = m.thread_id
+               JOIN app_state s
+                 ON s.id = 1 AND s.active_user_id = t.user_id
+               WHERE m.id = message_feedback.message_id
+                 AND t.id = ?
+                 AND t.archived_at IS NULL
+                 AND m.content = message_feedback.source_content
+           )",
+    )
+        .bind(message_id)
+        .bind(thread_id)
+        .execute(&pool)
+        .await
+        .map_err(database::error)?
+        .rows_affected();
+
+    if changed != 1 {
+        return Err(CommandError::app("This feedback is no longer available."));
+    }
+
+    Ok(())
+}

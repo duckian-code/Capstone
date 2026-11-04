@@ -3,11 +3,12 @@ import {useConversationController} from "../../hooks/useConversationController.t
 import {useCallback, useState} from "react";
 import {ErrorToast, Toast} from "../ErrorToast.tsx";
 import {ConversationWorkspace} from "./ConversationWorkspace.tsx";
-import {MascotCanvas} from "../MascotCanvas.tsx";
+import {MascotCanvas} from "../mascot/MascotCanvas.tsx";
 import {ThreadCreationDialog} from "../ThreadCreationDialog.tsx";
 import {StickyProvider} from "../sticky/StickyProvider.tsx";
-import { AccountPanel } from "../settings/SettingsMenus.tsx";
 import { DictionaryProvider } from "../dictionary/DictionaryProvider";
+import type { MobileView } from "./ConversationWorkspace";
+import { ThreadSidebar } from "./ThreadSidebar";
 
 interface Props {
     userId: string;
@@ -31,6 +32,8 @@ function ConversationSession({ userId, context }: Props) {
     const [toast, setToast] = useState<Toast | null>(null);
     const [creationOpen, setCreationOpen] = useState(false);
 
+    const [mobileView, setMobileView] = useState<MobileView>("threads");
+
     function openCreation() {
         if (conversation.navigationDisabled) return;
 
@@ -42,11 +45,13 @@ function ConversationSession({ userId, context }: Props) {
         <ThreadCreationDialog
             creating={conversation.creatingThread}
             error={conversation.operationError}
-            onCreate={async (title, prompt) => {
-                const created = await conversation.createThread(title, prompt);
+            onClearError={conversation.clearCreationError}
+            onCreate={async (input) => {
+                const created = await conversation.createThread(input);
 
                 if (created) {
                     setSelectedMessageId(null);
+                    setMobileView("mascot");
                 }
 
                 return created;
@@ -69,6 +74,7 @@ function ConversationSession({ userId, context }: Props) {
     function selectThread(id: string) {
         if (conversation.selectThread(id)) {
             setSelectedMessageId(null);
+            setMobileView("mascot");
         }
     }
 
@@ -94,18 +100,22 @@ function ConversationSession({ userId, context }: Props) {
     // TODO: evaluate placeholder starter
     if (!conversation.activeThread) {
         return (
-            <main className="conversation-placeholder">
-                <h1>Start practicing</h1>
-                <p>Create your first conversation</p>
-
-                <button type="button" disabled={conversation.creatingThread} onClick={openCreation}>
-                        + New thread
-                </button>
-
-                <AccountPanel disabled={conversation.creatingThread} />
+            <div className="conversation-screen">
+                <main
+                    className="cw cw-empty-workspace"
+                    data-mobile-view="threads"
+                >
+                    <ThreadSidebar
+                        threads={conversation.threads}
+                        activeThreadId=""
+                        disabled={conversation.creatingThread}
+                        onSelect={selectThread}
+                        onCreate={openCreation}
+                    />
+                </main>
 
                 {creationDialog}
-            </main>
+            </div>
         );
     }
 
@@ -116,12 +126,19 @@ function ConversationSession({ userId, context }: Props) {
         "saving-reply": "Saving the reply…",
         animating: "Displaying the reply…",
         failed: "",
+        cancelling: "Cancelling your message…",
+        "cancel-failed": "",
     }[conversation.phase];
 
     return (
         <div className="conversation-screen">
             <div className="conversation-operation">
                 <p role="status">{progressText}</p>
+                {conversation.cancellationFailed && (
+                    <p role="alert">
+                        {conversation.operationError} Click Cancel again to retry cleanup.
+                    </p>
+                )}
 
                 {conversation.recoveryRequired && (
                     <div>
@@ -141,15 +158,11 @@ function ConversationSession({ userId, context }: Props) {
                             Retry
                         </button>
 
-                        <button
-                            type="button"
-                            onClick={() => {
-                                setSelectedMessageId(null);
-                                conversation.leaveRecovery();
-                            }}
-                        >
-                            Discard unsaved content and reload history
-                        </button>
+                        <p>
+                            Retry continues the unfinished step.
+                            Use Cancel in the composer to remove this pending turn
+                            and return your original text for editing.
+                        </p>
                     </div>
                 )}
             </div>
@@ -162,6 +175,9 @@ function ConversationSession({ userId, context }: Props) {
                 status={conversation.status}
                 selectedMessageId={selectedMessageId}
 
+                mobileView={mobileView}
+                onMobileViewChange={setMobileView}
+
                 sendDisabled={conversation.sendDisabled}
                 navigationDisabled={conversation.navigationDisabled}
 
@@ -169,6 +185,17 @@ function ConversationSession({ userId, context }: Props) {
                 historyError={conversation.historyError}
                 onRetryHistory={conversation.reloadHistory}
                 onCreateThread={openCreation}
+                onRenameThread={conversation.renameThread}
+                onDeleteThread={async (id) => {
+                    const deletingActive = conversation.activeThread?.id === id;
+
+                    await conversation.deleteThread(id);
+
+                    if (deletingActive) {
+                        setSelectedMessageId(null);
+                        setMobileView("threads");
+                    }
+                }}
 
                 mascot={
                     <MascotCanvas
@@ -179,7 +206,23 @@ function ConversationSession({ userId, context }: Props) {
 
                 onSelectThread={selectThread}
                 onSelectMessage={setSelectedMessageId}
-                onSend={conversation.sendMessage}
+                onSend={(text) => {
+                    const sent = conversation.sendMessage(text);
+
+                    if (sent) {
+                        setSelectedMessageId(null);
+                    }
+
+                    return sent;
+                }}
+
+                canCancel={conversation.canCancel}
+                cancelling={conversation.cancelling}
+                pendingUserMessageId={conversation.pendingUserMessageId}
+                onCancel={async () => {
+                    setSelectedMessageId(null);
+                    return conversation.cancelTurn();
+                }}
             />
 
             {creationDialog}

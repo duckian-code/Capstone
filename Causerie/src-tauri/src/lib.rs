@@ -1,5 +1,4 @@
 // use std::process::Command;
-use serde::Serialize;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
@@ -15,32 +14,18 @@ mod feedback;
 mod persistence;
 mod dictionary;
 mod conversation_memory;
-// use tauri::utils::config::CustomSignCommandConfig::Command;
+mod hints;
+mod thread_topics;
+mod thread_starters;
+mod languages;
+mod reminder_scheduler;
+mod reminders;
+mod proficiency;
+mod turn_cancellations;
+mod app_error;
+use app_error::CommandError;
 
-
-// Structured errors from Rust to React
-#[derive(Debug, Serialize)]
-struct CommandError {
-    kind: &'static str,
-    message: String,
-}
-// IMPL SEPARATES OPENAI ERRORS (delivered to mascot) from APP ERRORS (delivered via toast)
-impl CommandError {
-    fn app(message: impl Into<String>) -> Self {
-        Self {
-            kind: "app",
-            message: message.into(),
-        }
-    }
-
-    fn openai(message: impl Into<String>) -> Self {
-        Self {
-            kind: "openai",
-            message: message.into(),
-        }
-    }
-}
-
+pub use reminders::handle_cli as handle_reminder_cli;
 
 use tauri_plugin_log::{Target, TargetKind};
 
@@ -86,6 +71,26 @@ pub fn run() {
         description: "conversation_summaries",
         sql: include_str!("../migrations/0008_conversation_summaries.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 9,
+        description: "message_hints",
+        sql: include_str!("../migrations/0009_message_hints.sql"),
+        kind: MigrationKind::Up,
+    }, Migration {
+        version: 10,
+        description: "practice_reminders",
+        sql: include_str!("../migrations/0010_practice_reminders.sql"),
+        kind: MigrationKind::Up,
+    }, Migration {
+        version: 11,
+        description: "user_proficiency",
+        sql: include_str!("../migrations/0011_user_proficiency.sql"),
+        kind: MigrationKind::Up,
+    }, Migration {
+        version: 12,
+        description: "feedback_read",
+        sql: include_str!("../migrations/0012_feedback_read.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
@@ -97,6 +102,7 @@ pub fn run() {
         }))
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_notification::init())
         .invoke_handler(tauri::generate_handler![
             conversation::send_message,
             credentials::save_openai_api_key,
@@ -142,6 +148,18 @@ pub fn run() {
             persistence::get_app_state,
             persistence::complete_onboarding,
             dictionary::lookup_dictionary,
+            hints::list_message_hints,
+            hints::request_message_hint,
+            thread_topics::list_thread_topics,
+            thread_starters::create_generated_thread,
+            reminders::get_practice_reminders,
+            reminders::save_practice_reminders,
+            proficiency::get_proficiency,
+            proficiency::save_proficiency,
+            feedback::list_feedback_states,
+            feedback::mark_feedback_read,
+            turn_cancellations::cancel_message,
+            turn_cancellations::discard_cancelled_turn,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

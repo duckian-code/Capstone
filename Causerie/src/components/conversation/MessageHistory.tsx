@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import type { ConversationMessage } from "../../data/models/conversation-types.ts";
 import { StickyMessageText } from "../sticky/StickyMessageText.tsx";
 import { useStickies } from "../sticky/StickyProvider.tsx";
+import type { FeedbackBadges } from "../../services/feedback-state";
 
 interface Props {
     threadId: string;
@@ -9,6 +10,8 @@ interface Props {
     messages: ConversationMessage[];
     selectedMessageId: string | null;
     onSelectMessage: (id: string) => void;
+    feedbackBadges: FeedbackBadges;
+    visible?: boolean;
 }
 
 const timeFormat = new Intl.DateTimeFormat(undefined, {
@@ -16,7 +19,7 @@ const timeFormat = new Intl.DateTimeFormat(undefined, {
     minute: "2-digit"
 });
 
-export function MessageHistory({threadId, prompt, messages, selectedMessageId, onSelectMessage}: Props) {
+export function MessageHistory({threadId, prompt, messages, selectedMessageId, onSelectMessage, feedbackBadges, visible = true}: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const followLatest = useRef(true);
     const { loading: stickiesLoading, error: stickiesError, reload: reloadStickies } = useStickies();
@@ -29,10 +32,10 @@ export function MessageHistory({threadId, prompt, messages, selectedMessageId, o
     useEffect(() => {
         const container = containerRef.current;
 
-        if (container && followLatest.current) {
+        if (visible && container && followLatest.current) {
             container.scrollTop = container.scrollHeight;
         }
-    }, [messages, threadId]);
+    }, [messages, threadId, visible]);
 
     return (
         <div ref={containerRef}
@@ -91,16 +94,29 @@ export function MessageHistory({threadId, prompt, messages, selectedMessageId, o
                                     </time>
                                 </div>
 
-                                <StickyMessageText text={message.content} />
+                                <StickyMessageText
+                                    key={JSON.stringify([message.id, message.content])}
+                                    messageId={message.id}
+                                    text={message.content}
+                                />
+
 
                                 {message.role === "user" && (
                                     <button
                                         type="button"
                                         className="cw-feedback-button"
+                                        data-unread={feedbackBadges[message.id]?.unread || undefined}
                                         aria-pressed={selectedMessageId === message.id}
                                         aria-controls="conversation-feedback"
+                                        aria-label={
+                                            feedbackBadges[message.id]?.unread
+                                                ? "View unread feedback for this message"
+                                                : "View feedback for this message"
+                                        }
                                         onClick={() => onSelectMessage(message.id)}>
-                                        View Feedback
+                                        {feedbackBadges[message.id]?.unread
+                                            ? "Feedback · New"
+                                            : "View feedback"}
                                     </button>
                                 )}
                             </article>

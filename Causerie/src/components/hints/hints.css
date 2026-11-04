@@ -1,0 +1,106 @@
+.hint-underline {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: #c62828;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 4px;
+    cursor: pointer;
+}
+
+.hint-underline:focus-visible {
+    outline: 2px solid #c62828;
+    outline-offset: 4px;
+}
+
+.hint-panel {
+    box-sizing: border-box;
+    width: min(480px, calc(100vw - 2rem));
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
+    padding: 1.2rem;
+    border: 2px solid #bd5656;
+    border-radius: 16px;
+    background: #fff8f6;
+    color: #442b2b;
+    box-shadow: 0 20px 70px rgb(0 0 0 / 40%);
+    overflow-wrap: anywhere;
+}
+
+.hint-panel::backdrop {
+    background: rgb(0 0 0 / 35%);
+}
+
+.hint-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.hint-toolbar h2 {
+    margin: 0;
+}
+
+.hint-panel blockquote {
+    margin: 1rem 0;
+    padding: 0.75rem;
+    border-left: 3px solid #c62828;
+    background: #fbe5e1;
+    white-space: pre-wrap;
+}
+
+.hint-panel label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.hint-panel textarea {
+    box-sizing: border-box;
+    width: 100%;
+    resize: vertical;
+    padding: 0.7rem;
+    border: 1px solid #b88282;
+    border-radius: 8px;
+    background: white;
+    color: #442b2b;
+    font: inherit;
+}
+
+.hint-panel textarea::placeholder {
+    color: #826a6a;
+    opacity: 1;
+}
+
+.hint-panel button {
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #b88282;
+    border-radius: 8px;
+    background: #fbe5e1;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+.hint-panel button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.hint-panel :focus-visible {
+    outline: 3px solid #a73535;
+    outline-offset: 3px;
+}
+
+.hint-help,
+.hint-question {
+    color: #715757;
+    font-size: 0.9rem;
+}
+
+.hint-answer {
+    white-space: pre-wrap;
+}
+
+.hint-result + .hint-result {
+    border-top: 1px solid #dbbaba;
+}

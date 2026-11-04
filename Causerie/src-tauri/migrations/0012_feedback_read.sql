@@ -1,0 +1,1 @@
+ALTER TABLE message_feedback ADD COLUMN read_at TEXT;

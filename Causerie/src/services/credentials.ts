@@ -1,5 +1,4 @@
-import { invoke } from "@tauri-apps/api/core";
-
+import { invoke } from "./recovery";
 export const credentials = {
     saveApiKey(apiKey: string): Promise<void> {
         return invoke("save_openai_api_key", { apiKey });

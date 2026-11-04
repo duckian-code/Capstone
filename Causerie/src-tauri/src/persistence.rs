@@ -100,6 +100,11 @@ pub async fn initialize_database(databases: State<'_, DbInstances>) -> Result<()
         ));
     }
 
+    if let Err(error) = crate::reminders::reconcile(&pool).await {
+        // A scheduler problem must not prevent using the application
+        log::warn!("Unable to reconcile practice reminders: {error}");
+    }
+
     Ok(())
 }
 
@@ -397,13 +402,27 @@ pub async fn create_thread(databases: State<'_, DbInstances>, user_id: String, t
 }
 
 #[tauri::command]
-pub async fn rename_thread(databases: State<'_, DbInstances>, id: String, title: String) -> Result<u64, CommandError> {
+pub async fn rename_thread(databases: State<'_, DbInstances>, id: String, title: String, ) -> Result<u64, CommandError> {
+    let title = title.trim();
+
+    // Match the frontend's UTF-16 length limit.
+    if title.is_empty() || title.encode_utf16().count() > 100 {
+        return Err(CommandError::app(
+            "Enter a thread name between 1 and 100 characters.",
+        ));
+    }
+
     let pool = database::pool(databases.inner()).await?;
 
     Ok(sqlx::query(
         "UPDATE threads
-         SET title = ?, updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
-         WHERE id = ?",
+         SET title = ?,
+             updated_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
+         WHERE id = ?
+           AND archived_at IS NULL
+           AND user_id = (
+               SELECT active_user_id FROM app_state WHERE id = 1
+           )",
     )
         .bind(title)
         .bind(id)
@@ -412,6 +431,7 @@ pub async fn rename_thread(databases: State<'_, DbInstances>, id: String, title:
         .map_err(db_error)?
         .rows_affected())
 }
+
 
 #[tauri::command]
 pub async fn set_thread_archived(databases: State<'_, DbInstances>, id: String, archived: bool) -> Result<u64, CommandError> {
@@ -438,13 +458,20 @@ pub async fn set_thread_archived(databases: State<'_, DbInstances>, id: String, 
 pub async fn delete_thread(databases: State<'_, DbInstances>, id: String) -> Result<u64, CommandError> {
     let pool = database::pool(databases.inner()).await?;
 
-    Ok(sqlx::query("DELETE FROM threads WHERE id = ?")
+    Ok(sqlx::query(
+        "DELETE FROM threads
+         WHERE id = ?
+           AND user_id = (
+               SELECT active_user_id FROM app_state WHERE id = 1
+           )",
+    )
         .bind(id)
         .execute(&pool)
         .await
         .map_err(db_error)?
         .rows_affected())
 }
+
 
 #[tauri::command]
 pub async fn get_thread_history(databases: State<'_, DbInstances>, thread_id: String) -> Result<Option<ThreadHistory>, CommandError> {
@@ -753,19 +780,133 @@ pub async fn get_app_state(databases: State<'_, DbInstances>, ) -> Result<Option
 pub async fn complete_onboarding(databases: State<'_, DbInstances>, user_id: String) -> Result<(), CommandError> {
     let pool = database::pool(databases.inner()).await?;
 
+    let mut transaction = pool
+        .begin_with("BEGIN IMMEDIATE")
+        .await
+        .map_err(db_error)?;
+
+    // retry after completion must not make another thread
+    let already_completed: i64 = sqlx::query_scalar(
+        "SELECT EXISTS(
+            SELECT 1
+            FROM app_state
+            WHERE id = 1
+              AND active_user_id = ?
+              AND onboarding_completed_at IS NOT NULL
+        )",
+    )
+        .bind(&user_id)
+        .fetch_one(&mut *transaction)
+        .await
+        .map_err(db_error)?;
+
+    if already_completed == 1 {
+        transaction.commit().await.map_err(db_error)?;
+        return Ok(());
+    }
+
+    // TODO: adjust user initial prompts to match generic introduction
+    let language: Option<String> = sqlx::query_scalar(
+        "SELECT COALESCE(NULLIF(TRIM(target_language), ''), 'French')
+         FROM users
+         WHERE id = ?",
+    )
+        .bind(&user_id)
+        .fetch_optional(&mut *transaction)
+        .await
+        .map_err(db_error)?;
+
+    let language = language.ok_or_else(|| {
+        CommandError::app("Save your profile before completing setup.")
+    })?;
+
+    let language_profile = crate::languages::profile(&language)?;
+
+    // TODO: evaluate target OR source language thread creation
+    // FIX SPANISH THREAD START AND VERIY FRENCH
+    let (title, topic, greeting) = match language_profile.code {
+        "fr" => (
+            "Bienvenue à Causerie!",
+            "Une première conversation avec Dot pour faire connaissance.",
+            "Salut ! Moi, c’est Dot, ta partenaire de conversation numérique. \
+             On va pratiquer le français ensemble, à ton rythme. \
+             Présente-toi un peu : comment tu t’appelles et pourquoi tu veux apprendre le français ? \
+             Qu’est-ce que tu aimerais pouvoir faire en français ?",
+        ),
+        "es" => (
+            "Bienvenidos a Causerie!",
+            "Una primera conversación con Dot para conocernos.",
+            "¡Hola! Soy Dot, tu compañera digital de conversación. \
+             Vamos a practicar español a tu ritmo. \
+             Cuéntame un poco de ti: ¿cómo te llamas y por qué quieres aprender español? \
+             ¿Qué te gustaría poder hacer en español?",
+        ),
+        _ => {
+            return Err(CommandError::app(
+                "An introductory conversation is not available for this language.",
+            ));
+        }
+    };
+
+    let thread_id = format!("intro:{user_id}");
+    let message_id = format!("intro-message:{user_id}");
+
+    let timestamp: String = sqlx::query_scalar(
+        "SELECT strftime('%Y-%m-%dT%H:%M:%fZ', 'now')",
+    )
+        .fetch_one(&mut *transaction)
+        .await
+        .map_err(db_error)?;
+
+    sqlx::query(
+        "INSERT INTO threads (
+            id, user_id, title, topic, created_at, updated_at
+         )
+         VALUES (?, ?, ?, ?, ?, ?)",
+    )
+        .bind(&thread_id)
+        .bind(&user_id)
+        .bind(title)
+        .bind(topic)
+        .bind(&timestamp)
+        .bind(&timestamp)
+        .execute(&mut *transaction)
+        .await
+        .map_err(db_error)?;
+
+    // Store Dot's greeting as a normal assistant message so it appears
+    // in both the mascot speech box and conversation history.
+    sqlx::query(
+        "INSERT INTO messages (
+            id, thread_id, role, content, sequence_no, created_at
+         )
+         VALUES (?, ?, 'assistant', ?, 0, ?)",
+    )
+        .bind(&message_id)
+        .bind(&thread_id)
+        .bind(greeting)
+        .bind(&timestamp)
+        .execute(&mut *transaction)
+        .await
+        .map_err(db_error)?;
+
+    // Mark setup complete only after the introductory thread is ready.
     sqlx::query(
         "INSERT INTO app_state (
             id, active_user_id, onboarding_completed_at
          )
-         VALUES (1, ?, strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))
+         VALUES (1, ?, ?)
          ON CONFLICT(id) DO UPDATE SET
             active_user_id = excluded.active_user_id,
             onboarding_completed_at = excluded.onboarding_completed_at",
     )
-        .bind(user_id)
-        .execute(&pool)
+        .bind(&user_id)
+        .bind(&timestamp)
+        .execute(&mut *transaction)
         .await
         .map_err(db_error)?;
+
+    transaction.commit().await.map_err(db_error)?;
 
     Ok(())
 }

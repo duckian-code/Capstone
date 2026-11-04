@@ -13,6 +13,7 @@ import type { DictionaryResult } from "../../data/models/dictionary-types";
 import { parseCommandError } from "../../services/command-error";
 
 import "./dictionary.css";
+import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types";
 
 interface DictionaryContextValue {
     openWord: (word: string) => void;
@@ -118,6 +119,16 @@ function DictionaryPanel({ word, language, onClose }: PanelProps) {
         };
     }, [word, language, attempt]);
 
+    const languageOption = LANGUAGE_OPTIONS.find(
+        (option) => option.value === language,
+    );
+
+    const sourceCode = state.status === "ready"
+        ? state.result.source_language
+        : languageOption?.code;
+
+    const sourceName = languageOption?.value ?? language;
+
     return (
         <dialog
             ref={dialogRef}
@@ -141,13 +152,13 @@ function DictionaryPanel({ word, language, onClose }: PanelProps) {
                 </button>
             </header>
 
-            <h2 id="dictionary-heading" lang="fr">
+            <h2 id="dictionary-heading" lang={sourceCode}>
                 {word}
             </h2>
 
-            {/** TODO: NOT HARD CODED!! TARGET TO SOURCE **/}
-
-            <p className="dictionary-direction">French → English</p>
+            <p className="dictionary-direction">
+                {sourceName} → English
+            </p>
 
             {state.status === "loading" && (
                 <p role="status">Looking up “{word}”…</p>
@@ -198,7 +209,7 @@ function DictionaryPanel({ word, language, onClose }: PanelProps) {
 
                                     {meaning.phrase ? (
                                         <>
-                                            <blockquote lang="fr">
+                                            <blockquote lang={sourceCode}>
                                                 {meaning.phrase}
                                             </blockquote>
 

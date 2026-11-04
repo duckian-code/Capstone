@@ -1,32 +1,50 @@
 export interface CommandError {
     kind: "openai" | "app";
+    code: string;
     message: string;
 }
 
 export function parseCommandError(error: unknown): CommandError {
-    // tauri may reject with a structured object
-    // convert structured object to CommandError
-    if (error instanceof Error) {
-        return { kind: "app", message: error.message };
-    }
-    if (
-        typeof error === "object"
-        && error !== null
-        && "kind" in error
-        && "message" in error
-        && (error.kind === "openai" || error.kind === "app")
-        && typeof error.message === "string"
-    ) {
-        return error as CommandError;
-    }
-    // convert JSON-stringified command errors
     if (typeof error === "string") {
         try {
-            return parseCommandError(JSON.parse(error));
+            const parsed: unknown = JSON.parse(error);
+
+            if (typeof parsed === "object" && parsed !== null) {
+                return parseCommandError(parsed);
+            }
         } catch {
-            return { kind: "app", message: error };
+            // Legacy string error
+        }
+
+        return {
+            kind: "app",
+            code: "system_failure",
+            message: error,
+        };
+    }
+
+    if (typeof error === "object" && error !== null) {
+        const value = error as Record<string, unknown>;
+
+        if (
+            (value.kind === "app" || value.kind === "openai") &&
+            typeof value.message === "string"
+        ) {
+            return {
+                kind: value.kind,
+                code: typeof value.code === "string"
+                    ? value.code
+                    : "system_failure",
+                message: value.message,
+            };
         }
     }
 
-    return { kind: "app", message: String(error) };
+    return {
+        kind: "app",
+        code: "system_failure",
+        message: error instanceof Error
+            ? error.message
+            : "An unexpected application error occurred.",
+    };
 }

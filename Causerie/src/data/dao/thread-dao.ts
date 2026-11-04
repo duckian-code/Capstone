@@ -1,5 +1,6 @@
 import { callBackend } from "./base";
 import type { Thread } from "../models/dao-types";
+import type { ThreadTopic } from "../models/thread-creation-types";
 
 export class ThreadDAO {
     get(id: string): Promise<Thread | null> {
@@ -32,5 +33,13 @@ export class ThreadDAO {
 
     delete(id: string): Promise<number> {
         return callBackend("delete_thread", { id });
+    }
+
+    topics(): Promise<ThreadTopic[]> {
+        return callBackend("list_thread_topics");
+    }
+
+    createGenerated(userId: string, topicId: number, requestId: string): Promise<Thread> {
+        return callBackend("create_generated_thread", { userId, topicId, requestId });
     }
 }
