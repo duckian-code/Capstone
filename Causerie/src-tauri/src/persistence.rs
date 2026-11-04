@@ -72,6 +72,9 @@ pub struct Sticky {
     pub title: String,
     pub user_text: String,
     pub color: String,
+    #[serde(default)]
+    #[sqlx(json)]
+    pub categories: Vec<String>,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -633,6 +636,36 @@ fn validate_sticky_color(color: &str) -> Result<(), CommandError> {
     Ok(())
 }
 
+fn validate_sticky_categories(categories: &[String]) -> Result<(), CommandError> {
+    if categories.len() > 3 {
+        return Err(CommandError::app("Choose at most three sticky categories."));
+    }
+
+    for (index, category) in categories.iter().enumerate() {
+        if !matches!(
+            category.as_str(),
+            "grammar"
+                | "vocabulary"
+                | "phrasing"
+                | "pronunciation"
+                | "spelling"
+                | "idioms"
+                | "register"
+                | "cultural_context"
+        ) {
+            return Err(CommandError::app("Invalid sticky category."));
+        }
+
+        if categories[..index].contains(category) {
+            return Err(CommandError::app(
+                "Sticky categories must be distinct.",
+            ));
+        }
+    }
+
+    Ok(())
+}
+
 #[tauri::command]
 pub async fn get_sticky(databases: State<'_, DbInstances>, id: String) -> Result<Option<Sticky>, CommandError> {
     let pool = database::pool(databases.inner()).await?;
@@ -666,17 +699,22 @@ pub async fn create_sticky(
     user_text: String,
     title: String,
     color: String,
+    categories: Option<Vec<String>>,
 ) -> Result<Sticky, CommandError> {
+    let categories = categories.unwrap_or_default();
+
     validate_sticky_color(&color)?;
+    validate_sticky_categories(&categories)?;
+
     let pool = database::pool(databases.inner()).await?;
 
     sqlx::query_as::<_, Sticky>(
         "INSERT INTO stickies (
             id, user_id, selected_text, title,
-            user_text, color, created_at, updated_at
+            user_text, color, categories, created_at, updated_at
          )
          VALUES (
-            lower(hex(randomblob(16))), ?, ?, ?, ?, ?,
+            lower(hex(randomblob(16))), ?, ?, ?, ?, ?, ?,
             strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
             strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
          )
@@ -687,14 +725,19 @@ pub async fn create_sticky(
         .bind(title.trim())
         .bind(user_text)
         .bind(color)
+        .bind(sqlx::types::Json(categories))
         .fetch_one(&pool)
         .await
         .map_err(db_error)
 }
 
 #[tauri::command]
-pub async fn save_sticky(databases: State<'_, DbInstances>, sticky: Sticky) -> Result<Sticky, CommandError> {
+pub async fn save_sticky(
+    databases: State<'_, DbInstances>,
+    sticky: Sticky,
+) -> Result<Sticky, CommandError> {
     validate_sticky_color(&sticky.color)?;
+    validate_sticky_categories(&sticky.categories)?;
 
     if sticky.id.is_empty() {
         return Err(CommandError::app("Sticky ID cannot be empty."));
@@ -702,20 +745,20 @@ pub async fn save_sticky(databases: State<'_, DbInstances>, sticky: Sticky) -> R
 
     let pool = database::pool(databases.inner()).await?;
 
-    // existing UI drafts already have IDs and creation timestamps (accept for new rows; updates preserve immutable fields).
     sqlx::query_as::<_, Sticky>(
         "INSERT INTO stickies (
             id, user_id, selected_text, title,
-            user_text, color, created_at, updated_at
+            user_text, color, categories, created_at, updated_at
          )
          VALUES (
-            ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?,
             strftime('%Y-%m-%dT%H:%M:%fZ', 'now')
          )
          ON CONFLICT(id) DO UPDATE SET
             title = excluded.title,
             user_text = excluded.user_text,
             color = excluded.color,
+            categories = excluded.categories,
             updated_at = excluded.updated_at
          WHERE stickies.user_id = excluded.user_id
          RETURNING *",
@@ -726,11 +769,14 @@ pub async fn save_sticky(databases: State<'_, DbInstances>, sticky: Sticky) -> R
         .bind(sticky.title.trim())
         .bind(sticky.user_text)
         .bind(sticky.color)
+        .bind(sqlx::types::Json(sticky.categories))
         .bind(sticky.created_at)
         .fetch_optional(&pool)
         .await
         .map_err(db_error)?
-        .ok_or_else(|| CommandError::app("Sticky ID already belongs to another user."))
+        .ok_or_else(|| {
+            CommandError::app("Sticky ID already belongs to another user.")
+        })
 }
 
 #[tauri::command]

@@ -1,5 +1,6 @@
 import { callBackend } from "./base";
 import type { Sticky, StickyColor } from "../models/dao-types";
+import {StickyCategory} from "../models/sticky-categories.ts";
 
 export class StickyDAO {
     get(id: string): Promise<Sticky | null> {
@@ -16,6 +17,7 @@ export class StickyDAO {
         userText: string,
         title = "",
         color: StickyColor = "yellow",
+        categories: StickyCategory[] = [],
     ): Promise<Sticky> {
         return callBackend("create_sticky", {
             userId,
@@ -23,6 +25,7 @@ export class StickyDAO {
             userText,
             title,
             color,
+            categories,
         });
     }
 

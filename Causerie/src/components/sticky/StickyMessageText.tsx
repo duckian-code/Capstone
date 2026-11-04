@@ -6,14 +6,23 @@ import { useDictionary } from "../dictionary/DictionaryProvider";
 import { selectedWord } from "../dictionary/selected-word";
 import { createPortal } from "react-dom";
 import type { HintSelection } from "../../data/dao/hint-dao";
-import {
-    hasMultipleWords,
-    useMessageHints,
-} from "../hints/MessageHints";
+import { hasMultipleWords, useMessageHints } from "../hints/MessageHints";
+import type { Sticky } from "../../data/models/dao-types";
+import { stickyCategoryLabel } from "../../data/models/sticky-categories";
 
 interface Props {
     text: string;
     messageId: string;
+}
+
+function stickyHoverText(sticky: Sticky): string {
+    const title = sticky.title.trim() || "Untitled sticky";
+
+    const categories = sticky.categories.length > 0
+        ? sticky.categories.map(stickyCategoryLabel).join(", ")
+        : "No categories";
+
+    return `${title}\nCategories: ${categories}`;
 }
 
 export function StickyMessageText({ text, messageId }: Props) {
@@ -283,6 +292,13 @@ export function StickyMessageText({ text, messageId }: Props) {
                             ? `Open sticky: ${sticky?.title.trim() || "Untitled sticky"}`
                             : "Open hint";
 
+                    const hoverText = part.stickies.length > 0
+                        ? [
+                            ...part.stickies.map(stickyHoverText),
+                            ...(hasHints ? ["Saved hint also available"] : []),
+                        ].join("\n\n")
+                        : label;
+
                     function openAnnotation() {
                         textRef.current?.focus({ preventScroll: true });
 
@@ -304,9 +320,13 @@ export function StickyMessageText({ text, messageId }: Props) {
                             ].filter(Boolean).join(" ")}
                             role="button"
                             tabIndex={0}
-                            aria-label={label}
+                            aria-label={
+                                part.stickies.length > 0
+                                    ? `${label}. ${hoverText}`
+                                    : label
+                            }
                             aria-haspopup="dialog"
-                            title={label}
+                            title={hoverText}
                             onClick={() => {
                                 const selection = window.getSelection();
 

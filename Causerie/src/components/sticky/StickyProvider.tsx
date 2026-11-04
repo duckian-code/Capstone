@@ -80,6 +80,7 @@ export function StickyProvider({ userId, children }: Props) {
             title: "",
             user_text: "",
             color: "green",
+            categories: [],
             created_at: timestamp,
             updated_at: timestamp,
         });

@@ -1,3 +1,4 @@
+import type { StickyCategory } from "./sticky-categories";
 // SQLite stores bools as 0/1. These models reflect raw DB rows.
 export interface User {
     id: string; display_name: string | null; pronouns: string | null;
@@ -28,8 +29,15 @@ export interface MessageCorrection {
     category: string | null; created_at: string; goal_id: string | null; origin: "manual" | "teacher";
 }
 export interface Sticky {
-    id: string; user_id: string; selected_text: string; title: string; user_text: string; color: StickyColor;
-    created_at: string; updated_at: string;
+    id: string;
+    user_id: string;
+    selected_text: string;
+    title: string;
+    user_text: string;
+    color: StickyColor;
+    categories: StickyCategory[];
+    created_at: string;
+    updated_at: string;
 }
 export type StickyColor =
     | "red"

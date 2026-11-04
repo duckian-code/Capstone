@@ -91,6 +91,11 @@ pub fn run() {
         description: "feedback_read",
         sql: include_str!("../migrations/0012_feedback_read.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 13,
+        description: "sticky_categories",
+        sql: include_str!("../migrations/0013_sticky_categories.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()

@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import type {
-    Sticky,
-    StickyColor,
-} from "../../data/models/dao-types.ts";
+import type { Sticky, StickyColor } from "../../data/models/dao-types.ts";
 import { parseCommandError } from "../../services/command-error.ts";
 import { STICKY_EXAMPLES } from "./sticky-examples.ts";
+import { MAX_STICKY_CATEGORIES, STICKY_CATEGORIES } from "../../data/models/sticky-categories";
+import type { StickyCategory } from "../../data/models/sticky-categories";
 
 interface Props {
     sticky: Sticky;
@@ -28,6 +27,9 @@ export function StickyEditor({ sticky, onSave, onDelete }: Props) {
     const [title, setTitle] = useState(sticky.title);
     const [body, setBody] = useState(sticky.user_text);
     const [color, setColor] = useState<StickyColor>(sticky.color);
+    const [categories, setCategories] = useState<StickyCategory[]>(
+        () => [...sticky.categories],
+    );
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [confirmDelete, setConfirmDelete] = useState(false);
@@ -72,6 +74,7 @@ export function StickyEditor({ sticky, onSave, onDelete }: Props) {
                 title: title.trim(),
                 user_text: body,
                 color,
+                categories,
             });
         } catch (err) {
             setError(parseCommandError(err).message);
@@ -101,6 +104,20 @@ export function StickyEditor({ sticky, onSave, onDelete }: Props) {
             busyRef.current = false;
             setBusy(false);
         }
+    }
+
+    function toggleCategory(category: StickyCategory) {
+        setCategories((previous) => {
+            if (previous.includes(category)) {
+                return previous.filter((item) => item !== category);
+            }
+
+            if (previous.length >= MAX_STICKY_CATEGORIES) {
+                return previous;
+            }
+
+            return [...previous, category];
+        });
     }
 
     return createPortal(
@@ -224,6 +241,45 @@ export function StickyEditor({ sticky, onSave, onDelete }: Props) {
                         </label>
                     ))}
                 </div>
+            </fieldset>
+
+            <fieldset
+                className="sticky-categories"
+                disabled={busy}
+                aria-describedby="sticky-categories-help"
+            >
+                <legend>Categories</legend>
+
+                <p id="sticky-categories-help" className="sticky-category-help">
+                    Choose up to {MAX_STICKY_CATEGORIES}. Categories are optional.
+                </p>
+
+                <div className="sticky-category-options">
+                    {STICKY_CATEGORIES.map((option) => {
+                        const checked = categories.includes(option.id);
+                        const atLimit =
+                            categories.length >= MAX_STICKY_CATEGORIES;
+
+                        return (
+                            <label
+                                key={option.id}
+                                className="sticky-category-option"
+                            >
+                                <input
+                                    type="checkbox"
+                                    checked={checked}
+                                    disabled={!checked && atLimit}
+                                    onChange={() => toggleCategory(option.id)}
+                                />
+                                <span>{option.label}</span>
+                            </label>
+                        );
+                    })}
+                </div>
+
+                <p className="sticky-category-help" role="status">
+                    {categories.length} of {MAX_STICKY_CATEGORIES} selected
+                </p>
             </fieldset>
 
             <p id="sticky-editor-help" className="sticky-help">
