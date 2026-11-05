@@ -19,6 +19,7 @@ import {
 } from "../../services/reminders";
 
 import "./settings.css";
+import { PersonalDictionarySettings } from "./PersonalDictionarySettings";
 import {
     proficiency,
     type ProficiencyLevel,
@@ -451,7 +452,7 @@ function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
     return (
         <SettingsModal title="Your profile" dirty={dirty} busy={busy} onClose={onClose}>
             <form className="settings-form" onSubmit={save}>
-                <fieldset disabled={busy}>
+            <fieldset disabled={busy}>
                     <legend className="settings-sr-only">
                         Profile fields
                     </legend>
@@ -467,39 +468,39 @@ function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
                             <button type="button" disabled={!avatar} onClick={() => {
                                 setAvatar(null);
                                 setSaved(false);
-                                }}>
+                            }}>
                                 Use default picture
                             </button>
                         </div>
                     </div>
 
                     <input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" hidden
-                        onChange={(event) => {
-                            const file = event.currentTarget.files?.[0];
-                            event.currentTarget.value = "";
+                           onChange={(event) => {
+                               const file = event.currentTarget.files?.[0];
+                               event.currentTarget.value = "";
 
-                            if (file) {
-                                void chooseAvatar(file);
-                            }
-                        }}/>
+                               if (file) {
+                                   void chooseAvatar(file);
+                               }
+                           }}/>
 
                     <div className="settings-fields">
                         <label htmlFor="profile-name">Name</label>
                         <input id="profile-name" autoFocus value={name} maxLength={80} required autoComplete="given-name"
-                            onChange={(event) => {
-                                setName(event.currentTarget.value);
-                                setSaved(false);
-                            }}
+                               onChange={(event) => {
+                                   setName(event.currentTarget.value);
+                                   setSaved(false);
+                               }}
                         />
 
                         <label htmlFor="profile-pronouns">
                             Pronouns
                         </label>
                         <select id="profile-pronouns" value={pronouns} required
-                            onChange={(event) => {
-                                setPronouns(event.currentTarget.value);
-                                setSaved(false);
-                            }}
+                                onChange={(event) => {
+                                    setPronouns(event.currentTarget.value);
+                                    setSaved(false);
+                                }}
                         >
                             <option value="" disabled>
                                 Select pronouns
@@ -542,15 +543,142 @@ interface FullSettingsProps extends EditorProps {
     onGoalsSaved: (settings: GoalSettings) => void;
 }
 
+const SETTINGS_NAVIGATION = [
+    ...SETTINGS_SECTIONS.map(({ id, label }) => ({ id, label })),
+    { id: "personal-dictionary", label: "Personal dictionary" },
+    { id: "reset", label: "Reset application" },
+];
+
 function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }: FullSettingsProps ) {
+    const [dictionaryOpen, setDictionaryOpen] = useState(false);
+    const [dictionaryBusy, setDictionaryBusy] = useState(false);
+    const [dictionaryDirty, setDictionaryDirty] = useState(false);
+    const dictionaryButton = useRef<HTMLButtonElement>(null);
     const busyRef = useRef(false);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [saved, setSaved] = useState(false);
     const [activeSection, setActiveSection] = useState(SETTINGS_SECTIONS[0]?.id ?? "");
+    const settingsContentRef = useRef<HTMLFormElement>(null);
+
+    function scrollToSection(sectionId: string) {
+        const container = settingsContentRef.current;
+        const section = container?.querySelector<HTMLElement>(
+            `#settings-section-${sectionId}`,
+        );
+
+        if (!container || !section) return;
+
+        const containerTop =
+            container.getBoundingClientRect().top + container.clientTop;
+
+        const top =
+            container.scrollTop
+            + section.getBoundingClientRect().top
+            - containerTop
+            - 16;
+
+        container.scrollTo({
+            top: Math.max(0, top),
+            behavior: window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches
+                ? "auto"
+                : "smooth",
+        });
+    }
+
+    useEffect(() => {
+        if (dictionaryOpen) return;
+
+        const container = settingsContentRef.current;
+        if (!container) return;
+
+        const sections = SETTINGS_NAVIGATION.flatMap(({ id }) => {
+            const element = container.querySelector<HTMLElement>(
+                `#settings-section-${id}`,
+            );
+
+            return element ? [{ id, element }] : [];
+        });
+
+        let frame: number | null = null;
+
+        function updateActiveSection() {
+            frame = null;
+
+            if (!container || container.clientHeight === 0) return;
+
+            // Activate a section as its heading reaches the top of the panel
+            const activationLine =
+                container.getBoundingClientRect().top
+                + container.clientTop
+                + 32;
+
+            let current = sections[0]?.id;
+
+            for (const section of sections) {
+                if (
+                    section.element.getBoundingClientRect().top
+                    <= activationLine
+                ) {
+                    current = section.id;
+                }
+            }
+
+            // Short final sections may never reach the activation line
+            const canScroll =
+                container.scrollHeight > container.clientHeight + 2;
+
+            const atBottom =
+                container.scrollTop + container.clientHeight
+                >= container.scrollHeight - 2;
+
+            if (canScroll && atBottom) {
+                current = sections[sections.length - 1]?.id;
+            }
+
+            if (current) {
+                setActiveSection(current);
+            }
+        }
+
+        function scheduleUpdate() {
+            if (frame !== null) return;
+            frame = requestAnimationFrame(updateActiveSection);
+        }
+
+        container.addEventListener("scroll", scheduleUpdate, {
+            passive: true,
+        });
+
+        // Account for resizing and settings that finish loading asynchronously
+        const observer = new ResizeObserver(scheduleUpdate);
+        observer.observe(container);
+
+        for (const section of sections) {
+            observer.observe(section.element);
+        }
+
+        scheduleUpdate();
+
+        return () => {
+            container.removeEventListener("scroll", scheduleUpdate);
+            observer.disconnect();
+
+            if (frame !== null) {
+                cancelAnimationFrame(frame);
+            }
+        };
+    }, [dictionaryOpen]);
+
     useEffect(() => {
         function selectApiSettings() {
-            setActiveSection("onboarding");
+            setDictionaryOpen(false);
+
+            requestAnimationFrame(() => {
+                scrollToSection("onboarding");
+            });
         }
 
         window.addEventListener(
@@ -797,31 +925,38 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     }
 
     return (
-        <SettingsModal title="Settings" wide dirty={dirty} busy={busy} onClose={onClose}>
-            <div className="settings-layout">
-                <nav className="settings-navigation" aria-label="Settings sections">
-                    {SETTINGS_SECTIONS.map((section) => (
-                        <button key={section.id} type="button" aria-current={
+        <SettingsModal title={dictionaryOpen ? "Personal dictionary" : "Settings"} wide
+                       dirty={dirty || dictionaryDirty} busy={busy || dictionaryBusy} onClose={onClose}>
+            <PersonalDictionarySettings
+                key={user.id} userId={user.id} active={dictionaryOpen}
+                onBusyChange={setDictionaryBusy} onDirtyChange={setDictionaryDirty}
+                onBack={() => {
+                    setDictionaryOpen(false);
+                    requestAnimationFrame(() => dictionaryButton.current?.focus());
+                }}
+            />
+            <div className="settings-layout" style={dictionaryOpen ? { display: "none" } : undefined}>
+                <nav
+                    className="settings-navigation"
+                    aria-label="Settings sections">
+                    {SETTINGS_NAVIGATION.map((section) => (
+                        <button
+                            key={section.id}
+                            type="button"
+                            aria-controls={`settings-section-${section.id}`}
+                            aria-current={
                                 activeSection === section.id
                                     ? "location"
                                     : undefined
                             }
-                            onClick={() => {
-                                setActiveSection(section.id);
-
-                                document.getElementById(`settings-section-${section.id}`,)
-                                    ?.scrollIntoView({
-                                        block: "start",
-                                        behavior: "smooth",
-                                    });
-                            }}>
+                            onClick={() => scrollToSection(section.id)}>
                             {section.label}
                         </button>
                     ))}
                 </nav>
 
-                <form className="settings-content" onSubmit={save}>
-                    <fieldset disabled={busy}>
+                <form ref={settingsContentRef} className="settings-content" onSubmit={save}>
+                <fieldset disabled={busy}>
                         <legend className="settings-sr-only">
                             Application settings
                         </legend>
@@ -851,6 +986,27 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                             ),
                         )}
 
+                        <section
+                            id="settings-section-personal-dictionary"
+                            className="settings-section"
+                            aria-labelledby="settings-section-title-personal-dictionary">
+                            <h3 id="settings-section-title-personal-dictionary">
+                                Personal dictionary
+                            </h3>
+
+                            <p className="settings-help">
+                                Manage words you want the spellchecker to recognize.
+                            </p>
+
+                            <button
+                                ref={dictionaryButton}
+                                type="button"
+                                disabled={busy}
+                                onClick={() => setDictionaryOpen(true)}>
+                                Open personal dictionary
+                            </button>
+                        </section>
+
                         {dirty && (
                             <div className="settings-save-bar">
                                 <span>You have unsaved changes.</span>
@@ -861,7 +1017,16 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                         )}
                     </fieldset>
 
-                    <ResetApplicationButton />
+                    <section
+                        id="settings-section-reset"
+                        className="settings-section"
+                        aria-labelledby="settings-section-title-reset">
+                        <h3 id="settings-section-title-reset">
+                            Reset application
+                        </h3>
+
+                        <ResetApplicationButton />
+                    </section>
 
                     {remindersLoadError && (
                         <div className="settings-error">

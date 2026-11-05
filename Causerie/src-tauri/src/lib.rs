@@ -24,6 +24,7 @@ mod proficiency;
 mod turn_cancellations;
 mod app_error;
 mod spelling;
+mod personal_dictionary;
 
 use app_error::CommandError;
 
@@ -98,6 +99,11 @@ pub fn run() {
         description: "sticky_categories",
         sql: include_str!("../migrations/0013_sticky_categories.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 14,
+        description: "personal_dictionary",
+        sql: include_str!("../migrations/0014_personal_dictionary.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
@@ -168,6 +174,9 @@ pub fn run() {
             turn_cancellations::cancel_message,
             turn_cancellations::discard_cancelled_turn,
             spelling::check_spelling,
+            personal_dictionary::list_personal_words,
+            personal_dictionary::add_personal_word,
+            personal_dictionary::remove_personal_word,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

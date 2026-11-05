@@ -1,4 +1,4 @@
-import { invoke } from "./recovery";
+import { callBackend } from "../data/dao/base";
 
 export type SpellingLocale = "es" | "es-PR" | "fr";
 
@@ -16,10 +16,12 @@ export interface SpellingResult {
 }
 
 export function checkSpelling(
+    userId: string,
     text: string,
     language: string,
 ): Promise<SpellingResult> {
-    return invoke<SpellingResult>("check_spelling", {
+    return callBackend<SpellingResult>("check_spelling", {
+        userId,
         text,
         language,
     });

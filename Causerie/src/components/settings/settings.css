@@ -341,3 +341,20 @@
         padding: 1rem;
     }
 }
+
+.personal-dictionary-settings {
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+    padding: 1rem;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+.personal-dictionary-settings form { display: grid; gap: 0.4rem; }
+.personal-dictionary-settings ul { list-style: none; margin: 0; padding: 0; }
+.personal-dictionary-settings li { padding: 0.4rem 0; }
+.personal-dictionary-row { display: flex; align-items: center; gap: 0.75rem; }
+.personal-dictionary-row > span:first-child { flex: 1; overflow-wrap: anywhere; }
+.personal-dictionary-row input { flex: 1; min-width: 0; }
+.personal-dictionary-settings :focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }

@@ -1,11 +1,13 @@
-use std::{ collections::HashMap, sync::OnceLock };
+use std::{ collections::{HashMap, HashSet}, sync::OnceLock };
 
 use regex::Regex;
 use serde::Serialize;
 use spellbook::Dictionary;
 use unicode_normalization::UnicodeNormalization;
 
-use crate::CommandError;
+use tauri::State;
+use tauri_plugin_sql::DbInstances;
+use crate::{database, personal_dictionary, CommandError};
 
 // TODO: FIX TEXT LENGTH TO GLOBAL VARIABLE
 const MAX_TEXT_LENGTH: usize = 1000;
@@ -112,7 +114,7 @@ fn suggestions(dictionary: &Dictionary, word: &str) -> Vec<String> {
     output
 }
 
-fn check_text( text: String, locale: &str ) -> Result<SpellingResult, CommandError> {
+fn check_text( text: String, locale: &str, personal: &HashSet<String> ) -> Result<SpellingResult, CommandError> {
     let primary = dictionary(locale)?;
 
     // Preserve acceptance of valid Spanish from other regions
@@ -128,6 +130,9 @@ fn check_text( text: String, locale: &str ) -> Result<SpellingResult, CommandErr
 
     for token in word_pattern().find_iter(&text) {
         let lookup = normalize_word(token.as_str());
+        if personal.contains(&personal_dictionary::key(&lookup)) {
+            continue;
+        }
 
         let replacements = cache.entry(lookup.clone()).or_insert_with(|| {
             let recognized = recognizes(primary, &lookup)
@@ -175,14 +180,28 @@ fn check_text( text: String, locale: &str ) -> Result<SpellingResult, CommandErr
 }
 
 #[tauri::command]
-pub async fn check_spelling( text: String, language: String ) -> Result<SpellingResult, CommandError> {
+pub async fn check_spelling(
+    databases: State<'_, DbInstances>,
+    user_id: String,
+    text: String,
+    language: String,
+) -> Result<SpellingResult, CommandError> {
     if text.encode_utf16().count() > MAX_TEXT_LENGTH {
-        return Err(CommandError::app(format!("Spellchecking supports drafts up to :{MAX_TEXT_LENGTH} characters.")));
+        return Err(CommandError::app(format!(
+            "Spellchecking supports drafts up to {MAX_TEXT_LENGTH} characters.",
+        )));
     }
+    let profile = crate::languages::profile(&language)?;
+    let locale = profile.locale;
+    let pool = database::pool(databases.inner()).await?;
+    personal_dictionary::require_active_user(&pool, &user_id).await?;
+    let keys: HashSet<String> = word_pattern().find_iter(&text)
+        .map(|token| personal_dictionary::key(token.as_str())).collect();
+    let personal = personal_dictionary::matching_keys(
+        &pool, &user_id, profile.code, &keys,
+    ).await?;
 
-    let locale = crate::languages::profile(&language)?.locale;
-
-    tauri::async_runtime::spawn_blocking(move || check_text(text, locale))
+    tauri::async_runtime::spawn_blocking(move || check_text(text, locale, &personal))
         .await
         .map_err(|_| CommandError::app("Spellchecking could not finish."))?
 }
@@ -190,6 +209,16 @@ pub async fn check_spelling( text: String, language: String ) -> Result<Spelling
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn personal_words_suppress_every_case_variant_but_not_other_errors() {
+        let personal = HashSet::from([personal_dictionary::key("qzxqzxqzx")]);
+        let result = check_text(
+            "qzxqzxqzx QZXQZXQZX qzxqzxother".to_owned(), "es-PR", &personal,
+        ).unwrap();
+        assert_eq!(result.issues.len(), 1);
+        assert_eq!(result.issues[0].word, "qzxqzxother");
+    }
 
     #[test]
     fn all_bundled_dictionaries_load() {
@@ -203,7 +232,7 @@ mod tests {
     #[test]
     fn results_preserve_the_selected_locale() {
         for locale in ["es", "es-PR", "fr"] {
-            let result = check_text(String::new(), locale).unwrap();
+            let result = check_text(String::new(), locale, &HashSet::new()).unwrap();
             assert_eq!(result.locale, locale);
         }
     }
@@ -211,7 +240,7 @@ mod tests {
     #[test]
     fn offsets_match_javascript_with_emoji_and_combining_accents() {
         let text = "🙂 e\u{301}cole qzxqzxqzx";
-        let result = check_text(text.to_owned(), "fr").unwrap();
+        let result = check_text(text.to_owned(), "fr", &HashSet::new()).unwrap();
 
         assert!(!result.issues.iter().any(|issue| {
             issue.word == "e\u{301}cole"
@@ -235,6 +264,7 @@ mod tests {
         let result = check_text(
             "qzxqzxqzx qzxqzxqzx".to_owned(),
             "es-PR",
+            &HashSet::new(),
         )
             .unwrap();
 

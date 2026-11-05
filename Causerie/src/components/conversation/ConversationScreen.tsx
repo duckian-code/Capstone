@@ -168,6 +168,7 @@ function ConversationSession({ userId, context }: Props) {
             </div>
 
             <ConversationWorkspace
+                userId={userId}
                 threads={conversation.threads}
                 activeThread={conversation.activeThread}
                 context={context}

@@ -1,8 +1,12 @@
 import { useId, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
 import { useStoredText } from "../../hooks/useStoredText";
+import { SpellingTextarea } from "./SpellingTextarea";
+import { useInlineSpelling } from "./useInlineSpelling";
+import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types";
 
 interface Props {
+    userId: string;
     language: string;
     disabled: boolean;
     canCancel: boolean;
@@ -15,7 +19,7 @@ interface Props {
 // max input length.
 const MAX_LENGTH = 1000;
 
-export function MessageComposer({ language, disabled, canCancel, cancelling, onSend, onCancel, draftKey }: Props) {
+export function MessageComposer({ userId, language, disabled, canCancel, cancelling, onSend, onCancel, draftKey }: Props) {
     const [draft, setDraft] = useStoredText(draftKey);
     const [restoring, setRestoring] = useState(false);
 
@@ -23,11 +27,18 @@ export function MessageComposer({ language, disabled, canCancel, cancelling, onS
     const cancelLock = useRef(false);
     const id = useId();
 
+    const spelling = useInlineSpelling({
+        userId, language, text: draft, onChange: setDraft, maxLength: MAX_LENGTH,
+    });
     const busy = canCancel || cancelling || restoring;
     const canSend =
         !disabled &&
-        !busy &&
+        !busy && !spelling.saving &&
         draft.trim().length > 0;
+
+    const languageLabel = LANGUAGE_OPTIONS.find(
+        (option) => option.value === language || option.locale === language
+    )?.label ?? language;
 
     function submit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -35,7 +46,7 @@ export function MessageComposer({ language, disabled, canCancel, cancelling, onS
         if (!canSend) return;
 
         // The controller trims the sent message but retains this exact draft
-        if (onSend(draft)) setDraft("");
+        if (onSend(draft)) spelling.change("");
     }
 
     async function cancel() {
@@ -48,7 +59,7 @@ export function MessageComposer({ language, disabled, canCancel, cancelling, onS
             const restored = await onCancel();
 
             if (restored !== null) {
-                setDraft(restored);
+                spelling.change(restored);
 
                 requestAnimationFrame(() => {
                     const textarea = textareaRef.current;
@@ -82,19 +93,24 @@ export function MessageComposer({ language, disabled, canCancel, cancelling, onS
 
     return (
         <form className="cw-composer" onSubmit={submit}>
-            <label htmlFor={id}>Write in {language}</label>
+            <label htmlFor={id}>Write in {languageLabel}</label>
 
-            <textarea
-                ref={textareaRef}
+            <SpellingTextarea
+                textareaRef={textareaRef}
                 id={id}
                 value={draft}
-                placeholder="What would you like to say?"
-                aria-describedby={`${id}-help ${id}-count`}
-                onChange={(event) => setDraft(event.target.value)}
+                describedBy={`${id}-help ${id}-count ${id}-spelling`}
+                onChange={spelling.change}
                 onKeyDown={handleKeyDown}
-                readOnly={busy}
+                readOnly={busy || spelling.saving}
+                saving={spelling.saving}
                 maxLength={MAX_LENGTH}
+                issues={spelling.issues}
+                onReplace={spelling.replace}
+                onAdd={spelling.add}
             />
+            <p id={`${id}-spelling`} className="spelling-status" role="status">{spelling.status}</p>
+            {spelling.error && <p className="spelling-error" role="alert">{spelling.error}</p>}
 
             <div className="cw-composer-footer">
                 <small id={`${id}-help`}>
@@ -106,6 +122,14 @@ export function MessageComposer({ language, disabled, canCancel, cancelling, onS
                 <small id={`${id}-count`}>
                     {draft.length}/{MAX_LENGTH}
                 </small>
+
+                <button
+                    type="button"
+                    disabled={disabled || busy || spelling.saving || spelling.checking || !draft.trim()}
+                    onClick={() => void spelling.check()}
+                >
+                    {spelling.checking ? "Checking…" : "Check spelling"}
+                </button>
 
                 {busy ? (
                     <button

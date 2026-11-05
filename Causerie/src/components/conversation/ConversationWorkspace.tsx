@@ -28,6 +28,7 @@ export type MobileView =
     | "feedback";
 
 interface Props {
+    userId: string;
     threads: ConversationSummary[];
     activeThread: ConversationSummary;
     context: LearningContext;
@@ -249,6 +250,7 @@ export function ConversationWorkspace(props: Props) {
                 </MascotStage>
 
                 <MessageComposer
+                    userId={props.userId}
                     key={props.activeThread.id}
                     language={props.context.language}
                     disabled={props.sendDisabled}
