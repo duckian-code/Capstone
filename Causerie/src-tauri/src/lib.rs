@@ -23,6 +23,8 @@ mod reminders;
 mod proficiency;
 mod turn_cancellations;
 mod app_error;
+mod spelling;
+
 use app_error::CommandError;
 
 pub use reminders::handle_cli as handle_reminder_cli;
@@ -165,6 +167,7 @@ pub fn run() {
             feedback::mark_feedback_read,
             turn_cancellations::cancel_message,
             turn_cancellations::discard_cancelled_turn,
+            spelling::check_spelling,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

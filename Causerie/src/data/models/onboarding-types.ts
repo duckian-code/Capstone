@@ -14,8 +14,25 @@ export const PRONOUN_OPTIONS = [
 // TODO: Add dialectical support (France, Canada, etc.)
 // TODO: Add support for other native languages?
 export const LANGUAGE_OPTIONS = [
-    { value: "French", label: "French", code: "fr" },
-    { value: "Spanish", label: "Spanish (Caribbean)", code: "es" },
+    {
+        value: "French",
+        label: "French",
+        code: "fr",
+        locale: "fr",
+    },
+    {
+        value: "Spanish (General)",
+        label: "Spanish (General)",
+        code: "es",
+        locale: "es",
+    },
+    {
+        // Preserve the existing stored Caribbean selection.
+        value: "Spanish",
+        label: "Spanish (Puerto Rico)",
+        code: "es",
+        locale: "es-PR",
+    },
 ] as const;
 
 export interface OnboardingInput {

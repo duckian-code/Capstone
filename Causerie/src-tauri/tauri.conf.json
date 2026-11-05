@@ -42,7 +42,13 @@
     "resources": [
       "resources/goals.json",
       "prompts/mascot-system-prompt.txt",
-      "prompts/teacher-system-prompt.txt"
+      "prompts/teacher-system-prompt.txt",
+      "resources/spelling/es/license",
+      "resources/spelling/es/readme.md",
+      "resources/spelling/es-PR/license",
+      "resources/spelling/es-PR/readme.md",
+      "resources/spelling/fr/license",
+      "resources/spelling/fr/readme.md"
     ]
   },
   "plugins": {

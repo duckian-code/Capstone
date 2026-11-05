@@ -3,6 +3,7 @@ use crate::CommandError;
 pub(crate) struct LanguageProfile {
     pub name: &'static str,
     pub code: &'static str,
+    pub locale: &'static str,
     pub region: &'static str,
     pub rules: &'static str,
 }
@@ -12,38 +13,54 @@ pub(crate) fn profile(language: &str) -> Result<LanguageProfile, CommandError> {
         "french" | "fr" | "français" => Ok(LanguageProfile {
             name: "French",
             code: "fr",
+            locale: "fr",
             region: "France",
             rules: "Use French as used in France as the regional reference.",
         }),
 
-        "spanish" | "es" | "español" | "spanish (caribbean)" => {
+        "es" | "español" | "spanish (general)" | "general spanish" => {
             Ok(LanguageProfile {
                 name: "Spanish",
                 code: "es",
-                region: "the Spanish-speaking Caribbean",
+                locale: "es",
+                region: "the Spanish-speaking world",
                 rules: r#"
-DIALECT REFERENCE: Caribbean Spanish.
+Use broadly understandable standard written Spanish.
+Do not assign the learner a specific national identity or dialect.
+When regional usage matters, explain the variation.
+Accept valid Spanish from different regions.
+"#,
+            })
+        }
 
-For Spanish you produce, use approachable, natural Caribbean Spanish.
-This is a broad regional default, not a single national dialect.
-Do not silently assign the learner a Cuban, Dominican, Puerto Rican,
-or other national identity.
+        // The existing app stores "Spanish" for its Caribbean option.
+        // Preserve that stored value while replacing the option with Puerto Rico.
+        "spanish"
+        | "spanish (caribbean)"
+        | "es-pr"
+        | "spanish (puerto rico)"
+        | "español (puerto rico)" => {
+            Ok(LanguageProfile {
+                name: "Spanish",
+                code: "es",
+                locale: "es-PR",
+                region: "Puerto Rico",
+                rules: r#"
+DIALECT REFERENCE: Puerto Rican Spanish.
 
-Prefer broadly understandable vocabulary and standard written spelling.
-Use tú for ordinary informal singular address and ustedes for plural
-address. Use usted when the context calls for respectful/formal address.
+Use approachable, natural Puerto Rican Spanish.
+Prefer standard written spelling and vocabulary appropriate to the context.
+Use tú for ordinary informal singular address and ustedes for plural address.
+Use usted when the context calls for respectful or formal address.
 Do not default to vosotros or Peninsular Spanish expressions.
 
-Avoid exaggerated slang, caricatures, and phonetic spellings intended
-to imitate an accent. Do not mix country-specific slang indiscriminately.
-
-When explaining regional usage, identify the relevant variety if known.
-Do not imply that every Caribbean variety uses the same expression.
-Acknowledge uncertainty rather than inventing a regional explanation.
+Avoid exaggerated slang or phonetic spellings intended to imitate an accent.
+Do not assume that the learner is Puerto Rican.
+Explain regional expressions when helpful.
 
 When reviewing learner text, accept valid Spanish from other regions.
-Do not mark a valid regional variant as a grammatical error merely
-because it differs from this configured reference.
+Do not mark a valid regional variant as an error solely because it differs
+from the configured reference.
 "#,
             })
         }
@@ -57,18 +74,36 @@ mod tests {
     use super::*;
 
     #[test]
-    fn spanish_uses_caribbean_reference() {
-        let spanish = profile("Spanish").unwrap();
+    fn general_spanish_has_its_own_locale() {
+        let language = profile("es").unwrap();
 
-        assert_eq!(spanish.code, "es");
-        assert_eq!(spanish.region, "the Spanish-speaking Caribbean");
+        assert_eq!(language.code, "es");
+        assert_eq!(language.locale, "es");
     }
 
     #[test]
-    fn french_keeps_its_existing_reference() {
-        let french = profile("French").unwrap();
+    fn puerto_rico_retains_the_spanish_base_language() {
+        let language = profile("es-PR").unwrap();
 
-        assert_eq!(french.code, "fr");
-        assert_eq!(french.region, "France");
+        assert_eq!(language.code, "es");
+        assert_eq!(language.locale, "es-PR");
+        assert_eq!(language.region, "Puerto Rico");
+    }
+
+    #[test]
+    fn existing_caribbean_selection_becomes_puerto_rico() {
+        assert_eq!(profile("Spanish").unwrap().locale, "es-PR");
+        assert_eq!(
+            profile("Spanish (Caribbean)").unwrap().locale,
+            "es-PR",
+        );
+    }
+
+    #[test]
+    fn french_is_preserved() {
+        let language = profile("French").unwrap();
+
+        assert_eq!(language.code, "fr");
+        assert_eq!(language.locale, "fr");
     }
 }
