@@ -4,6 +4,7 @@ import { useStoredText } from "../../hooks/useStoredText";
 import { SpellingTextarea } from "./SpellingTextarea";
 import { useInlineSpelling } from "./useInlineSpelling";
 import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types";
+import { EnglishDictionaryButton } from "../dictionary/EnglishDictionaryButton";
 
 interface Props {
     userId: string;
@@ -93,7 +94,14 @@ export function MessageComposer({ userId, language, disabled, canCancel, cancell
 
     return (
         <form className="cw-composer" onSubmit={submit}>
-            <label htmlFor={id}>Write in {languageLabel}</label>
+            <div className="cw-composer-heading">
+                <label htmlFor={id}>Write in {languageLabel}</label>
+                <EnglishDictionaryButton
+                    key={`${userId}:${language}`}
+                    language={language}
+                    label={languageLabel}
+                />
+            </div>
 
             <SpellingTextarea
                 textareaRef={textareaRef}

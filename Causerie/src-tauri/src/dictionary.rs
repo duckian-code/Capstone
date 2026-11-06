@@ -48,6 +48,118 @@ pub struct DictionaryResult {
     pub source_url: String,
 }
 
+#[derive(Serialize)]
+pub struct WordTranslation {
+    pub word: String,
+    pub sense: Option<String>,
+    pub part_of_speech: Option<String>,
+    pub tags: Vec<String>,
+}
+
+#[derive(Serialize)]
+pub struct EnglishLookup {
+    pub word: String,
+    pub target_locale: String,
+    pub translations: Vec<WordTranslation>,
+    pub source_url: String,
+}
+
+fn parse_translations( body: &Value, target: &str ) -> Result<Vec<WordTranslation>, CommandError> {
+    let entries = body["entries"].as_array().ok_or_else(|| {
+        CommandError::app("The dictionary returned an unexpected response.")
+    })?;
+
+    let mut translations = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+
+    for entry in entries {
+        // Search English source entries.
+        if entry["lang_code"].as_str() != Some("en") {
+            continue;
+        }
+
+        for item in entry["translations"].as_array().into_iter().flatten() {
+            // Translation records use `code` for the destination language
+            if item["code"].as_str() != Some(target) {
+                continue;
+            }
+
+            let Some(word) = text(&item["word"]) else {
+                continue;
+            };
+
+            let sense = text(&item["sense"]);
+            let part_of_speech = text(&entry["pos"]);
+            let tags: Vec<String> = item["tags"]
+                .as_array()
+                .into_iter()
+                .flatten()
+                .filter_map(text)
+                .collect();
+
+            // Preserve separate meanings and regional/grammatical tags
+            let key = (
+                word.clone(),
+                sense.clone(),
+                part_of_speech.clone(),
+                tags.clone(),
+            );
+
+            if seen.insert(key) {
+                translations.push(WordTranslation {
+                    word,
+                    sense,
+                    part_of_speech,
+                    tags,
+                });
+            }
+        }
+    }
+
+    Ok(translations)
+}
+
+#[tauri::command]
+pub async fn lookup_english_word( dictionary: State<'_, DictionaryClient>, word: String, language: String ) -> Result<EnglishLookup, CommandError> {
+    let profile = crate::languages::profile(&language)?;
+    let word = validate_word(&word)?;
+
+    let mut lookup_word = word
+        .replace('’', "'")
+        .replace(['‐', '‑'], "-");
+
+    // `lang=en` selects English source entries
+    let body = fetch_entry(&dictionary.client, &lookup_word, "en").await?;
+    let mut translations = parse_translations(&body, profile.code)?;
+
+    let lowercase = lookup_word.to_lowercase();
+
+    if translations.is_empty() && lowercase != lookup_word {
+        lookup_word = lowercase;
+
+        let body = fetch_entry(&dictionary.client, &lookup_word, "en").await?;
+        translations = parse_translations(&body, profile.code)?;
+    }
+
+    let mut source_url = Url::parse("https://en.wiktionary.org/wiki/")
+        .map_err(|_| CommandError::app("Invalid dictionary configuration."))?;
+
+    source_url
+        .path_segments_mut()
+        .map_err(|_| CommandError::app("Invalid dictionary configuration."))?
+        .pop_if_empty()
+        .push(&lookup_word);
+
+    source_url.set_fragment(Some("English"));
+
+    Ok(EnglishLookup {
+        word,
+        target_locale: profile.locale.to_owned(),
+        translations,
+        source_url: source_url.to_string(),
+    })
+}
+
 fn word_pattern() -> &'static Regex {
     static PATTERN: OnceLock<Regex> = OnceLock::new();
 
@@ -61,9 +173,7 @@ fn validate_word(raw: &str) -> Result<String, CommandError> {
     let word: String = raw.trim().nfc().collect();
 
     if word.chars().count() > 100 || !word_pattern().is_match(&word) {
-        return Err(CommandError::app(
-            "Select one word containing letters, with optional apostrophes or hyphens.",
-        ));
+        return Err(CommandError::app("Enter or select one word containing letters, with optional apostrophes or hyphens." ));
     }
 
     Ok(word)
@@ -154,7 +264,7 @@ fn request_error(error: reqwest::Error) -> CommandError {
     }
 }
 
-async fn fetch_meanings(client: &Client, word: &str, language_code: &str) -> Result<Vec<DictionaryMeaning>, CommandError> {
+async fn fetch_entry(client: &Client, word: &str, language_code: &str) -> Result<Value, CommandError> {
     let mut url = Url::parse("https://api.wiktapi.dev/v1/en/word/")
         .map_err(|_| CommandError::app("Invalid dictionary configuration."))?;
 
@@ -172,7 +282,9 @@ async fn fetch_meanings(client: &Client, word: &str, language_code: &str) -> Res
         .map_err(request_error)?;
 
     match response.status() {
-        StatusCode::NOT_FOUND => return Ok(Vec::new()),
+        StatusCode::NOT_FOUND => {
+            return Ok(serde_json::json!({ "entries": [] }));
+        }
         StatusCode::TOO_MANY_REQUESTS => {
             return Err(CommandError::app("The dictionary is busy. Wait a moment before trying again."));
         }
@@ -195,6 +307,11 @@ async fn fetch_meanings(client: &Client, word: &str, language_code: &str) -> Res
 
     let body: Value = serde_json::from_slice(&bytes).map_err(|_| { CommandError::app("The dictionary returned an unreadable response.")})?;
 
+    Ok(body)
+}
+
+async fn fetch_meanings( client: &Client, word: &str, language_code: &str ) -> Result<Vec<DictionaryMeaning>, CommandError> {
+    let body = fetch_entry(client, word, language_code).await?;
     parse_meanings(&body, language_code)
 }
 

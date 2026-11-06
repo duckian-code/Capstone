@@ -177,6 +177,7 @@ pub fn run() {
             personal_dictionary::list_personal_words,
             personal_dictionary::add_personal_word,
             personal_dictionary::remove_personal_word,
+            dictionary::lookup_english_word,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.

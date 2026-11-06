@@ -1,0 +1,108 @@
+.cw-composer-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.cw-composer-heading > button {
+    flex-shrink: 0;
+}
+
+.english-dictionary-panel {
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    z-index: 2000;
+    box-sizing: border-box;
+    width: min(420px, calc(100vw - 16px));
+    max-height: calc(100dvh - 16px);
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    box-shadow: 0 8px 32px var(--color-shadow);
+}
+
+.english-dictionary-panel header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.english-dictionary-panel h2 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.english-dictionary-panel form {
+    margin-top: 1rem;
+}
+
+.english-dictionary-search {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.english-dictionary-search input {
+    flex: 1;
+    min-width: 0;
+}
+
+.english-dictionary-panel input,
+.english-dictionary-panel button {
+    font: inherit;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: var(--color-surface-raised);
+    color: inherit;
+}
+
+.english-dictionary-panel button {
+    cursor: pointer;
+}
+
+.english-dictionary-panel button:hover {
+    background: var(--color-hover);
+}
+
+.english-dictionary-panel button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.english-dictionary-panel :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+}
+
+.english-dictionary-panel ol {
+    padding-left: 1.3rem;
+}
+
+.english-dictionary-panel li {
+    margin: 1rem 0;
+    overflow-wrap: anywhere;
+}
+
+.english-dictionary-panel li p {
+    margin: 0.35rem 0;
+}
+
+.english-dictionary-note {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.english-dictionary-panel footer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+}
