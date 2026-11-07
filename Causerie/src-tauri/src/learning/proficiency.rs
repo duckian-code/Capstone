@@ -2,7 +2,7 @@ use sqlx::SqlitePool;
 use tauri::State;
 use tauri_plugin_sql::DbInstances;
 
-use crate::{database, CommandError};
+use crate::{storage::database, CommandError};
 
 const LEVELS: [&str; 6] = ["A1", "A2", "B1", "B2", "C1", "C2"];
 

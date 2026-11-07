@@ -11,11 +11,11 @@ use tauri_plugin_sql::DbInstances;
 use openai_rust_sdk::models::gpt5::ReasoningConfig;
 
 use crate::{
-    context::{ContextManager, TeacherContext},
-    corrections::SuggestedCorrection,
-    credentials,
-    database,
-    feedback_repository::{self, StoredFeedback},
+    chat::context::{ContextManager, TeacherContext},
+    learning::corrections::SuggestedCorrection,
+    account::credentials,
+    storage::database,
+    learning::feedback_repository::{self, StoredFeedback},
     CommandError,
 };
 

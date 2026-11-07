@@ -955,7 +955,12 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                     ))}
                 </nav>
 
-                <form ref={settingsContentRef} className="settings-content" onSubmit={save}>
+                <form
+                    id="application-settings-form"
+                    ref={settingsContentRef}
+                    className="settings-content"
+                    onSubmit={save}
+                >
                 <fieldset disabled={busy}>
                         <legend className="settings-sr-only">
                             Application settings
@@ -1006,15 +1011,6 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                                 Open personal dictionary
                             </button>
                         </section>
-
-                        {dirty && (
-                            <div className="settings-save-bar">
-                                <span>You have unsaved changes.</span>
-                                <button type="submit" disabled={remindersLoading || proficiencyLoading}>
-                                    {busy ? "Saving…" : "Save changes"}
-                                </button>
-                            </div>
-                        )}
                     </fieldset>
 
                     <section
@@ -1078,6 +1074,23 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                     )}
                 </form>
             </div>
+            {!dictionaryOpen && (dirty || busy) && (
+                <footer className="settings-save-footer">
+                    <div className="settings-save-bar">
+            <span role="status">
+                {busy ? "Saving your changes…" : "You have unsaved changes."}
+            </span>
+
+                        <button
+                            type="submit"
+                            form="application-settings-form"
+                            disabled={busy || remindersLoading || proficiencyLoading}
+                        >
+                            {busy ? "Saving…" : "Save changes"}
+                        </button>
+                    </div>
+                </footer>
+            )}
         </SettingsModal>
     );
 }

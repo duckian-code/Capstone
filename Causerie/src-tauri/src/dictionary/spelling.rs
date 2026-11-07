@@ -7,7 +7,7 @@ use unicode_normalization::UnicodeNormalization;
 
 use tauri::State;
 use tauri_plugin_sql::DbInstances;
-use crate::{database, personal_dictionary, CommandError};
+use crate::{storage::database, dictionary::personal_dictionary, CommandError};
 
 // TODO: FIX TEXT LENGTH TO GLOBAL VARIABLE
 const MAX_TEXT_LENGTH: usize = 1000;
@@ -38,24 +38,24 @@ fn dictionary(locale: &str) -> Result<&'static Dictionary, CommandError> {
     let loaded = match locale {
         "es" => SPANISH.get_or_init(|| {
             Dictionary::new(
-                include_str!("../resources/spelling/es/index.aff"),
-                include_str!("../resources/spelling/es/index.dic"),
+                include_str!("../../resources/spelling/es/index.aff"),
+                include_str!("../../resources/spelling/es/index.dic"),
             )
                 .map_err(|error| error.to_string())
         }),
 
         "es-PR" => PUERTO_RICAN.get_or_init(|| {
             Dictionary::new(
-                include_str!("../resources/spelling/es-PR/index.aff"),
-                include_str!("../resources/spelling/es-PR/index.dic"),
+                include_str!("../../resources/spelling/es-PR/index.aff"),
+                include_str!("../../resources/spelling/es-PR/index.dic"),
             )
                 .map_err(|error| error.to_string())
         }),
 
         "fr" => FRENCH.get_or_init(|| {
             Dictionary::new(
-                include_str!("../resources/spelling/fr/index.aff"),
-                include_str!("../resources/spelling/fr/index.dic"),
+                include_str!("../../resources/spelling/fr/index.aff"),
+                include_str!("../../resources/spelling/fr/index.dic"),
             )
                 .map_err(|error| error.to_string())
         }),

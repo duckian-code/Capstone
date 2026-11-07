@@ -1,3 +1,5 @@
+pub(crate) mod reminder_scheduler;
+
 use std::{
     fs::{File, OpenOptions},
     path::{Path, PathBuf},
@@ -14,7 +16,7 @@ use sqlx::{
 use tauri::State;
 use tauri_plugin_sql::DbInstances;
 
-use crate::{database, languages, reminder_scheduler, CommandError};
+use crate::{storage::database, languages, CommandError};
 
 const APP_ID: &str = "com.anabelle.causerie";
 

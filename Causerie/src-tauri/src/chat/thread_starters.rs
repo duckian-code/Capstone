@@ -11,10 +11,10 @@ use tauri_plugin_sql::DbInstances;
 use tokio::sync::Mutex;
 
 use crate::{
-    credentials,
-    database,
-    persistence::Thread,
-    thread_topics::TOPICS,
+    account::credentials,
+    storage::database,
+    storage::persistence::Thread,
+    chat::thread_topics::TOPICS,
     CommandError,
 };
 
@@ -179,8 +179,8 @@ pub async fn create_generated_thread(
     let client = OpenAIClient::new(api_key.to_string())
         .map_err(|_| CommandError::app("Unable to initialize API client."))?;
 
-    let level = crate::proficiency::load_for_user(&pool, &user_id).await?;
-    let proficiency_rules = crate::proficiency::instructions(&level)?;
+    let level = crate::learning::proficiency::load_for_user(&pool, &user_id).await?;
+    let proficiency_rules = crate::learning::proficiency::instructions(&level)?;
 
     let mut request = CreateResponseRequest::new_text("gpt-6-luna", input)
         .with_instructions(format!(

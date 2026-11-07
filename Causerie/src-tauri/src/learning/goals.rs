@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{SqliteConnection, SqlitePool};
 use tauri::{path::BaseDirectory, AppHandle, Manager, State};
 use tauri_plugin_sql::{DbInstances};
-use crate::database::pool as database_pool;
+use crate::storage::database::pool as database_pool;
 
 use crate::CommandError;
 

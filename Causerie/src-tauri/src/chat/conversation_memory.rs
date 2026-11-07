@@ -11,8 +11,8 @@ use sqlx::SqlitePool;
 use tokio::sync::Mutex;
 
 use crate::{
-    context::{ContextMessage, ConversationRole, ThreadContext},
-    database,
+    chat::context::{ContextMessage, ConversationRole, ThreadContext},
+    storage::database,
     CommandError,
 };
 

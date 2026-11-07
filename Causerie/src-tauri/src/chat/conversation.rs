@@ -8,10 +8,10 @@ use serde::Serialize;
 use tauri::ipc::Channel;
 
 use crate::{
-    context::ContextManager,
-    conversation_memory,
-    credentials,
-    database,
+    chat::context::ContextManager,
+    chat::conversation_memory,
+    account::credentials,
+    storage::database,
     CommandError,
 };
 
@@ -125,7 +125,7 @@ pub async fn send_message(
     user_message_id: String,
     on_event: Channel<StreamEvent>,
 ) -> Result<String, CommandError> {
-    crate::turn_cancellations::run(
+    crate::chat::turn_cancellations::run(
         &thread_id,
         &user_message_id,
         send_message_inner(

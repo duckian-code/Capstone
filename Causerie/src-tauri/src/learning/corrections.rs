@@ -3,8 +3,8 @@ use sqlx::SqliteConnection;
 use tauri::State;
 use tauri_plugin_sql::DbInstances;
 
-use crate::{database, CommandError};
-use crate::database::error as db_error;
+use crate::{storage::database, CommandError};
+use crate::storage::database::error as db_error;
 
 #[derive(Serialize, sqlx::FromRow)]
 pub struct MessageCorrection {

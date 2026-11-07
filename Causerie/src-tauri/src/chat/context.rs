@@ -1,6 +1,6 @@
 use sqlx::SqlitePool;
 use tauri::{path::BaseDirectory, AppHandle, Manager};
-use crate::goals::GoalDefinition;
+use crate::learning::goals::GoalDefinition;
 
 use crate::CommandError;
 
@@ -177,7 +177,7 @@ impl ContextManager {
         // Release the database transaction before starting the network request.
         transaction.commit().await.map_err(database_error)?;
 
-        let level = crate::proficiency::load_for_user(pool, &user_id).await?;
+        let level = crate::learning::proficiency::load_for_user(pool, &user_id).await?;
 
         let base_prompt = render_prompt(
             app,
@@ -190,7 +190,7 @@ impl ContextManager {
 
         let system_prompt = format!(
             "{base_prompt}\n\n{}",
-            crate::proficiency::instructions(&level)?,
+            crate::learning::proficiency::instructions(&level)?,
         );
 
         Ok(ThreadContext {
@@ -232,7 +232,7 @@ impl ContextManager {
             return Err(CommandError::app("An empty message cannot be reviewed."));
         }
 
-        let settings = crate::goals::load_for_user_in_transaction(&mut transaction, &user_id)
+        let settings = crate::learning::goals::load_for_user_in_transaction(&mut transaction, &user_id)
             .await?;
 
         let goals = settings

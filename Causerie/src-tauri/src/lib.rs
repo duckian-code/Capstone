@@ -2,29 +2,14 @@
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
 
-mod credentials;
-mod factory_reset;
-mod database;
-mod goals;
-mod context;
-mod corrections;
-mod conversation;
-mod feedback_repository;
-mod feedback;
-mod persistence;
-mod dictionary;
-mod conversation_memory;
-mod hints;
-mod thread_topics;
-mod thread_starters;
-mod languages;
-mod reminder_scheduler;
-mod reminders;
-mod proficiency;
-mod turn_cancellations;
+mod account;
 mod app_error;
-mod spelling;
-mod personal_dictionary;
+mod chat;
+mod dictionary;
+mod languages;
+mod learning;
+mod reminders;
+mod storage;
 
 use app_error::CommandError;
 
@@ -117,81 +102,81 @@ pub fn run() {
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_notification::init())
         .invoke_handler(tauri::generate_handler![
-            conversation::send_message,
-            credentials::save_openai_api_key,
-            credentials::has_openai_api_key,
-            factory_reset::reset_application,
-            goals::initialize_goal_catalog,
-            goals::get_goal_settings,
-            goals::save_goal_settings,
-            corrections::get_correction,
-            corrections::list_corrections,
-            corrections::create_correction,
-            corrections::delete_correction,
-            feedback::analyze_message,
-            persistence::initialize_database,
-            persistence::get_user,
-            persistence::list_users,
-            persistence::create_user,
-            persistence::update_user,
-            persistence::create_user_if_missing,
-            persistence::save_user_profile,
-            persistence::save_user_identity,
-            persistence::save_user_target_language,
-            persistence::delete_user,
-            persistence::get_user_settings,
-            persistence::save_user_settings,
-            persistence::get_thread,
-            persistence::list_threads,
-            persistence::create_thread,
-            persistence::rename_thread,
-            persistence::set_thread_archived,
-            persistence::delete_thread,
-            persistence::get_thread_history,
-            persistence::get_message,
-            persistence::list_messages,
-            persistence::append_message,
-            persistence::delete_message,
-            persistence::get_sticky,
-            persistence::list_stickies,
-            persistence::create_sticky,
-            persistence::save_sticky,
-            persistence::update_sticky_text,
-            persistence::delete_sticky,
-            persistence::get_app_state,
-            persistence::complete_onboarding,
-            dictionary::lookup_dictionary,
-            hints::list_message_hints,
-            hints::request_message_hint,
-            thread_topics::list_thread_topics,
-            thread_starters::create_generated_thread,
+            chat::conversation::send_message,
+            account::credentials::save_openai_api_key,
+            account::credentials::has_openai_api_key,
+            account::factory_reset::reset_application,
+            learning::goals::initialize_goal_catalog,
+            learning::goals::get_goal_settings,
+            learning::goals::save_goal_settings,
+            learning::corrections::get_correction,
+            learning::corrections::list_corrections,
+            learning::corrections::create_correction,
+            learning::corrections::delete_correction,
+            learning::feedback::analyze_message,
+            storage::persistence::initialize_database,
+            storage::persistence::get_user,
+            storage::persistence::list_users,
+            storage::persistence::create_user,
+            storage::persistence::update_user,
+            storage::persistence::create_user_if_missing,
+            storage::persistence::save_user_profile,
+            storage::persistence::save_user_identity,
+            storage::persistence::save_user_target_language,
+            storage::persistence::delete_user,
+            storage::persistence::get_user_settings,
+            storage::persistence::save_user_settings,
+            storage::persistence::get_thread,
+            storage::persistence::list_threads,
+            storage::persistence::create_thread,
+            storage::persistence::rename_thread,
+            storage::persistence::set_thread_archived,
+            storage::persistence::delete_thread,
+            storage::persistence::get_thread_history,
+            storage::persistence::get_message,
+            storage::persistence::list_messages,
+            storage::persistence::append_message,
+            storage::persistence::delete_message,
+            storage::persistence::get_sticky,
+            storage::persistence::list_stickies,
+            storage::persistence::create_sticky,
+            storage::persistence::save_sticky,
+            storage::persistence::update_sticky_text,
+            storage::persistence::delete_sticky,
+            storage::persistence::get_app_state,
+            storage::persistence::complete_onboarding,
+            dictionary::lookup::lookup_dictionary,
+            learning::hints::list_message_hints,
+            learning::hints::request_message_hint,
+            chat::thread_topics::list_thread_topics,
+            chat::thread_starters::create_generated_thread,
             reminders::get_practice_reminders,
             reminders::save_practice_reminders,
-            proficiency::get_proficiency,
-            proficiency::save_proficiency,
-            feedback::list_feedback_states,
-            feedback::mark_feedback_read,
-            turn_cancellations::cancel_message,
-            turn_cancellations::discard_cancelled_turn,
-            spelling::check_spelling,
-            personal_dictionary::list_personal_words,
-            personal_dictionary::add_personal_word,
-            personal_dictionary::remove_personal_word,
-            dictionary::lookup_english_word,
+            learning::proficiency::get_proficiency,
+            learning::proficiency::save_proficiency,
+            learning::feedback::list_feedback_states,
+            learning::feedback::mark_feedback_read,
+            chat::turn_cancellations::cancel_message,
+            chat::turn_cancellations::discard_cancelled_turn,
+            dictionary::spelling::check_spelling,
+            dictionary::personal_dictionary::list_personal_words,
+            dictionary::personal_dictionary::add_personal_word,
+            dictionary::personal_dictionary::remove_personal_word,
+            dictionary::lookup::lookup_english_word,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
-            factory_reset::finish_pending_reset(app.handle())
+            account::factory_reset::finish_pending_reset(app.handle())
                 .map_err(std::io::Error::other)?;
 
             let local_data_dir = app.path().app_local_data_dir()?;
             std::fs::create_dir_all(&local_data_dir)?;
 
-            app.manage(credentials::CredentialStore::new(
+            app.manage(account::credentials::CredentialStore::new(
                 local_data_dir,
             ));
 
-            app.manage(dictionary::DictionaryClient::new()
+            app.manage(dictionary::lookup::DictionaryClient::new()
                 .map_err(std::io::Error::other)?);
 
             // These registrations moved from the outer builder.

@@ -2,9 +2,9 @@ use serde::Serialize;
 use sqlx::{SqliteConnection, SqlitePool};
 
 use crate::{
-    context::TeacherContext,
-    corrections::{self, MessageCorrection, SuggestedCorrection},
-    database::error as db_error,
+    chat::context::TeacherContext,
+    learning::corrections::{self, MessageCorrection, SuggestedCorrection},
+    storage::database::error as db_error,
     CommandError,
 };
 

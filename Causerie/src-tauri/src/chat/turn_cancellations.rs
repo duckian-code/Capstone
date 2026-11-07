@@ -6,7 +6,7 @@ use std::{
 
 use futures::future::{AbortHandle, Abortable};
 
-use crate::{database, CommandError};
+use crate::{storage::database, CommandError};
 
 type TurnKey = (String, String);
 

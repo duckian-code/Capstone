@@ -7,8 +7,8 @@ use tauri::State;
 use tauri_plugin_sql::DbInstances;
 use unicode_normalization::UnicodeNormalization;
 
-use crate::{database, CommandError};
-use crate::database::error as db_error;
+use crate::{storage::database, CommandError};
+use crate::storage::database::error as db_error;
 
 const PAGE_SIZE: usize = 50;
 

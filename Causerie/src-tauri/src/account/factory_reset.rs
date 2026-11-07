@@ -65,7 +65,7 @@ pub fn finish_pending_reset(app: &AppHandle) -> Result<(), String> {
     }
 
     // Failure leaves the marker in place for the next launch.
-    crate::credentials::delete_unlock_keys_for_reset()?;
+    crate::account::credentials::delete_unlock_keys_for_reset()?;
 
     let paths = app.path();
 
@@ -104,7 +104,7 @@ pub async fn reset_application(app: AppHandle,
         return Err("Type RESET to confirm.".to_string());
     }
 
-    let pool = crate::database::pool(databases.inner())
+    let pool = crate::storage::database::pool(databases.inner())
         .await
         .map_err(|error| error.message)?;
 

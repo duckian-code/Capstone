@@ -10,7 +10,7 @@ use serde_json::json;
 use tauri::{AppHandle, State};
 use tauri_plugin_sql::DbInstances;
 
-use crate::{credentials, database, CommandError};
+use crate::{account::credentials, storage::database, CommandError};
 
 const INSTRUCTIONS: &str = r#"
 You are a language-learning teacher providing a small, useful hint.
