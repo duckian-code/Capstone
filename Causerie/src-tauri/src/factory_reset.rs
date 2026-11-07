@@ -144,5 +144,16 @@ pub async fn reset_application(app: AppHandle,
     }
 
     // built-in Tauri reset lifecycle https://docs.rs/tauri/latest/tauri/struct.AppHandle.html#method.restart
+    if tauri::is_dev() {
+        // The development frontend belongs to the Tauri CLI/Vite process
+        // Close without launching a new process against a stopped server
+        // The persisted reset marker completes cleanup on the next launch
+        app.exit(0);
+        return Ok(());
+    }
+
+    // Packaged builds load bundled frontend assets
+    // Startup completes the pending reset before initializing app storage
     app.restart();
+
 }

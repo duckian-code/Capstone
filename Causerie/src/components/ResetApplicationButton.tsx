@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { invoke } from "../services/recovery";
+const development = import.meta.env.DEV;
 
 export function ResetApplicationButton() {
     const dialogRef = useRef<HTMLDialogElement>(null);
@@ -23,7 +24,8 @@ export function ResetApplicationButton() {
         setError(null);
 
         try {
-            // Successful reset restarts the process.
+            // Development closes; package builds restart
+            // Cleanup finishes during the next startup
             await invoke("reset_application", { confirmation });
         } catch (reason) {
             setError(
@@ -60,7 +62,10 @@ export function ResetApplicationButton() {
                 <p>
                     This removes all local profiles, conversations,
                     goals, notes, settings, and stored credentials.
-                    The application will restart into onboarding.
+                    {" "}
+                    {development
+                        ? "The application will close. Launch it again to finish resetting and return to onboarding."
+                        : "The application will restart into onboarding."}
                 </p>
 
                 <label htmlFor="reset-confirmation">
@@ -83,8 +88,7 @@ export function ResetApplicationButton() {
                     <button
                         type="button"
                         disabled={busy}
-                        onClick={() => dialogRef.current?.close()}
-                    >
+                        onClick={() => dialogRef.current?.close()}>
                         Cancel
                     </button>
 
@@ -93,9 +97,14 @@ export function ResetApplicationButton() {
                         disabled={busy || confirmation !== "RESET"}
                         onClick={() => {
                             void reset();
-                        }}
-                    >
-                        {busy ? "Restarting…" : "Delete data and restart"}
+                        }}>
+                        {busy
+                            ? development
+                                ? "Closing…"
+                                : "Restarting…"
+                            : development
+                                ? "Reset and close"
+                                : "Delete data and restart"}
                     </button>
                 </div>
             </dialog>
