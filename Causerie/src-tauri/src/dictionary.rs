@@ -65,8 +65,8 @@ pub struct EnglishLookup {
 }
 
 fn parse_translations( body: &Value, target: &str ) -> Result<Vec<WordTranslation>, CommandError> {
-    let entries = body["entries"].as_array().ok_or_else(|| {
-        CommandError::app("The dictionary returned an unexpected response.")
+    let entries = body["translations"].as_array().ok_or_else(|| {
+        CommandError::app("The dictionary returned an unexpected translation response.")
     })?;
 
     let mut translations = Vec::new();
@@ -129,7 +129,7 @@ pub async fn lookup_english_word( dictionary: State<'_, DictionaryClient>, word:
         .replace(['‐', '‑'], "-");
 
     // `lang=en` selects English source entries
-    let body = fetch_entry(&dictionary.client, &lookup_word, "en").await?;
+    let body = fetch_translation_entry(&dictionary.client, &lookup_word).await?;
     let mut translations = parse_translations(&body, profile.code)?;
 
     let lowercase = lookup_word.to_lowercase();
@@ -137,7 +137,7 @@ pub async fn lookup_english_word( dictionary: State<'_, DictionaryClient>, word:
     if translations.is_empty() && lowercase != lookup_word {
         lookup_word = lowercase;
 
-        let body = fetch_entry(&dictionary.client, &lookup_word, "en").await?;
+        let body = fetch_translation_entry(&dictionary.client, &lookup_word).await?;
         translations = parse_translations(&body, profile.code)?;
     }
 
@@ -264,7 +264,12 @@ fn request_error(error: reqwest::Error) -> CommandError {
     }
 }
 
-async fn fetch_entry(client: &Client, word: &str, language_code: &str) -> Result<Value, CommandError> {
+async fn fetch_word_response(
+    client: &Client,
+    word: &str,
+    language_code: &str,
+    translations_only: bool,
+) -> Result<Value, CommandError> {
     let mut url = Url::parse("https://api.wiktapi.dev/v1/en/word/")
         .map_err(|_| CommandError::app("Invalid dictionary configuration."))?;
 
@@ -273,6 +278,12 @@ async fn fetch_entry(client: &Client, word: &str, language_code: &str) -> Result
         .map_err(|_| CommandError::app("Invalid dictionary configuration."))?
         .pop_if_empty()
         .push(word);
+
+    if translations_only {
+        url.path_segments_mut()
+            .map_err(|_| CommandError::app("Invalid dictionary configuration."))?
+            .push("translations");
+    }
 
     url.query_pairs_mut().append_pair("lang", language_code);
 
@@ -283,7 +294,11 @@ async fn fetch_entry(client: &Client, word: &str, language_code: &str) -> Result
 
     match response.status() {
         StatusCode::NOT_FOUND => {
-            return Ok(serde_json::json!({ "entries": [] }));
+            return Ok(if translations_only {
+                serde_json::json!({ "translations": [] })
+            } else {
+                serde_json::json!({ "entries": [] })
+            });
         }
         StatusCode::TOO_MANY_REQUESTS => {
             return Err(CommandError::app("The dictionary is busy. Wait a moment before trying again."));
@@ -308,6 +323,21 @@ async fn fetch_entry(client: &Client, word: &str, language_code: &str) -> Result
     let body: Value = serde_json::from_slice(&bytes).map_err(|_| { CommandError::app("The dictionary returned an unreadable response.")})?;
 
     Ok(body)
+}
+
+async fn fetch_entry(
+    client: &Client,
+    word: &str,
+    language_code: &str,
+) -> Result<Value, CommandError> {
+    fetch_word_response(client, word, language_code, false).await
+}
+
+async fn fetch_translation_entry(
+    client: &Client,
+    word: &str,
+) -> Result<Value, CommandError> {
+    fetch_word_response(client, word, "en", true).await
 }
 
 async fn fetch_meanings( client: &Client, word: &str, language_code: &str ) -> Result<Vec<DictionaryMeaning>, CommandError> {
