@@ -163,6 +163,7 @@ pub fn run() {
             dictionary::personal_dictionary::add_personal_word,
             dictionary::personal_dictionary::remove_personal_word,
             dictionary::lookup::lookup_english_word,
+            chat::language_validation::validate_user_language,
     ])
         .setup(move |app| {
             // No database, logger files, or WebView exists yet.
