@@ -555,6 +555,19 @@ pub async fn append_message(
     }
 
     let pool = database::pool(databases.inner()).await?;
+
+    if role == "user" {
+        let language =
+            crate::chat::language_validation::thread_language(&pool, &thread_id)
+                .await?;
+
+        crate::chat::language_validation::require_input(
+            &content,
+            &language,
+        )
+            .await?;
+    }
+
     let mut tx = pool.begin_with("BEGIN IMMEDIATE")
         .await
         .map_err(db_error)?;

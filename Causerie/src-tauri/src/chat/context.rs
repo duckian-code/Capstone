@@ -21,6 +21,7 @@ pub(crate) struct ThreadContext {
     pub thread_id: String,
     pub messages: Vec<ContextMessage>,
     pub system_prompt: String,
+    pub language: String,
 }
 
 // TODO: implement proper dialect handling
@@ -177,6 +178,11 @@ impl ContextManager {
         // Release the database transaction before starting the network request.
         transaction.commit().await.map_err(database_error)?;
 
+        crate::chat::language_validation::require_input(
+            &content,
+            &language,
+        ).await?;
+
         let level = crate::learning::proficiency::load_for_user(pool, &user_id).await?;
 
         let base_prompt = render_prompt(
@@ -197,6 +203,7 @@ impl ContextManager {
             thread_id: thread_id.to_owned(),
             messages,
             system_prompt,
+            language
         })
     }
 

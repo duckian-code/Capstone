@@ -1,21 +1,14 @@
-use futures::StreamExt;
-use openai_rust_sdk::{
-    client::OpenAIClient,
-    models::responses_v2::ResponseStreamEvent,
-};
-
+use openai_rust_sdk::client::OpenAIClient;
 use serde::Serialize;
 use tauri::ipc::Channel;
 
 use crate::{
-    chat::context::ContextManager,
-    chat::conversation_memory,
     account::credentials,
+    chat::{ context::ContextManager, conversation_memory, validated_reply },
     storage::database,
     CommandError,
 };
 
-// Messages from Rust to React
 #[derive(Clone, Serialize)]
 #[serde(tag = "event", content = "data", rename_all = "camelCase")]
 pub enum StreamEvent {
@@ -27,7 +20,7 @@ async fn send_message_inner(
     databases: tauri::State<'_, tauri_plugin_sql::DbInstances>,
     thread_id: String,
     user_message_id: String,
-    on_event: Channel<StreamEvent>
+    on_event: Channel<StreamEvent>,
 ) -> Result<String, CommandError> {
     let pool = database::pool(databases.inner()).await?;
 
@@ -39,16 +32,10 @@ async fn send_message_inner(
     )
         .await?;
 
-    log::debug!(
-        "Prepared {} conversation messages for thread {}",
-        context.messages.len(),
-        context.thread_id,
-    );
-
     let api_key = credentials::resolve_api_key(app).await?;
 
     let client = OpenAIClient::new(api_key.to_string())
-        .map_err(|_| CommandError::app("Unable to initialize API client!"))?;
+        .map_err(|_| CommandError::app("Unable to initialize API client."))?;
 
     let request = conversation_memory::prepare(
         &client,
@@ -57,62 +44,30 @@ async fn send_message_inner(
     )
         .await?;
 
+    let full_text = validated_reply::generate(
+        &client,
+        request,
+        &context.language,
+        6000,
+    )
+        .await?;
 
-    let mut stream = client.stream_response_v2(&request).await.map_err(CommandError::sdk)?;
+    // Reject a reply generated against a profile that changed mid-request.
+    let current_language =
+        crate::chat::language_validation::thread_language(&pool, &thread_id)
+            .await?;
 
-    let mut completed = false;
-    let mut received_text = false;
-    let mut full_text = String::new();
-
-    while let Some(event) = stream.next().await {
-        match event.map_err(CommandError::sdk)? {
-            ResponseStreamEvent::OutputTextDelta { delta, .. } => {
-                if !delta.is_empty() {
-                    received_text = true;
-                    full_text.push_str(&delta);
-
-                    on_event
-                        .send(StreamEvent::Chunk { text: delta })
-                        .map_err(|e| CommandError::app(e.to_string()))?;
-                }
-            }
-
-            ResponseStreamEvent::ResponseCompleted { response, .. } => {
-                completed = true;
-
-                if let Some(usage) = response.usage {
-                    log::debug!("Conversation usage: input={}, output={}",
-            usage.input_tokens,
-            usage.output_tokens,
-        );
-                }
-            }
-
-            ResponseStreamEvent::StreamError { error, .. } => {
-                return Err(CommandError::response(&error));
-            }
-
-            ResponseStreamEvent::ResponseFailed { response, .. } => {
-                return Err(
-                    response.error.as_ref()
-                        .map(CommandError::response)
-                        .unwrap_or_else(|| CommandError::coded("api_failure")),
-                );
-            }
-
-            _ => {}
-        }
+    if crate::languages::profile(&current_language)?.locale
+        != crate::languages::profile(&context.language)?.locale
+    {
+        return Err(CommandError::app("Your target language changed while preparing the reply. Please retry."));
     }
 
-    if !completed {
-        return Err(CommandError::openai(
-            "Response stream ended without completion.",
-        ));
-    }
-
-    if !received_text {
-        return Err(CommandError::openai("API returned no text!"));
-    }
+    on_event
+        .send(StreamEvent::Chunk {
+            text: full_text.clone(),
+        })
+        .map_err(|error| CommandError::app(error.to_string()))?;
 
     Ok(full_text)
 }
@@ -135,6 +90,5 @@ pub async fn send_message(
             user_message_id.clone(),
             on_event,
         ),
-    )
-        .await
+    ).await
 }

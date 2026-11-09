@@ -2,7 +2,7 @@ use openai_rust_sdk::{
     client::OpenAIClient,
     models::{
         gpt5::{ReasoningConfig, ReasoningEffort},
-        responses_v2::{CreateResponseRequest, ResponseStatus},
+        responses_v2::{CreateResponseRequest},
     },
 };
 use serde_json::json;
@@ -193,30 +193,12 @@ pub async fn create_generated_thread(
     request.max_output_tokens = Some(450);
     request.store = Some(false);
 
-    let response = client
-        .create_response_v2(&request)
-        .await
-        .map_err(CommandError::sdk)?;
-
-    if let Some(error) = response.error.as_ref() {
-        return Err(CommandError::response(error));
-    }
-
-    if response.status != ResponseStatus::Completed
-        || response
-        .output
-        .iter()
-        .flat_map(|item| item.content.iter())
-        .any(|part| part.part_type == "refusal")
-    {
-        return Err(CommandError::openai("The opening was not completed. Please try again."));
-    }
-
-    let opening = response.output_text().trim().to_owned();
-
-    if opening.is_empty() || opening.chars().count() > 2000 {
-        return Err(CommandError::openai("The generated opening was invalid. Please try again."));
-    }
+    let opening = crate::chat::validated_reply::generate(
+        &client,
+        request,
+        &language,
+        2000,
+    ).await?;
 
     let mut transaction = pool.begin().await.map_err(database::error)?;
 
