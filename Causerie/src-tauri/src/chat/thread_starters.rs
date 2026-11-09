@@ -80,7 +80,13 @@ pub async fn create_generated_thread(
     user_id: String,
     topic_id: usize,
     request_id: String,
+    voice: Option<bool>,
+    live: Option<bool>,
 ) -> Result<Thread, CommandError> {
+    let voice = voice.unwrap_or(false);
+    let live = voice && live.unwrap_or(false);
+    let conversation_mode = if voice { "voice" } else { "text" };
+
     let &(title, brief) = TOPICS
         .get(topic_id)
         .ok_or_else(|| CommandError::app("Choose a valid conversation topic."))?;
@@ -127,6 +133,8 @@ pub async fn create_generated_thread(
             || thread.title != title
             || thread.topic.as_deref() != Some(brief)
             || thread.archived_at.is_some()
+            || thread.conversation_mode != conversation_mode
+            || thread.live_conversation != i64::from(live)
         {
             return Err(CommandError::app(
                 "This creation request no longer matches the selected topic.",
@@ -205,20 +213,24 @@ pub async fn create_generated_thread(
     // Recheck the active profile and language after the API request.
     let thread = sqlx::query_as::<_, Thread>(
         "INSERT INTO threads (
-            id, user_id, title, topic, created_at, updated_at, archived_at
-         )
-         SELECT ?, u.id, ?, ?,
+                id, user_id, title, topic,
+                created_at, updated_at, archived_at,
+                conversation_mode, live_conversation
+            )
+            SELECT ?, u.id, ?, ?,
                 strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
                 strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
-                NULL
-         FROM users u
-         JOIN app_state s ON s.id = 1 AND s.active_user_id = u.id
-         WHERE u.id = ? AND TRIM(u.target_language) = ?
-         RETURNING *",
+                NULL, ?, ?
+            FROM users u
+            JOIN app_state s ON s.id = 1 AND s.active_user_id = u.id
+            WHERE u.id = ? AND TRIM(u.target_language) = ?
+            RETURNING *",
     )
         .bind(&thread_id)
         .bind(title)
         .bind(brief)
+        .bind(conversation_mode)
+        .bind(live)
         .bind(&user_id)
         .bind(&language)
         .fetch_optional(&mut *transaction)

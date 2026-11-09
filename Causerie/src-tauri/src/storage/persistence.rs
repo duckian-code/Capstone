@@ -44,6 +44,8 @@ pub struct Thread {
     pub created_at: String,
     pub updated_at: String,
     pub archived_at: Option<String>,
+    pub conversation_mode: String,
+    pub live_conversation: i64,
 }
 
 #[derive(Serialize, FromRow)]
@@ -380,25 +382,37 @@ pub async fn list_threads(databases: State<'_, DbInstances>, user_id: String, in
 }
 
 #[tauri::command]
-pub async fn create_thread(databases: State<'_, DbInstances>, user_id: String, title: String, topic: Option<String>) -> Result<Thread, CommandError> {
+pub async fn create_thread(
+    databases: State<'_, DbInstances>,
+    user_id: String,
+    title: String,
+    topic: Option<String>,
+    voice: Option<bool>,
+    live: Option<bool>,
+) -> Result<Thread, CommandError> {
     let pool = database::pool(databases.inner()).await?;
+    let voice = voice.unwrap_or(false);
+    let live = voice && live.unwrap_or(false);
 
     sqlx::query_as::<_, Thread>(
         "INSERT INTO threads (
             id, user_id, title, topic,
-            created_at, updated_at, archived_at
+            created_at, updated_at, archived_at,
+            conversation_mode, live_conversation
          )
          VALUES (
             lower(hex(randomblob(16))), ?, ?, ?,
             strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
             strftime('%Y-%m-%dT%H:%M:%fZ', 'now'),
-            NULL
+            NULL, ?, ?
          )
          RETURNING *",
     )
         .bind(user_id)
         .bind(title)
         .bind(topic)
+        .bind(if voice { "voice" } else { "text" })
+        .bind(live)
         .fetch_one(&pool)
         .await
         .map_err(db_error)
