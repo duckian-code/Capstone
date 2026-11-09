@@ -102,6 +102,11 @@ const catalog: Record<string, Guidance> = {
         instructions:
             "Return to the affected feature and retry if it offers a retry action. If the problem repeats, report the diagnostic code below. Resetting the app is not required.",
     },
+    input_language: {
+        title: "Use your target language",
+        instructions:
+            "Cancel the unfinished turn to return its text to the composer, then rewrite most of it in your target language. English substitutions for unfamiliar words are welcome.",
+    },
 };
 
 export function guidanceFor(code: string): Guidance {

@@ -251,7 +251,8 @@ export function ConversationWorkspace(props: Props) {
 
                 <MessageComposer
                     userId={props.userId}
-                    key={props.activeThread.id}
+                    threadId={props.activeThread.id}
+                    key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}
                     language={props.context.language}
                     disabled={props.sendDisabled}
                     canCancel={props.canCancel}
