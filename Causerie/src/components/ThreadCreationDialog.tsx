@@ -47,6 +47,17 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
 
     const selectedTopic = deck[0];
 
+    const [voice, setVoice] = useState(false);
+    const [live, setLive] = useState(false);
+
+    function changeVoice(next: boolean) {
+        if (submittingRef.current || creating) return;
+
+        setVoice(next);
+        requestId.current = crypto.randomUUID();
+        onClearError();
+    }
+
     useEffect(() => {
         const dialog = dialogRef.current;
         if (!dialog) return;
@@ -151,6 +162,12 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                         };
                     }
 
+                    input = {
+                        ...input,
+                        voice,
+                        live: voice && live,
+                    };
+
                     submittingRef.current = true;
 
                     try {
@@ -160,8 +177,7 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                     } finally {
                         submittingRef.current = false;
                     }
-                }}
-            >
+                }}>
                 <h2 id="thread-creation-title">Create a thread</h2>
 
                 <p id="thread-creation-description">
@@ -171,15 +187,50 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                 <div
                     className="thread-mode-switch"
                     role="group"
-                    aria-label="Conversation topic mode"
-                >
+                    aria-label="Conversation format">
+                    <button
+                        type="button"
+                        disabled={creating}
+                        aria-pressed={!voice}
+                        onClick={() => changeVoice(false)}>
+                        Text conversation
+                    </button>
+
+                    <button
+                        type="button"
+                        disabled={creating}
+                        aria-pressed={voice}
+                        onClick={() => changeVoice(true)}>
+                        Voice conversation
+                    </button>
+                </div>
+
+                {voice && (
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={live}
+                            disabled={creating}
+                            onChange={(event) => {
+                                setLive(event.target.checked);
+                                requestId.current = crypto.randomUUID();
+                                onClearError();
+                            }}
+                        />
+                        {" "}Live conversation — listen automatically after Dot finishes
+                    </label>
+                )}
+
+                <div
+                    className="thread-mode-switch"
+                    role="group"
+                    aria-label="Conversation topic mode">
                     <button
                         type="button"
                         autoFocus
                         aria-pressed={mode === "custom"}
                         disabled={creating}
-                        onClick={() => switchMode("custom")}
-                    >
+                        onClick={() => switchMode("custom")}>
                         My own topic
                     </button>
 
@@ -187,8 +238,7 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                         type="button"
                         aria-pressed={mode === "generated"}
                         disabled={creating}
-                        onClick={() => switchMode("generated")}
-                    >
+                        onClick={() => switchMode("generated")}>
                         Choose for me
                     </button>
                 </div>
@@ -251,8 +301,7 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                                     className="thread-topic-card"
                                     aria-live="polite"
                                     aria-atomic="true"
-                                    aria-labelledby="suggested-topic-title"
-                                >
+                                    aria-labelledby="suggested-topic-title">
                                     <p className="thread-topic-label">
                                         Suggested topic
                                     </p>
@@ -266,8 +315,7 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                                     type="button"
                                     className="thread-topic-refresh"
                                     disabled={creating || topics.length < 2}
-                                    onClick={refreshTopic}
-                                >
+                                    onClick={refreshTopic}>
                                     <span aria-hidden="true">↻</span>
                                     {" "}Try another topic
                                 </button>
@@ -300,15 +348,13 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                     <button
                         type="button"
                         disabled={creating}
-                        onClick={closeDialog}
-                    >
+                        onClick={closeDialog}>
                         Cancel
                     </button>
 
                     <button
                         type="submit"
-                        disabled={creating || !valid}
-                    >
+                        disabled={creating || !valid}>
                         {creating
                             ? "Creating…"
                             : mode === "generated"

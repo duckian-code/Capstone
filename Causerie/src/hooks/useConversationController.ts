@@ -120,6 +120,8 @@ export function useConversationController(userId: string) {
                 title: thread.title,
                 prompt: thread.topic,
                 createdAt: thread.created_at,
+                conversationMode: thread.conversation_mode,
+                liveConversation: thread.live_conversation === 1,
             }));
 
             setThreads(summaries);
@@ -516,8 +518,18 @@ export function useConversationController(userId: string) {
         try {
             // TODO: revisit predefined thread
             const thread = input.mode === "generated"
-                ? await dal.threads.createGenerated(userId, input.topicId, input.requestId)
-                : await dal.threads.create(userId, input.title.trim(), input.prompt.trim());
+                ? await dal.threads.createGenerated(
+                    userId,
+                    input.topicId,
+                    input.requestId,
+                    input,
+                )
+                : await dal.threads.create(
+                    userId,
+                    input.title.trim(),
+                    input.prompt.trim(),
+                    input,
+                );
 
             if (!mounted.current) return false;
 
@@ -527,6 +539,8 @@ export function useConversationController(userId: string) {
                     title: thread.title,
                     prompt: thread.topic,
                     createdAt: thread.created_at,
+                    conversationMode: thread.conversation_mode,
+                    liveConversation: thread.live_conversation === 1,
                 },
                 ...previous.filter((item) => item.id !== thread.id),
             ]);

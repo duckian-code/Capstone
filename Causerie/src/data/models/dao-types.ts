@@ -17,6 +17,7 @@ export interface UserSettings {
 export interface Thread {
     id: string; user_id: string; title: string; topic: string | null;
     created_at: string; updated_at: string; archived_at: string | null;
+    conversation_mode: "text" | "voice"; live_conversation: number;
 }
 export type MessageRole = 'user' | 'assistant' | 'system' | 'developer' | 'tool';
 export interface Message {

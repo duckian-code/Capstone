@@ -1,6 +1,7 @@
 import { callBackend } from "./base";
 import type { Thread } from "../models/dao-types";
 import type { ThreadTopic } from "../models/thread-creation-types";
+import type { VoiceThreadOptions } from "../models/thread-creation-types";
 
 export class ThreadDAO {
     get(id: string): Promise<Thread | null> {
@@ -15,8 +16,15 @@ export class ThreadDAO {
         userId: string,
         title: string,
         topic: string | null = null,
+        options: VoiceThreadOptions = {},
     ): Promise<Thread> {
-        return callBackend("create_thread", { userId, title, topic });
+        return callBackend("create_thread", {
+            userId,
+            title,
+            topic,
+            voice: options.voice ?? false,
+            live: Boolean(options.voice && options.live),
+        });
     }
 
     rename(id: string, title: string): Promise<number> {
@@ -39,7 +47,18 @@ export class ThreadDAO {
         return callBackend("list_thread_topics");
     }
 
-    createGenerated(userId: string, topicId: number, requestId: string): Promise<Thread> {
-        return callBackend("create_generated_thread", { userId, topicId, requestId });
+    createGenerated(
+        userId: string,
+        topicId: number,
+        requestId: string,
+        options: VoiceThreadOptions = {},
+    ): Promise<Thread> {
+        return callBackend("create_generated_thread", {
+            userId,
+            topicId,
+            requestId,
+            voice: options.voice ?? false,
+            live: Boolean(options.voice && options.live),
+        });
     }
 }

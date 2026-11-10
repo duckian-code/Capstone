@@ -4,7 +4,12 @@ export interface ThreadTopic {
     prompt: string;
 }
 
-export type ThreadCreationInput =
+export interface VoiceThreadOptions {
+    voice?: boolean;
+    live?: boolean;
+}
+
+export type ThreadCreationInput = VoiceThreadOptions & (
     | {
     mode: "custom";
     title: string;
@@ -14,4 +19,5 @@ export type ThreadCreationInput =
     mode: "generated";
     topicId: number;
     requestId: string;
-};
+}
+);

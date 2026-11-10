@@ -18,6 +18,9 @@ export interface ConversationSummary {
     title: string;
     prompt: string | null;
     createdAt: string;
+    // Optional for existing demo fixtures. Persisted threads supply both
+    conversationMode?: "text" | "voice";
+    liveConversation?: boolean;
 }
 
 export interface LearningContext {
