@@ -8,7 +8,7 @@ use crate::{
     CommandError,
 };
 
-fn fallback(language: &str) -> Result<String, CommandError> {
+pub(crate) fn fallback(language: &str) -> Result<String, CommandError> {
     let text = match crate::languages::profile(language)?.code {
         "fr" => {
             "Reprenons simplement. De quoi aimerais-tu parler aujourd’hui ?"

@@ -36,7 +36,8 @@ zeroize = "1"
 fs2 = "0.4"
 tauri-plugin-single-instance = "2"
 regex = "1.13.1"
-reqwest = { version = "0.13.5", features = ["json"] }
+reqwest = { version = "0.13.5", features = ["json", "multipart"] }
+base64 = "0.22"
 unicode-normalization = "0.1"
 sha2 = "0.10"
 tokio = { version = "1", features = ["sync", "rt", "time", "net"] }

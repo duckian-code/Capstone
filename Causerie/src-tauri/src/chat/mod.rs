@@ -8,3 +8,5 @@ pub(crate) mod turn_cancellations;
 pub(crate) mod language_validation;
 
 pub(crate) mod validated_reply;
+
+pub(crate) mod voice;
