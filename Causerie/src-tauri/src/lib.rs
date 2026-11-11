@@ -1,6 +1,7 @@
 // use std::process::Command;
 use tauri::Manager;
 use tauri_plugin_sql::{Migration, MigrationKind};
+use tauri::webview::{PermissionKind, PermissionResponse};
 
 mod account;
 mod app_error;
@@ -217,10 +218,46 @@ pub fn run() {
                 })?
                 .clone();
 
-            tauri::WebviewWindowBuilder::from_config(
-                app,
-                &window_config,
-            )?
+            let dev_url = app.config().build.dev_url.clone();
+
+            tauri::WebviewWindowBuilder::from_config(app, &window_config)?
+                .on_permission_request(move |webview, permission| {
+                    match permission {
+                        PermissionKind::Microphone => {
+                            let Ok(url) = webview.url() else {
+                                return PermissionResponse::Deny;
+                            };
+
+                            let is_packaged_app =
+                                (url.scheme() == "tauri"
+                                    && url.host_str() == Some("localhost"))
+                                    || (matches!(url.scheme(), "http" | "https")
+                                    && url.host_str() == Some("tauri.localhost"));
+
+                            let is_dev_app = cfg!(dev)
+                                && dev_url.as_ref().is_some_and(|expected| {
+                                url.scheme() == expected.scheme()
+                                    && url.host_str() == expected.host_str()
+                                    && url.port_or_known_default()
+                                    == expected.port_or_known_default()
+                            });
+
+                            if webview.label() == "main"
+                                && (is_packaged_app || is_dev_app)
+                            {
+                                PermissionResponse::Allow
+                            } else {
+                                PermissionResponse::Deny
+                            }
+                        }
+
+                        PermissionKind::Camera | PermissionKind::DisplayCapture => {
+                            PermissionResponse::Deny
+                        }
+
+                        _ => PermissionResponse::Default,
+                    }
+                })
                 .build()?;
 
             Ok(())

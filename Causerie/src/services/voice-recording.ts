@@ -48,14 +48,60 @@ export async function startRecording(
         throw new Error("Microphone access is unavailable in this webview.");
     }
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true,
-            channelCount: 1,
-        },
-    });
+    if (signal.aborted) {
+        throw new DOMException("Cancelled", "AbortError");
+    }
+
+    let stream: MediaStream;
+
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: false,
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true,
+                channelCount: 1,
+            },
+        });
+    } catch (error) {
+        if (signal.aborted) {
+            throw new DOMException("Cancelled", "AbortError");
+        }
+
+        const name = error instanceof DOMException
+            ? error.name
+            : "UnknownError";
+
+        switch (name) {
+            case "NotAllowedError":
+                throw new Error(
+                    "Microphone access was denied (NotAllowedError). " +
+                    "Check microphone permissions for Causerie in your " +
+                    "system settings, then fully restart the app.",
+                );
+
+            case "NotFoundError":
+                throw new Error(
+                    "No microphone was found (NotFoundError). " +
+                    "Connect or enable an input device and try again.",
+                );
+
+            case "NotReadableError":
+                throw new Error(
+                    "The microphone could not be opened (NotReadableError). " +
+                    "Check your selected input device and whether another " +
+                    "application is using it.",
+                );
+
+            default:
+                throw new Error(
+                    `Unable to start microphone recording (${name}): ${
+                        error instanceof Error ? error.message : String(error)
+                    }`,
+                );
+        }
+    }
 
     if (signal.aborted) {
         stream.getTracks().forEach((track) => track.stop());
