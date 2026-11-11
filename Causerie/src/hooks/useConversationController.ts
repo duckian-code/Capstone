@@ -69,6 +69,31 @@ export function useConversationController(userId: string) {
 
     const recoveryChecked = useRef(false);
 
+    const voiceWaiter = useRef<{
+        resolve: (message: ConversationMessage) => void;
+        reject: (reason: unknown) => void;
+    } | null>(null);
+
+    function failVoice(reason: unknown) {
+        const waiter = voiceWaiter.current;
+        voiceWaiter.current = null;
+        waiter?.reject(reason);
+    }
+
+    function sendVoiceMessage(text: string): Promise<ConversationMessage> {
+        if (voiceWaiter.current) {
+            return Promise.reject(new Error("A voice turn is already running."));
+        }
+
+        return new Promise((resolve, reject) => {
+            voiceWaiter.current = { resolve, reject };
+
+            if (!sendMessage(text)) {
+                failVoice(new Error("Finish the current operation before speaking again."));
+            }
+        });
+    }
+
 
     function finishTurn() {
         const turn = turnRef.current;
@@ -81,8 +106,13 @@ export function useConversationController(userId: string) {
             setOperationError(parseCommandError(reason).message);
             setPhase("failed");
             mascot.send({ type: "REQUEST_FAILED" });
+            failVoice(reason);
             return;
         }
+
+        const waiter = voiceWaiter.current;
+        voiceWaiter.current = null;
+        waiter?.resolve(turn.assistant);
 
         turnRef.current = null;
         setPhase("idle");
@@ -223,7 +253,7 @@ export function useConversationController(userId: string) {
         runningRef.current = true;
 
         // save retry already has its full response
-        const willAnimate = turn.fullReply === null;
+        const willAnimate = turn.fullReply === null && voiceWaiter.current === null;
 
         try {
             if (!turn.userSaved) {
@@ -268,7 +298,7 @@ export function useConversationController(userId: string) {
                             mascot.send({ type: "RESPONSE_STARTED" });
                         }
 
-                        typewriter.append(chunk);
+                        if (willAnimate) typewriter.append(chunk);
                     },
                 );
 
@@ -328,6 +358,7 @@ export function useConversationController(userId: string) {
             mascot.send({
                 type: turn.userSaved && turn.fullReply !== null ? "REQUEST_FAILED" : "REQUEST_CANCELLED",
             });
+            failVoice(reason);
         } finally {
             runningRef.current = false;
         }
@@ -341,6 +372,7 @@ export function useConversationController(userId: string) {
         } catch (reason) {
             setOperationError(parseCommandError(reason).message);
             setPhase("failed");
+            failVoice(reason);
         }
     }
 
@@ -426,11 +458,13 @@ export function useConversationController(userId: string) {
             removePendingTurn(userId);
 
             if (!mounted.current || turnRef.current !== turn) return null;
+            failVoice(new Error("The turn was cancelled."));
 
             setLocalMessages((previous) =>
                 previous.filter((message) =>
                     message.id !== turn.user.id && message.id !== turn.assistant.id));
 
+            failVoice(new Error("The conversation was closed."));
             turnRef.current = null;
             inFlightRef.current = null;
 
@@ -724,5 +758,7 @@ export function useConversationController(userId: string) {
         cancelling: phase === "cancelling",
         cancellationFailed: phase === "cancel-failed",
         pendingUserMessageId: turnRef.current?.user.id,
+
+        sendVoiceMessage,
     };
 }
