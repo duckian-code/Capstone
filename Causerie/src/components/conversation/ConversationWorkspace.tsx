@@ -20,6 +20,7 @@ import { FeedbackPanel } from "./FeedbackPanel";
 import { ThreadActions } from "./ThreadActions";
 
 import "./conversation.css";
+import { VoiceComposer } from "./VoiceComposer";
 
 export type MobileView =
     | "threads"
@@ -59,6 +60,8 @@ interface Props {
     canCancel: boolean;
     cancelling: boolean;
     onCancel: () => Promise<string | null>;
+
+    onVoiceSend: (text: string) => Promise<ConversationMessage>;
 }
 
 export function ConversationWorkspace(props: Props) {
@@ -249,18 +252,33 @@ export function ConversationWorkspace(props: Props) {
                     {props.mascot}
                 </MascotStage>
 
-                <MessageComposer
-                    userId={props.userId}
-                    threadId={props.activeThread.id}
-                    key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}
-                    language={props.context.language}
-                    disabled={props.sendDisabled}
-                    canCancel={props.canCancel}
-                    cancelling={props.cancelling}
-                    onSend={props.onSend}
-                    onCancel={props.onCancel}
-                    draftKey={`causerie:draft:v1:${props.activeThread.id}`}
-                />
+                {props.activeThread.conversationMode === "voice" ? (
+                    <VoiceComposer
+                        key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}
+                        threadId={props.activeThread.id}
+                        language={props.context.language}
+                        live={props.activeThread.liveConversation ?? false}
+                        disabled={props.sendDisabled}
+                        canCancel={props.canCancel}
+                        cancelling={props.cancelling}
+                        messages={props.messages}
+                        onSend={props.onVoiceSend}
+                        onCancel={props.onCancel}
+                    />
+                ) : (
+                    <MessageComposer
+                        userId={props.userId}
+                        threadId={props.activeThread.id}
+                        key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}
+                        language={props.context.language}
+                        disabled={props.sendDisabled}
+                        canCancel={props.canCancel}
+                        cancelling={props.cancelling}
+                        onSend={props.onSend}
+                        onCancel={props.onCancel}
+                        draftKey={`causerie:draft:v1:${props.activeThread.id}`}
+                    />
+                )}
             </section>
 
             <section

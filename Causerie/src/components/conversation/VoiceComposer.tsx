@@ -111,9 +111,7 @@ export function VoiceComposer(props: Props) {
                 const restored = await latest.current.onCancel();
                 if (mounted.current && restored !== null) setTranscript(restored);
                 if (restored === null) {
-                    throw new Error(
-                        "The pending turn could not be cancelled. Use Cancel pending turn to retry.",
-                    );
+                    throw new Error("The pending turn could not be cancelled. Use Cancel pending turn to retry.");
                 }
             }
         } catch (reason) {

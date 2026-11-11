@@ -224,6 +224,8 @@ function ConversationSession({ userId, context }: Props) {
                     setSelectedMessageId(null);
                     return conversation.cancelTurn();
                 }}
+
+                onVoiceSend={conversation.sendVoiceMessage}
             />
 
             {creationDialog}
