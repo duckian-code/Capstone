@@ -46,7 +46,7 @@ category must be grammar, vocabulary, idiom, register, clarity, or other.
 goal_id must identify a supplied goal, or be null.
 "#;
 
-fn render_prompt(app: &AppHandle, filename: &str, language: &str) -> Result<Option<String>, CommandError> {
+pub(crate) fn render_prompt(app: &AppHandle, filename: &str, language: &str) -> Result<Option<String>, CommandError> {
     let profile = crate::languages::profile(language)?;
 
     let path = app

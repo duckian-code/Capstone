@@ -21,6 +21,7 @@ import { ThreadActions } from "./ThreadActions";
 
 import "./conversation.css";
 import { VoiceComposer } from "./VoiceComposer";
+import { AskDotPanel } from "./AskDotPanel";
 
 export type MobileView =
     | "threads"
@@ -299,6 +300,13 @@ export function ConversationWorkspace(props: Props) {
                             onDelete={props.onDeleteThread}
                         />
                     </div>
+
+                    <AskDotPanel
+                        key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}
+                        threadId={props.activeThread.id}
+                        language={props.context.language}
+                        disabled={props.navigationDisabled}
+                    />
 
                     <time dateTime={props.activeThread.createdAt}>
                         {new Date(

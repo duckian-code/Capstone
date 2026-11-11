@@ -4,3 +4,4 @@ pub(crate) mod feedback_repository;
 pub(crate) mod goals;
 pub(crate) mod hints;
 pub(crate) mod proficiency;
+pub(crate) mod ask_dot;

@@ -120,6 +120,7 @@ pub fn run() {
             learning::corrections::create_correction,
             learning::corrections::delete_correction,
             learning::feedback::analyze_message,
+            learning::ask_dot::ask_dot,
             storage::persistence::initialize_database,
             storage::persistence::get_user,
             storage::persistence::list_users,
