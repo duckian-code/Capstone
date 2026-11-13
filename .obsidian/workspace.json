@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Documentation/Color Guide.md",
+                "file": "Documentation/CEFR TESTING PLANNING.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Color Guide"
+              "title": "CEFR TESTING PLANNING"
             }
           }
         ]
@@ -80,8 +80,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "4361f68798d9ad95",
@@ -188,6 +187,8 @@
   },
   "active": "de14ac3474d5ef83",
   "lastOpenFiles": [
+    "Documentation/Color Guide.md",
+    "Documentation/CEFR TESTING PLANNING.md",
     "Info/Mascot Info.md",
     "Info/Database Info.md",
     "Info/Commission Info.md",
@@ -222,8 +223,6 @@
     "Causerie/node_modules/pixi.js/skills/pixijs-scene-mesh/references/mesh-perspective.md",
     "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/tiling-sprite.md",
     "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/sprite.md",
-    "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/nineslice-sprite.md",
-    "Causerie/node_modules/pixi.js/skills/pixijs-scene-sprite/references/animated-sprite.md",
     "Causerie/node_modules/js-binary-schema-parser/example/horses.gif",
     "Causerie/node_modules/js-binary-schema-parser/example/dog.gif",
     "Causerie/node_modules/js-binary-schema-parser/example/box.gif",
