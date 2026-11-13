@@ -67,7 +67,7 @@ Individual scores should also include a score 0-100 that is your progress to the
 * answers
 * results
 
-## Sources For Test
+## Sources
 * French Linguistic Inventory - *grammatical structures/vocab per level*
 	* https://www.france-education-international.fr/document/cecrl?utm_source=chatgpt.com
 * DIALANG descriptive scales - *what learners should understand*
@@ -75,7 +75,11 @@ Individual scores should also include a score 0-100 that is your progress to the
 * CEFR Companion Volume - *broader proficiency expectations and distinctions (per level)*
 	* https://rm.coe.int/cefr-companion-volume-with-new-descriptors-2020/16809ea0d4?utm_source=chatgpt.com
 * DELF/DALF exam examples - *what assessment questions look like*
-	* https://www.delf-dalf.ambafrance-ca.org/fr/exemples-de-sujets?utm_source=chatgpt.com
+	* A1: https://www.france-education-international.fr/diplome/delf-tout-public/niveau-a1/exemples-sujets?langue=fr&utm_source=chatgpt.com
+	* A2: https://www.france-education-international.fr/diplome/delf-tout-public/niveau-a2/exemples-sujets?langue=fr&utm_source=chatgpt.com
+	  B1: https://www.france-education-international.fr/diplome/delf-tout-public/niveau-b1/exemples-sujets?langue=fr&utm_source=chatgpt.com
+	* B2: https://www.france-education-international.fr/diplome/delf-tout-public/niveau-b2/exemples-sujets?langue=fr&utm_source=chatgpt.com
+	* C1: https://www.france-education-international.fr/diplome/dalf/exemples-sujets?langue=fr&utm_source=chatgpt.com
 	* INCLUDES TONS OF EXAMPLES
 
 NOTE: these questions will be appropriate for levels, but not empirically accurate to the level
