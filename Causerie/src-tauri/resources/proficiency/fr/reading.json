@@ -1,0 +1,2448 @@
+{
+  "schemaVersion": 1,
+  "bankId": "fr-reading",
+  "bankVersion": 1,
+  "language": "fr",
+  "skill": "reading",
+  "levels": [
+    "A1",
+    "A2",
+    "B1",
+    "B2",
+    "C1"
+  ],
+  "passages": [
+    {
+      "id": "fr-reading-a1-p01",
+      "version": 1,
+      "language": "fr",
+      "level": "A1",
+      "title": "Un message de Nora",
+      "genre": "message",
+      "text": "Salut Hugo ! Samedi, je travaille au magasin jusqu’à midi. Viens chez moi à treize heures pour manger. Mon frère prépare une salade. Apporte du pain, s’il te plaît. Après le repas, nous allons au parc. À samedi ! Nora"
+    },
+    {
+      "id": "fr-reading-a1-p02",
+      "version": 1,
+      "language": "fr",
+      "level": "A1",
+      "title": "À la piscine",
+      "genre": "notice",
+      "text": "Piscine des Tilleuls\nDu lundi au vendredi : de 10 h à 19 h.\nSamedi : de 9 h à 12 h.\nFermée le dimanche.\nEntrée : 5 euros pour les adultes, 3 euros pour les enfants.\nLes bonnets de bain sont obligatoires."
+    },
+    {
+      "id": "fr-reading-a1-p03",
+      "version": 1,
+      "language": "fr",
+      "level": "A1",
+      "title": "Une chambre à louer",
+      "genre": "advertisement",
+      "text": "Chambre à louer dans un appartement près de la gare. La chambre a un lit, une table et une grande fenêtre. La cuisine est commune. Prix : 420 euros par mois. Pour visiter, téléphonez à Mme Petit après 18 heures. Pas de messages, merci."
+    },
+    {
+      "id": "fr-reading-a1-p04",
+      "version": 1,
+      "language": "fr",
+      "level": "A1",
+      "title": "La sortie de dimanche",
+      "genre": "email",
+      "text": "Bonjour à tous,\nDimanche, notre groupe visite le jardin des Roses. Rendez-vous devant l’école à 9 heures. Nous partons en bus à 9 h 15. Prenez un sandwich et une bouteille d’eau. Nous rentrons à l’école à 16 heures.\nLucie"
+    },
+    {
+      "id": "fr-reading-a1-p05",
+      "version": 1,
+      "language": "fr",
+      "level": "A1",
+      "title": "Petit-déjeuner à l’hôtel",
+      "genre": "instructions",
+      "text": "Bienvenue à l’hôtel du Pont !\nLe petit-déjeuner est servi dans la salle du rez-de-chaussée, de 7 heures à 10 heures. Pour avoir un café, demandez à Paul. Le thé et le jus d’orange sont sur la grande table. Merci de laisser votre clé à l’accueil quand vous quittez l’hôtel."
+    },
+    {
+      "id": "fr-reading-a1-p06",
+      "version": 1,
+      "language": "fr",
+      "level": "A1",
+      "title": "Au club de dessin",
+      "genre": "notice",
+      "text": "Club de dessin\nLe cours pour les adultes a lieu le mardi à 18 heures. Le cours pour les enfants a lieu le mercredi à 14 heures. Les cours sont dans la salle 2. Apportez des crayons. Le papier est gratuit et disponible dans la salle."
+    },
+    {
+      "id": "fr-reading-a2-p01",
+      "version": 1,
+      "language": "fr",
+      "level": "A2",
+      "title": "Un colis pour Léa",
+      "genre": "message",
+      "text": "Bonjour Léa, le livreur est passé pendant ton absence. J’ai pris ton colis et je l’ai laissé chez Mme Roux, au deuxième étage, car je pars travailler. Elle est chez elle jusqu’à 18 heures aujourd’hui. Après, elle va au cinéma. Si tu rentres plus tard, tu peux récupérer le colis demain matin. Inutile d’aller à la poste : le livreur n’y a rien déposé. À bientôt, Sami"
+    },
+    {
+      "id": "fr-reading-a2-p02",
+      "version": 1,
+      "language": "fr",
+      "level": "A2",
+      "title": "Choisir un atelier",
+      "genre": "advertisement",
+      "text": "La maison de quartier propose trois ateliers le samedi. « Cuisine facile » commence à 10 heures et accueille les débutants. On prépare un repas sans viande, puis on le mange ensemble. « Photos en ville » commence à 14 heures ; chacun doit apporter son appareil photo. « Jardin sur le balcon » a lieu à 16 heures. Les plantes et les pots sont fournis. Chaque atelier coûte 8 euros. Inscrivez-vous à l’accueil avant jeudi soir."
+    },
+    {
+      "id": "fr-reading-a2-p03",
+      "version": 1,
+      "language": "fr",
+      "level": "A2",
+      "title": "Une visite différente",
+      "genre": "email",
+      "text": "Salut Inès,\nHier, nous voulions visiter le château, mais il était fermé pour travaux. Nous avons donc pris le bus pour aller au musée de la ville. La visite était intéressante, surtout la salle avec les vieux jouets. Ensuite, nous avons mangé dans un petit café près du musée. Nous pensions rentrer à pied, mais il a commencé à pleuvoir. Nous avons repris le bus. La prochaine fois, je vérifierai les horaires du château avant de partir !\nÉmilie"
+    },
+    {
+      "id": "fr-reading-a2-p04",
+      "version": 1,
+      "language": "fr",
+      "level": "A2",
+      "title": "Les vélos de la résidence",
+      "genre": "notice",
+      "text": "À partir de lundi, les travaux commencent dans le local à vélos de la résidence. Merci de déplacer votre vélo avant dimanche soir. Pendant les travaux, vous pouvez le mettre dans la cour, sous le toit près de l’entrée. Ne laissez pas de vélo dans le couloir : les voisins doivent pouvoir passer facilement. Le local ouvrira de nouveau vendredi matin. Pour toute question, vous pouvez parler au gardien entre 8 heures et 11 heures."
+    },
+    {
+      "id": "fr-reading-a2-p05",
+      "version": 1,
+      "language": "fr",
+      "level": "A2",
+      "title": "Une nouvelle bibliothèque",
+      "genre": "short_article",
+      "text": "Depuis un mois, une petite bibliothèque est ouverte dans l’ancienne gare de Valmont. Les habitants peuvent y emprunter des livres gratuitement. Le mercredi après-midi, une bénévole lit des histoires aux enfants. Les parents restent avec eux pendant l’activité. La bibliothèque cherche aussi des livres pour les adolescents. Vous pouvez en apporter le samedi matin, mais seulement s’ils sont en bon état. Les magazines ne sont pas acceptés, car la salle est trop petite."
+    },
+    {
+      "id": "fr-reading-a2-p06",
+      "version": 1,
+      "language": "fr",
+      "level": "A2",
+      "title": "Le repas de vendredi",
+      "genre": "workplace_message",
+      "text": "Bonjour,\nPour le repas d’équipe de vendredi, le restaurant nous demande de choisir nos plats mercredi au plus tard. Le menu à 18 euros comprend un plat et un dessert. Les boissons sont en plus. Envoyez votre choix à Julie par courriel. Si vous ne pouvez plus venir, prévenez-la avant jeudi midi. Après cette heure, le restaurant préparera votre repas et il faudra le payer, même si vous êtes absent.\nMerci !"
+    },
+    {
+      "id": "fr-reading-b1-p01",
+      "version": 1,
+      "language": "fr",
+      "level": "B1",
+      "title": "Le café des voisins",
+      "genre": "local_article",
+      "text": "Quand le dernier café du village a fermé, plusieurs habitants ont décidé d’en ouvrir un ensemble. Au départ, ils voulaient simplement retrouver un lieu où discuter. Aujourd’hui, leur café propose aussi une aide aux devoirs et des soirées de jeux. Les bénévoles se partagent le service, mais trouver des personnes disponibles en semaine reste difficile.\nLes responsables avaient envisagé d’ouvrir tous les jours. Ils ont finalement préféré limiter les horaires pour ne pas épuiser l’équipe. Certains clients trouvent dommage de ne pas pouvoir venir le lundi, mais les responsables rappellent que le café doit pouvoir durer. Ils cherchent maintenant une personne salariée pour assurer deux journées par semaine, sans remplacer les bénévoles. Les bénéfices servent à payer les dépenses du café et à organiser les activités."
+    },
+    {
+      "id": "fr-reading-b1-p02",
+      "version": 1,
+      "language": "fr",
+      "level": "B1",
+      "title": "Un stage loin de chez soi",
+      "genre": "personal_account",
+      "text": "J’avais choisi un stage dans une petite entreprise à trois cents kilomètres de chez moi. Mes amis me conseillaient une grande société, dont le nom aurait été plus connu sur mon CV. Pourtant, pendant l’entretien, la responsable de la petite entreprise m’avait décrit un projet que je pourrais suivre du début à la fin. C’est cela qui m’a décidé.\nLa première semaine a été difficile : je ne connaissais personne et je devais apprendre à utiliser un logiciel. Un collègue m’a proposé de déjeuner avec l’équipe, ce qui m’a aidé à poser mes questions plus facilement. À la fin du stage, je n’avais pas reçu de promesse d’embauche, mais je savais mieux quel métier je voulais exercer. Je ne regrette donc pas mon choix, même si vivre loin de mes proches m’a parfois pesé."
+    },
+    {
+      "id": "fr-reading-b1-p03",
+      "version": 1,
+      "language": "fr",
+      "level": "B1",
+      "title": "Trouver un lieu pour répéter",
+      "genre": "comparison",
+      "text": "Notre groupe de musique cherche une salle pour huit personnes le jeudi soir. Nous pouvons payer au maximum 60 euros par séance. Comme nous transportons une batterie, il nous faut un accès sans escalier.\nLa salle du Parc coûte 45 euros et accueille dix personnes. Elle est disponible le jeudi, mais se trouve au deuxième étage sans ascenseur. Le studio Canal est au rez-de-chaussée et possède tout le matériel nécessaire ; il coûte 80 euros. La salle des Peupliers, accessible directement depuis la rue, peut accueillir douze personnes. Elle coûte 55 euros, mais les groupes doivent apporter leurs instruments. Elle est libre tous les jeudis soir. Enfin, le centre du Marché propose une salle accessible sans escalier pour 50 euros. Le jeudi soir, elle est déjà réservée à un cours de danse."
+    },
+    {
+      "id": "fr-reading-b1-p04",
+      "version": 1,
+      "language": "fr",
+      "level": "B1",
+      "title": "Acheter moins, réparer davantage",
+      "genre": "short_article",
+      "text": "Chaque mois, une association organise un atelier où les habitants apportent des objets en panne. Les réparateurs bénévoles ne prennent pas les appareils pour les rendre une semaine plus tard : ils travaillent avec leurs propriétaires. L’objectif est de leur montrer comment chercher une panne simple et décider si une réparation est possible.\nSofia y a apporté une lampe qu’elle comptait jeter. Elle a découvert qu’un fil était débranché. Depuis, elle vérifie les petits problèmes avant d’acheter un nouvel objet. Tout ne peut cependant pas être réparé sur place. Certains appareils nécessitent des pièces coûteuses ou présentent un danger. Les bénévoles orientent alors les participants vers un professionnel. Pour l’association, une séance réussie n’est donc pas forcément une séance où tous les objets fonctionnent à nouveau : apprendre à faire un choix informé compte aussi."
+    },
+    {
+      "id": "fr-reading-b1-p05",
+      "version": 1,
+      "language": "fr",
+      "level": "B1",
+      "title": "Le trajet de Malik",
+      "genre": "personal_account",
+      "text": "Quand l’entreprise de Malik a déménagé, son trajet en voiture est passé de vingt à cinquante minutes. Il a d’abord pensé prendre le train tous les jours. La gare d’arrivée était cependant loin des nouveaux bureaux. Une collègue lui a alors proposé de laisser un vélo dans un local sécurisé près de la gare.\nDepuis, il combine le train et le vélo trois jours par semaine. Il garde sa voiture les jours où il doit transporter du matériel. Son trajet n’est pas toujours plus court, mais il arrive moins fatigué, car il lit dans le train au lieu de rester dans les embouteillages. Il conseille cette solution à ses collègues, à condition qu’ils vérifient les horaires et disposent d’un endroit sûr pour leur vélo. Il ne pense pas que tout le monde puisse adopter exactement la même organisation."
+    },
+    {
+      "id": "fr-reading-b1-p06",
+      "version": 1,
+      "language": "fr",
+      "level": "B1",
+      "title": "Des livres à partager",
+      "genre": "local_article",
+      "text": "La ville a installé des boîtes à livres dans trois quartiers. Chacun peut prendre un livre et en déposer un autre, sans inscription. Après six mois, les résultats sont différents selon les endroits. Près du marché, les livres changent souvent. Dans un petit square peu fréquenté, la boîte reste presque toujours pleine des mêmes ouvrages.\nLes élus avaient d’abord pensé que les habitants de ce quartier lisaient moins. Une rencontre avec les voisins a montré autre chose : beaucoup ignoraient que les livres étaient gratuits et certains pensaient que la boîte appartenait à l’école voisine. La ville va donc ajouter un panneau explicatif et organiser une première rencontre autour des livres. Elle attendra quelques mois avant de décider de déplacer la boîte. Les voisins souhaitent aussi proposer davantage de livres pour enfants."
+    },
+    {
+      "id": "fr-reading-b2-p01",
+      "version": 1,
+      "language": "fr",
+      "level": "B2",
+      "title": "Une rue sans voitures ?",
+      "genre": "opinion_article",
+      "text": "La municipalité souhaite réserver une rue commerçante aux piétons chaque samedi. Plusieurs commerçants redoutent une baisse de fréquentation : leurs clients viennent parfois de communes mal desservies par les transports. D’autres rappellent qu’une rue agréable peut encourager les visiteurs à rester plus longtemps. Les premiers essais ont enregistré davantage de passages, sans que les achats augmentent dans toutes les boutiques.\nPour la présidente de l’association des commerçants, ces résultats ne justifient ni l’abandon du projet ni sa généralisation immédiate. Elle demande une expérimentation sur plusieurs mois, avec des livraisons possibles tôt le matin et une navette depuis le parking extérieur. « Compter les promeneurs est utile, mais il faut aussi savoir qui revient et ce que deviennent les commerces les plus fragiles », explique-t-elle.\nLa mairie accepte de prolonger l’essai, mais voudrait annoncer dès maintenant une hausse de l’attractivité du quartier. L’association juge cette conclusion prématurée : la curiosité suscitée par une nouveauté peut gonfler les chiffres des premières semaines. Elle soutient donc l’objectif d’un espace plus accueillant, tout en demandant des garanties sur la manière de l’évaluer."
+    },
+    {
+      "id": "fr-reading-b2-p02",
+      "version": 1,
+      "language": "fr",
+      "level": "B2",
+      "title": "Travailler quatre jours",
+      "genre": "forum",
+      "text": "Camille : « Dans notre agence, nous avons réduit le temps de travail sans baisser les salaires. Cela a été possible après la suppression de réunions inutiles. Je crains cependant qu’une entreprise qui conserve la même charge de travail en quatre journées très longues obtienne surtout des salariés épuisés. »\nYanis : « Dans mon atelier, nous ne pouvons pas supprimer des heures de présence devant les machines comme on supprime une réunion. Je ne rejette pas la réforme, mais elle suppose des embauches ou une réorganisation des équipes. Présenter la semaine de quatre jours comme une mesure gratuite me paraît trompeur. »\nÉlodie : « Le débat porte souvent sur la productivité et oublie la vie quotidienne. Une journée libre en semaine peut faciliter les démarches et réduire certains frais de garde. Encore faut-il que cette journée soit prévisible : si elle change chaque semaine au dernier moment, l’avantage devient difficile à utiliser. »\nLes trois témoignages décrivent ainsi des conditions différentes pour qu’une même organisation du calendrier représente une amélioration réelle."
+    },
+    {
+      "id": "fr-reading-b2-p03",
+      "version": 1,
+      "language": "fr",
+      "level": "B2",
+      "title": "Des emballages à rapporter",
+      "genre": "opinion_article",
+      "text": "Un supermarché expérimente des récipients réutilisables. Le client verse une petite somme supplémentaire, récupérée lorsqu’il rapporte le récipient. Selon la direction, cette consigne devrait diminuer les déchets. Une association environnementale accueille favorablement l’initiative, mais refuse de considérer chaque récipient distribué comme un emballage jetable évité.\nEn effet, fabriquer un contenant solide demande davantage de matière et d’énergie. Le bénéfice dépend donc du nombre de réutilisations, ainsi que du transport et du lavage. Un récipient conservé dans un placard ne remplit pas sa fonction, même si le client avait de bonnes intentions. L’association demande la publication du taux de retour, plutôt que du seul nombre de clients inscrits.\nLe magasin propose désormais plusieurs points de dépôt, y compris à l’extérieur des caisses. Il espère rendre le retour compatible avec les habitudes des clients. Pour l’association, cette évolution répond mieux au problème qu’une campagne culpabilisant les personnes qui oublient leur récipient. Elle souligne toutefois qu’il faudra observer les résultats avant d’affirmer que le dispositif est plus avantageux que les solutions existantes."
+    },
+    {
+      "id": "fr-reading-b2-p04",
+      "version": 1,
+      "language": "fr",
+      "level": "B2",
+      "title": "Un musée ouvert le soir",
+      "genre": "discussion",
+      "text": "Le musée municipal envisage de fermer le mardi après-midi pour ouvrir le vendredi jusqu’à 22 heures, à budget constant. Selon sa directrice, beaucoup d’actifs ne peuvent pas venir aux horaires actuels. Les gardiens reconnaissent cet intérêt, mais craignent que le service du vendredi soir ne repose toujours sur les mêmes personnes. Ils demandent une rotation négociée et des solutions de retour pour ceux qui n’ont plus de bus à la fin du service.\nUne association de retraités s’inquiète, de son côté, de perdre son créneau habituel. Elle propose de conserver un mardi après-midi par mois. La directrice se dit prête à examiner cette possibilité, sans promettre de maintenir toutes les ouvertures existantes.\nDans un éditorial, le journal local estime que présenter le débat comme un affrontement entre modernité et immobilisme évite la vraie question : quels publics gagneront un accès au musée, et à quelles conditions pour les autres ? L’auteur soutient l’ouverture en soirée, mais considère que son succès ne devrait pas se mesurer uniquement au nombre d’entrées du vendredi."
+    },
+    {
+      "id": "fr-reading-b2-p05",
+      "version": 1,
+      "language": "fr",
+      "level": "B2",
+      "title": "Faut-il tout enregistrer ?",
+      "genre": "opinion_article",
+      "text": "Une université propose d’enregistrer les cours pour les étudiants qui travaillent ou vivent loin du campus. Des enseignants craignent que cette possibilité ne vide les amphithéâtres. Pourtant, pendant une expérimentation, les absences n’ont pas augmenté de manière uniforme : elles ont surtout concerné les séances où l’enregistrement reproduisait presque entièrement ce qui se passait sur place.\nPour une enseignante, cette observation invite à réfléchir à la valeur de la présence. Si les échanges, les exercices et les questions occupent une place réelle, venir peut rester utile même quand le contenu est disponible en ligne. Elle refuse cependant d’en déduire que toute absence serait un jugement sur la qualité du cours : certains étudiants n’ont simplement pas le choix.\nElle recommande donc de conserver les enregistrements, tout en aidant les enseignants à concevoir des séances participatives. Elle réclame aussi un accès aux équipements pour les étudiants mal connectés. Mettre un fichier en ligne ne suffit pas, selon elle, à garantir que tous puissent effectivement l’utiliser."
+    },
+    {
+      "id": "fr-reading-b2-p06",
+      "version": 1,
+      "language": "fr",
+      "level": "B2",
+      "title": "Un jardin sur le toit",
+      "genre": "local_report",
+      "text": "Le projet de jardin sur le toit d’un immeuble a d’abord suscité l’enthousiasme. Les résidents y voyaient un moyen de produire quelques légumes et de se rencontrer. Lors de l’étude technique, ils ont découvert que le renforcement du toit absorberait la majeure partie du budget. Le projet a alors été réduit à des bacs plus légers, avec une production modeste.\nQuelques habitants estiment que cette version ne mérite plus l’investissement. Pour eux, un jardin doit fournir une quantité significative de nourriture. D’autres répondent que les rencontres et les ateliers ont une valeur, même si la récolte reste limitée. La coordinatrice reconnaît ces deux attentes, mais demande de ne pas promettre une autonomie alimentaire que le bâtiment ne peut offrir.\nElle propose de comparer le coût du projet à celui d’autres espaces collectifs, et pas seulement au prix des légumes récoltés. Cette comparaison ne rendrait pas le jardin automatiquement prioritaire : elle permettrait de débattre de son utilité à partir d’objectifs clairement annoncés, plutôt que d’évaluer une promesse abandonnée en cours de route."
+    },
+    {
+      "id": "fr-reading-c1-p01",
+      "version": 1,
+      "language": "fr",
+      "level": "C1",
+      "title": "Le temps rendu invisible",
+      "genre": "essay",
+      "text": "Le nouveau portail administratif est présenté comme une victoire sur l’attente. Les usagers n’ont plus à faire la queue ; le nombre de dossiers traités par agent augmente. À lire le bilan, on pourrait croire que le temps autrefois perdu a simplement disparu. Il a surtout changé de propriétaire. Scanner une pièce, comprendre une catégorie mal définie, recommencer une saisie interrompue : autant d’opérations désormais effectuées à domicile et absentes du tableau de bord.\nIl serait pourtant commode de transformer ce constat en procès de la dématérialisation. Pour qui maîtrise l’outil, pouvoir accomplir une démarche le soir constitue un gain réel. Mais ce gain ne saurait tenir lieu de description universelle. Les personnes qui sollicitent un proche ou une association ne figurent pas nécessairement parmi les usagers déclarés en difficulté : leur dossier finit par arriver, parfaitement conforme, et le système n’enregistre que cette réussite. L’aide qui l’a rendue possible devient ainsi la preuve apparente qu’elle était superflue.\nL’enjeu n’est donc pas de rétablir la file d’attente comme horizon indépassable du service public. Il est de décider ce que l’on accepte de compter comme du travail, et qui doit l’assumer. Un indicateur de rapidité peut être exact dans son périmètre tout en donnant une image trompeuse de l’ensemble. Encore faudrait-il que ce périmètre soit exposé avec autant de soin que le résultat : sans cela, l’efficacité affichée risque de désigner moins une économie de temps qu’un transfert dont les bénéficiaires et les débiteurs ne sont jamais nommés."
+    },
+    {
+      "id": "fr-reading-c1-p02",
+      "version": 1,
+      "language": "fr",
+      "level": "C1",
+      "title": "Une consultation très ouverte",
+      "genre": "editorial",
+      "text": "La ville se félicite du succès de sa consultation sur l’avenir d’une ancienne halle. Plusieurs milliers de contributions ont été recueillies, et chacun pouvait choisir entre une salle de spectacle, un espace de travail partagé ou un marché couvert. Difficile, à première vue, de reprocher aux organisateurs d’avoir confisqué la parole : les réunions étaient publiques, les documents accessibles et les préférences publiées.\nUne question demeurait néanmoins hors formulaire : fallait-il nécessairement attribuer au bâtiment une fonction unique ? Des collectifs avaient proposé un usage alterné, dont les modalités auraient demandé davantage de négociation. Leur proposition n’a pas été censurée ; elle a été classée parmi les commentaires, là où les idées sont accueillies avec toute la considération due à ce qui ne sera pas compté.\nCe décalage n’autorise pas à conclure que les résultats sont faux. Ils répondent fidèlement aux questions posées. C’est précisément leur fidélité qui peut faire illusion lorsque la décision finale se présente comme l’expression spontanée d’un souhait collectif. Le dispositif a rendu certaines préférences comparables en laissant d’autres hors de son cadre.\nToute consultation exige des limites, sans quoi aucune décision ne serait possible. Mais reconnaître cette nécessité devrait conduire à rendre ces limites discutables, et non à les soustraire au débat au nom de la participation elle-même. Le nombre de réponses renseigne sur la mobilisation ; il ne dispense pas d’examiner comment l’espace des réponses a été dessiné. La transparence du dépouillement ne remplace pas celle du choix initial des possibles."
+    },
+    {
+      "id": "fr-reading-c1-p03",
+      "version": 1,
+      "language": "fr",
+      "level": "C1",
+      "title": "La maison rendue",
+      "genre": "literary_narrative",
+      "text": "Quand Ana revint dans la maison familiale, son frère avait déjà vidé les armoires. Sur la table, il avait aligné quatre boîtes, chacune munie d’une étiquette : papiers, photographies, objets à garder, objets à donner. Cette dernière débordait. « J’ai avancé », dit-il, avec le soulagement de celui qui peut montrer son travail. Ana le remercia. Elle avait passé des mois à lui reprocher, intérieurement, de ne jamais rien terminer ; elle aurait eu mauvaise grâce à lui en vouloir maintenant.\nDans la cuisine, elle retrouva une tasse ébréchée que personne n’avait rangée. Leur mère y buvait son café, mais ce n’était pas cela qui la retint. La tasse était encore à sa place, près de la fenêtre, comme si la maison avait conservé un geste alors que tout le reste était devenu un inventaire. Ana la prit, puis la reposa.\nSon frère proposa de l’ajouter aux objets à garder. Elle répondit qu’elle n’en avait pas besoin. Il haussa légèrement les épaules : on lui demandait de trier, et lorsqu’il triait, on hésitait. Elle comprit son agacement sans parvenir à expliquer le sien. Ce qu’elle aurait voulu garder n’entrait dans aucune boîte.\nAvant de partir, elle referma la fenêtre de la cuisine, bien que la maison dût être aérée pour la visite du lendemain. Son frère ne fit aucun commentaire. Pour la première fois de la journée, il laissa une tâche inachevée : il ne rouvrit pas la fenêtre."
+    },
+    {
+      "id": "fr-reading-c1-p04",
+      "version": 1,
+      "language": "fr",
+      "level": "C1",
+      "title": "La prudence du rapport",
+      "genre": "professional_memo",
+      "text": "À l’attention du comité de direction,\nLe programme de tutorat a été suivi par quarante salariés volontaires. À son issue, trente-deux déclarent mieux comprendre les possibilités d’évolution dans l’entreprise. Ce résultat encourageant mérite d’être conservé dans le bilan. Il ne permet toutefois pas, à lui seul, d’attribuer au programme une amélioration des parcours professionnels : les participants étaient déjà engagés dans une démarche de mobilité, et aucun suivi comparable n’a été réalisé auprès des autres salariés.\nLa version actuelle du communiqué affirme que le tutorat « ouvre de nouvelles perspectives à l’ensemble du personnel ». Nous suggérons de distinguer ici une ambition, que nous partageons, d’un effet établi, que les données ne documentent pas encore. Cette distinction ne minore pas le travail accompli ; elle évite de demander aux premiers résultats de garantir ce qui relève d’une étape ultérieure.\nIl serait opportun de poursuivre l’expérimentation en incluant des personnes qui ne se portent pas spontanément candidates, sans pour autant rendre leur participation obligatoire. Des entretiens permettraient de comprendre si leur réserve tient à un manque d’intérêt, à une disponibilité insuffisante ou à la crainte que leur candidature soit interprétée comme un désengagement de leur poste actuel.\nSous réserve de ces ajustements, notre avis sur la poursuite du programme est favorable. Nous proposons simplement que la communication accompagne le développement du dispositif, plutôt qu’elle ne lui attribue par avance la portée que nous souhaitons lui donner."
+    },
+    {
+      "id": "fr-reading-c1-p05",
+      "version": 1,
+      "language": "fr",
+      "level": "C1",
+      "title": "Conserver sans figer",
+      "genre": "cultural_criticism",
+      "text": "La restauration du cinéma des Arcades a restitué les couleurs de sa façade et sauvé une salle menacée de disparition. On ne saurait traiter ce travail comme un simple décor. Pourtant, l’inauguration a surtout célébré la fidélité au bâtiment d’origine, comme si l’authenticité du lieu pouvait se lire entièrement dans ses murs.\nLes anciens habitués se souviennent aussi de séances bruyantes, de débats improvisés et de tarifs assez bas pour revenir sans y penser. Le nouvel établissement propose une programmation exigeante, mais les billets plus chers et la réservation obligatoire transforment la manière de le fréquenter. Rien de cela ne constitue en soi une trahison. Les conditions économiques ont changé, et personne ne souhaite retrouver les sièges cassés au nom de la mémoire. Il reste que l’on peut conserver une salle tout en modifiant le public auquel elle semble s’adresser.\nLe directeur affirme vouloir « rendre le cinéma à la ville ». La formule serait plus convaincante si elle ouvrait une question plutôt que de clore le débat. À quelle ville le rend-on : à celle que les archives permettent de représenter, à celle qui peut acheter ses billets, ou à celle qui n’a pas encore franchi la porte ?\nLe patrimoine n’est pas condamné à choisir entre la reproduction du passé et l’effacement de toute continuité. Mais sa transmission demande peut-être d’inventer des usages qui ne figuraient sur aucun plan ancien. Préserver le droit de s’approprier un lieu peut exiger davantage de nouveauté que la restauration minutieuse de son apparence."
+    },
+    {
+      "id": "fr-reading-c1-p06",
+      "version": 1,
+      "language": "fr",
+      "level": "C1",
+      "title": "Le droit de ne pas être recommandé",
+      "genre": "essay",
+      "text": "Une plateforme culturelle annonce qu’elle veut favoriser la découverte. Son outil propose des œuvres proches de celles que l’utilisateur a déjà appréciées, puis introduit quelques suggestions plus éloignées. On pourrait lui reprocher de ne pas aller assez loin ; ce serait encore admettre que découvrir consiste à parcourir un territoire dont nos préférences passées auraient déjà dessiné la carte.\nLe problème n’est pas que les recommandations soient mauvaises. Elles sont souvent remarquablement pertinentes. C’est leur pertinence même qui mérite examen : lorsque chaque proposition trouve sa justification dans ce que l’on sait déjà de nous, la surprise devient un écart calculé à partir d’une identité supposée stable. L’utilisateur qui change d’intérêt risque d’apparaître comme une anomalie momentanée plutôt que comme quelqu’un qui se transforme.\nIl ne s’ensuit pas qu’une sélection aléatoire serait plus émancipatrice. Être confronté à des œuvres sans aucun repère peut aussi décourager. Entre l’itinéraire parfaitement balisé et le hasard intégral, il existe pourtant des médiations : une sélection éditoriale dont on connaît le point de vue, la recommandation inattendue d’un lecteur, ou la possibilité de suspendre temporairement son profil.\nDemander cette suspension ne revient pas à souhaiter l’oubli de toute préférence. C’est revendiquer le droit de ne pas être constamment reconduit vers une version de soi devenue commode à prédire. Une plateforme soucieuse de découverte pourrait donc juger sa réussite aussi à ce qu’elle rend possible hors de ses anticipations, même si ces détours se laissent moins facilement présenter comme la preuve de sa précision."
+    }
+  ],
+  "questions": [
+    {
+      "id": "fr-reading-a1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p01",
+      "passageVersion": 1,
+      "prompt": "À quelle heure Hugo doit-il arriver chez Nora ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "À treize heures."
+        },
+        {
+          "id": "opt-2",
+          "text": "À midi."
+        },
+        {
+          "id": "opt-3",
+          "text": "À dix heures."
+        },
+        {
+          "id": "opt-4",
+          "text": "À seize heures."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Nora demande à Hugo de venir chez elle à treize heures.",
+      "tags": [
+        "explicit_detail",
+        "message"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p01",
+      "passageVersion": 1,
+      "prompt": "Que doit apporter Hugo ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Une salade."
+        },
+        {
+          "id": "opt-2",
+          "text": "Des fruits."
+        },
+        {
+          "id": "opt-3",
+          "text": "Du pain."
+        },
+        {
+          "id": "opt-4",
+          "text": "Du fromage."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Nora demande du pain à Hugo.",
+      "tags": [
+        "required_action",
+        "message"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p02",
+      "passageVersion": 1,
+      "prompt": "Quel jour la piscine est-elle fermée ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le lundi."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le dimanche."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le vendredi."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le samedi."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "La piscine est fermée le dimanche.",
+      "tags": [
+        "explicit_detail",
+        "notice"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p02",
+      "passageVersion": 1,
+      "prompt": "Combien coûte une entrée pour un enfant ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "5 euros."
+        },
+        {
+          "id": "opt-2",
+          "text": "9 euros."
+        },
+        {
+          "id": "opt-3",
+          "text": "10 euros."
+        },
+        {
+          "id": "opt-4",
+          "text": "3 euros."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le prix indiqué pour les enfants est de 3 euros.",
+      "tags": [
+        "explicit_detail",
+        "notice"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p03",
+      "passageVersion": 1,
+      "prompt": "Où se trouve l’appartement ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Près de la gare."
+        },
+        {
+          "id": "opt-2",
+          "text": "Près de la piscine."
+        },
+        {
+          "id": "opt-3",
+          "text": "Au-dessus d’un magasin."
+        },
+        {
+          "id": "opt-4",
+          "text": "À côté d’une école."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "L’annonce situe l’appartement près de la gare.",
+      "tags": [
+        "explicit_detail",
+        "advertisement"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p03",
+      "passageVersion": 1,
+      "prompt": "Comment demander une visite ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "En envoyant un message."
+        },
+        {
+          "id": "opt-2",
+          "text": "En téléphonant avant midi."
+        },
+        {
+          "id": "opt-3",
+          "text": "En téléphonant après 18 heures."
+        },
+        {
+          "id": "opt-4",
+          "text": "En allant à la gare."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Il faut appeler Mme Petit après 18 heures pour visiter.",
+      "tags": [
+        "required_action",
+        "advertisement"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p04",
+      "passageVersion": 1,
+      "prompt": "Où le groupe se retrouve-t-il le matin ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Dans le jardin des Roses."
+        },
+        {
+          "id": "opt-2",
+          "text": "Devant l’école."
+        },
+        {
+          "id": "opt-3",
+          "text": "Devant la gare."
+        },
+        {
+          "id": "opt-4",
+          "text": "Chez Lucie."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Le rendez-vous du matin est devant l’école.",
+      "tags": [
+        "explicit_detail",
+        "email"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p04",
+      "passageVersion": 1,
+      "prompt": "Comment le groupe va-t-il au jardin ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "À pied."
+        },
+        {
+          "id": "opt-2",
+          "text": "En train."
+        },
+        {
+          "id": "opt-3",
+          "text": "À vélo."
+        },
+        {
+          "id": "opt-4",
+          "text": "En bus."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le groupe part en bus.",
+      "tags": [
+        "explicit_detail",
+        "email"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p05",
+      "passageVersion": 1,
+      "prompt": "Où prend-on le petit-déjeuner ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Au rez-de-chaussée."
+        },
+        {
+          "id": "opt-2",
+          "text": "Dans les chambres."
+        },
+        {
+          "id": "opt-3",
+          "text": "Au premier étage."
+        },
+        {
+          "id": "opt-4",
+          "text": "Sur la terrasse."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Le petit-déjeuner est servi au rez-de-chaussée.",
+      "tags": [
+        "explicit_detail",
+        "instructions"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p05",
+      "passageVersion": 1,
+      "prompt": "Que faut-il faire pour avoir un café ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le prendre sur la grande table."
+        },
+        {
+          "id": "opt-2",
+          "text": "Aller dans sa chambre."
+        },
+        {
+          "id": "opt-3",
+          "text": "Demander à Paul."
+        },
+        {
+          "id": "opt-4",
+          "text": "Donner sa clé à Paul."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Paul est la personne à qui demander un café.",
+      "tags": [
+        "required_action",
+        "instructions"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p06",
+      "passageVersion": 1,
+      "prompt": "Quand a lieu le cours pour les enfants ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le mardi à 18 heures."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le mercredi à 14 heures."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le mercredi à 18 heures."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le mardi à 14 heures."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Les enfants ont cours le mercredi à 14 heures.",
+      "tags": [
+        "explicit_detail",
+        "notice"
+      ]
+    },
+    {
+      "id": "fr-reading-a1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a1-p06",
+      "passageVersion": 1,
+      "prompt": "Que faut-il apporter au cours ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Du papier."
+        },
+        {
+          "id": "opt-2",
+          "text": "Une table."
+        },
+        {
+          "id": "opt-3",
+          "text": "Un livre."
+        },
+        {
+          "id": "opt-4",
+          "text": "Des crayons."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le club demande d’apporter des crayons et fournit le papier.",
+      "tags": [
+        "required_action",
+        "notice"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p01",
+      "passageVersion": 1,
+      "prompt": "Léa rentre aujourd’hui à 19 heures. Quand peut-elle récupérer son colis, selon le message ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Demain matin."
+        },
+        {
+          "id": "opt-2",
+          "text": "Aujourd’hui à 19 heures chez Mme Roux."
+        },
+        {
+          "id": "opt-3",
+          "text": "Ce soir à la poste."
+        },
+        {
+          "id": "opt-4",
+          "text": "Aujourd’hui au travail de Sami."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "À 19 heures, Mme Roux est sortie. Le message propose le lendemain matin.",
+      "tags": [
+        "practical_information",
+        "message"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p01",
+      "passageVersion": 1,
+      "prompt": "Pourquoi Sami a-t-il laissé le colis chez Mme Roux ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Parce qu’il allait au cinéma."
+        },
+        {
+          "id": "opt-2",
+          "text": "Parce que Léa habite chez Mme Roux."
+        },
+        {
+          "id": "opt-3",
+          "text": "Parce qu’il devait aller travailler."
+        },
+        {
+          "id": "opt-4",
+          "text": "Parce que le livreur devait revenir."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Sami explique qu’il part travailler.",
+      "tags": [
+        "explicit_reason",
+        "message"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p02",
+      "passageVersion": 1,
+      "prompt": "Nadia ne sait pas cuisiner et voudrait apprendre à préparer un repas végétarien. Quel atelier lui convient ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Photos en ville."
+        },
+        {
+          "id": "opt-2",
+          "text": "Cuisine facile."
+        },
+        {
+          "id": "opt-3",
+          "text": "Jardin sur le balcon."
+        },
+        {
+          "id": "opt-4",
+          "text": "Les trois ateliers."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Cuisine facile accepte les débutants et propose un repas sans viande.",
+      "tags": [
+        "matching_needs",
+        "advertisement"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p02",
+      "passageVersion": 1,
+      "prompt": "Que doit apporter une personne inscrite à « Photos en ville » ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Des plantes."
+        },
+        {
+          "id": "opt-2",
+          "text": "Un repas."
+        },
+        {
+          "id": "opt-3",
+          "text": "Des pots."
+        },
+        {
+          "id": "opt-4",
+          "text": "Son appareil photo."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Les participants à Photos en ville doivent apporter leur appareil.",
+      "tags": [
+        "required_action",
+        "advertisement"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p03",
+      "passageVersion": 1,
+      "prompt": "Pourquoi Émilie et ses amis ont-ils visité le musée ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Parce que le château était fermé."
+        },
+        {
+          "id": "opt-2",
+          "text": "Parce qu’il pleuvait avant leur départ."
+        },
+        {
+          "id": "opt-3",
+          "text": "Parce que le café était fermé."
+        },
+        {
+          "id": "opt-4",
+          "text": "Parce qu’ils avaient réservé au musée."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Le musée remplace la visite du château fermé pour travaux.",
+      "tags": [
+        "explicit_reason",
+        "email"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p03",
+      "passageVersion": 1,
+      "prompt": "Qu’ont-ils fait juste après la visite du musée ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Ils ont visité le château."
+        },
+        {
+          "id": "opt-2",
+          "text": "Ils sont rentrés à pied."
+        },
+        {
+          "id": "opt-3",
+          "text": "Ils ont mangé dans un café."
+        },
+        {
+          "id": "opt-4",
+          "text": "Ils ont acheté de vieux jouets."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Le repas au café vient juste après la visite.",
+      "tags": [
+        "sequence",
+        "email"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p04",
+      "passageVersion": 1,
+      "prompt": "Où les habitants peuvent-ils mettre leur vélo pendant les travaux ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Dans le couloir."
+        },
+        {
+          "id": "opt-2",
+          "text": "Dans la cour, sous le toit."
+        },
+        {
+          "id": "opt-3",
+          "text": "Dans le local à vélos."
+        },
+        {
+          "id": "opt-4",
+          "text": "Dans le bureau du gardien."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "La cour couverte est le lieu proposé pendant les travaux.",
+      "tags": [
+        "practical_information",
+        "notice"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p04",
+      "passageVersion": 1,
+      "prompt": "Pourquoi faut-il laisser le couloir libre ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Pour y ranger les outils."
+        },
+        {
+          "id": "opt-2",
+          "text": "Pour y réparer les vélos."
+        },
+        {
+          "id": "opt-3",
+          "text": "Pour fermer l’entrée de la résidence."
+        },
+        {
+          "id": "opt-4",
+          "text": "Pour permettre aux voisins de passer."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le couloir doit rester libre pour le passage des voisins.",
+      "tags": [
+        "explicit_reason",
+        "notice"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p05",
+      "passageVersion": 1,
+      "prompt": "Quel don la bibliothèque accepte-t-elle le samedi matin ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Un roman en bon état pour adolescents."
+        },
+        {
+          "id": "opt-2",
+          "text": "Un magazine récent."
+        },
+        {
+          "id": "opt-3",
+          "text": "Un livre pour adolescents avec des pages manquantes."
+        },
+        {
+          "id": "opt-4",
+          "text": "Une collection de journaux."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Le don doit être un livre pour adolescents en bon état.",
+      "tags": [
+        "practical_information",
+        "short_article"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p05",
+      "passageVersion": 1,
+      "prompt": "Que doivent faire les parents pendant la lecture du mercredi ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Attendre à l’extérieur."
+        },
+        {
+          "id": "opt-2",
+          "text": "Lire les histoires à la place de la bénévole."
+        },
+        {
+          "id": "opt-3",
+          "text": "Rester avec leurs enfants."
+        },
+        {
+          "id": "opt-4",
+          "text": "Revenir chercher les enfants le samedi."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Les parents doivent rester avec leurs enfants pendant la lecture.",
+      "tags": [
+        "required_action",
+        "short_article"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p06",
+      "passageVersion": 1,
+      "prompt": "Que comprend le menu à 18 euros ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Un plat et une boisson."
+        },
+        {
+          "id": "opt-2",
+          "text": "Un plat et un dessert."
+        },
+        {
+          "id": "opt-3",
+          "text": "Une entrée et un plat."
+        },
+        {
+          "id": "opt-4",
+          "text": "Un dessert et une boisson."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Le prix comprend le plat et le dessert, sans les boissons.",
+      "tags": [
+        "practical_information",
+        "workplace_message"
+      ]
+    },
+    {
+      "id": "fr-reading-a2-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-a2-p06",
+      "passageVersion": 1,
+      "prompt": "Paul annule vendredi matin. Que devra-t-il faire, selon le message ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Choisir un autre plat."
+        },
+        {
+          "id": "opt-2",
+          "text": "Payer seulement une boisson."
+        },
+        {
+          "id": "opt-3",
+          "text": "Ne rien payer."
+        },
+        {
+          "id": "opt-4",
+          "text": "Payer son repas."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Vendredi matin est après jeudi midi : le repas reste à payer.",
+      "tags": [
+        "practical_information",
+        "workplace_message"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p01",
+      "passageVersion": 1,
+      "prompt": "Pourquoi les responsables ont-ils renoncé à ouvrir tous les jours ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Pour éviter de trop demander aux bénévoles."
+        },
+        {
+          "id": "opt-2",
+          "text": "Parce que les clients ne viennent jamais le lundi."
+        },
+        {
+          "id": "opt-3",
+          "text": "Pour supprimer les activités pour les enfants."
+        },
+        {
+          "id": "opt-4",
+          "text": "Parce qu’ils ont déjà embauché une personne."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Les horaires limités doivent préserver l’équipe bénévole et permettre au café de durer.",
+      "tags": [
+        "explicit_reason",
+        "local_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p01",
+      "passageVersion": 1,
+      "prompt": "Comment le projet a-t-il évolué depuis son début ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Les bénévoles ont tous été remplacés par des salariés."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le café est devenu une école à temps plein."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le lieu de rencontre propose désormais plusieurs activités."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le café a abandonné son rôle de lieu de rencontre."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Au lieu de seulement accueillir des discussions, le café organise aussi des activités.",
+      "tags": [
+        "main_idea",
+        "local_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p02",
+      "passageVersion": 1,
+      "prompt": "Qu’est-ce qui a surtout motivé le choix de ce stage ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La réputation de l’entreprise auprès de ses amis."
+        },
+        {
+          "id": "opt-2",
+          "text": "La possibilité de suivre un projet complet."
+        },
+        {
+          "id": "opt-3",
+          "text": "La garantie d’obtenir un emploi ensuite."
+        },
+        {
+          "id": "opt-4",
+          "text": "La proximité de sa famille."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Le projet complet proposé a été l’élément décisif.",
+      "tags": [
+        "motivation",
+        "personal_account"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p02",
+      "passageVersion": 1,
+      "prompt": "Quel bilan la personne fait-elle de son stage ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Il a été inutile puisqu’il n’a pas mené à un emploi."
+        },
+        {
+          "id": "opt-2",
+          "text": "Il a été facile dès le premier jour."
+        },
+        {
+          "id": "opt-3",
+          "text": "Il a surtout permis de se rapprocher de sa famille."
+        },
+        {
+          "id": "opt-4",
+          "text": "Il a été utile malgré certaines difficultés personnelles."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le stage a clarifié son projet professionnel malgré l’éloignement.",
+      "tags": [
+        "overall_attitude",
+        "personal_account"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p03",
+      "passageVersion": 1,
+      "prompt": "Quel lieu respecte toutes les conditions annoncées par le groupe ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La salle des Peupliers."
+        },
+        {
+          "id": "opt-2",
+          "text": "La salle du Parc."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le studio Canal."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le centre du Marché."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Les Peupliers conviennent pour le nombre de personnes, le budget, l’accès et le jour.",
+      "tags": [
+        "matching_criteria",
+        "comparison"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p03",
+      "passageVersion": 1,
+      "prompt": "Avec un budget de 80 euros, quel lieu respecterait les conditions d’accès du groupe et serait équipé pour jouer ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La salle du Parc."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le centre du Marché."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le studio Canal."
+        },
+        {
+          "id": "opt-4",
+          "text": "Aucun autre lieu."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Avec un budget de 80 euros, le studio Canal répond aux conditions d’accès et d’équipement indiquées.",
+      "tags": [
+        "matching_criteria",
+        "comparison"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p04",
+      "passageVersion": 1,
+      "prompt": "Pourquoi les propriétaires participent-ils eux-mêmes aux réparations ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Pour travailler ensuite comme bénévoles obligatoires."
+        },
+        {
+          "id": "opt-2",
+          "text": "Pour apprendre à comprendre une panne et les solutions possibles."
+        },
+        {
+          "id": "opt-3",
+          "text": "Pour vendre leurs objets aux réparateurs."
+        },
+        {
+          "id": "opt-4",
+          "text": "Pour éviter tout recours à un professionnel."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "L’atelier vise l’apprentissage des participants, pas seulement la réparation des objets.",
+      "tags": [
+        "purpose",
+        "short_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p04",
+      "passageVersion": 1,
+      "prompt": "Selon l’association, quand une séance peut-elle être considérée comme réussie ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Seulement quand tous les appareils sont réparés sur place."
+        },
+        {
+          "id": "opt-2",
+          "text": "Quand les participants achètent tous un nouvel appareil."
+        },
+        {
+          "id": "opt-3",
+          "text": "Quand les réparateurs gardent les objets une semaine."
+        },
+        {
+          "id": "opt-4",
+          "text": "Quand une personne sait mieux quoi faire de son objet, même s’il reste en panne."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Mieux comprendre ses options est aussi un résultat utile.",
+      "tags": [
+        "main_conclusion",
+        "short_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p05",
+      "passageVersion": 1,
+      "prompt": "Quel problème le vélo a-t-il permis de résoudre pour Malik ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La distance entre la gare d’arrivée et les bureaux."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le manque de place dans sa voiture."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le prix élevé des billets de train."
+        },
+        {
+          "id": "opt-4",
+          "text": "L’absence de train près de son domicile."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Le vélo lui permet d’effectuer la dernière partie du trajet après le train.",
+      "tags": [
+        "cause_and_solution",
+        "personal_account"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p05",
+      "passageVersion": 1,
+      "prompt": "Quel conseil correspond à l’avis de Malik ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Vendre sa voiture avant d’essayer le train."
+        },
+        {
+          "id": "opt-2",
+          "text": "Choisir le train uniquement s’il réduit le temps de trajet."
+        },
+        {
+          "id": "opt-3",
+          "text": "Étudier cette solution en tenant compte de sa propre situation."
+        },
+        {
+          "id": "opt-4",
+          "text": "Copier ses déplacements sans vérifier les horaires."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Malik recommande d’examiner les conditions pratiques avant d’adopter cette solution.",
+      "tags": [
+        "overall_attitude",
+        "personal_account"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p06",
+      "passageVersion": 1,
+      "prompt": "Qu’a révélé la rencontre avec les voisins ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Les habitants refusaient tous de lire."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le fonctionnement de la boîte était mal connu."
+        },
+        {
+          "id": "opt-3",
+          "text": "L’école avait interdit l’accès à la boîte."
+        },
+        {
+          "id": "opt-4",
+          "text": "Les livres étaient trop chers."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Les habitants manquaient d’informations sur l’accès gratuit à la boîte.",
+      "tags": [
+        "cause_and_effect",
+        "local_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b1-p06",
+      "passageVersion": 1,
+      "prompt": "Que fera la ville avant de décider d’un déplacement ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Fermer immédiatement les trois boîtes."
+        },
+        {
+          "id": "opt-2",
+          "text": "Faire payer les livres du square."
+        },
+        {
+          "id": "opt-3",
+          "text": "Confier définitivement la boîte à l’école."
+        },
+        {
+          "id": "opt-4",
+          "text": "Mieux informer les habitants, puis observer l’utilisation."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "La ville prévoit d’abord des informations et une rencontre, puis une période d’attente.",
+      "tags": [
+        "sequence_and_plan",
+        "local_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p01",
+      "passageVersion": 1,
+      "prompt": "Quelle position l’association défend-elle ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Poursuivre l’essai avec des aménagements et une évaluation plus complète."
+        },
+        {
+          "id": "opt-2",
+          "text": "Abandonner le projet puisque toutes les ventes ont baissé."
+        },
+        {
+          "id": "opt-3",
+          "text": "Généraliser la mesure puisque les passages ont augmenté."
+        },
+        {
+          "id": "opt-4",
+          "text": "Réserver la rue aux seuls clients des boutiques."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "L’association soutient l’objectif, mais demande des adaptations et davantage de preuves.",
+      "tags": [
+        "qualified_stance",
+        "opinion_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p01",
+      "passageVersion": 1,
+      "prompt": "Pourquoi l’association évoque-t-elle la curiosité des premières semaines ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Pour prouver que les visiteurs ne feront jamais d’achats."
+        },
+        {
+          "id": "opt-2",
+          "text": "Pour expliquer pourquoi les livraisons doivent cesser."
+        },
+        {
+          "id": "opt-3",
+          "text": "Pour montrer que la hausse observée pourrait être temporaire."
+        },
+        {
+          "id": "opt-4",
+          "text": "Pour affirmer que les commerçants ont falsifié les chiffres."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "L’effet de nouveauté peut rendre les premiers chiffres peu représentatifs de la suite.",
+      "tags": [
+        "argument_function",
+        "opinion_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p02",
+      "passageVersion": 1,
+      "prompt": "Qui insiste surtout sur la nécessité de prévoir la journée libre à l’avance ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Camille."
+        },
+        {
+          "id": "opt-2",
+          "text": "Élodie."
+        },
+        {
+          "id": "opt-3",
+          "text": "Yanis."
+        },
+        {
+          "id": "opt-4",
+          "text": "Les trois personnes de la même manière."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Élodie lie les avantages pratiques à la possibilité de prévoir la journée libre.",
+      "tags": [
+        "viewpoint_attribution",
+        "forum"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p02",
+      "passageVersion": 1,
+      "prompt": "Sur quel point Camille et Yanis se rejoignent-ils ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Tous les métiers permettent de supprimer les mêmes tâches."
+        },
+        {
+          "id": "opt-2",
+          "text": "Il faut diminuer les salaires pour financer la réforme."
+        },
+        {
+          "id": "opt-3",
+          "text": "La semaine de quatre jours doit être refusée dans toutes les entreprises."
+        },
+        {
+          "id": "opt-4",
+          "text": "Changer le calendrier ne suffit pas : il faut repenser le travail."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Camille demande d’adapter la charge et Yanis l’organisation : le calendrier seul ne suffit pas.",
+      "tags": [
+        "shared_position",
+        "forum"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p03",
+      "passageVersion": 1,
+      "prompt": "Pourquoi le nombre de clients inscrits ne suffit-il pas à évaluer le dispositif ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Parce que l’inscription ne garantit pas des retours et des réutilisations effectives."
+        },
+        {
+          "id": "opt-2",
+          "text": "Parce que seuls les clients non inscrits peuvent rapporter les récipients."
+        },
+        {
+          "id": "opt-3",
+          "text": "Parce que les récipients solides ne peuvent jamais être écologiques."
+        },
+        {
+          "id": "opt-4",
+          "text": "Parce que le montant de la consigne mesure directement les déchets évités."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "L’effet environnemental dépend de l’usage répété, pas de la seule adhésion au programme.",
+      "tags": [
+        "evidence_evaluation",
+        "opinion_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p03",
+      "passageVersion": 1,
+      "prompt": "Comment l’association juge-t-elle les nouveaux points de dépôt ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Ils prouvent déjà la supériorité environnementale du dispositif."
+        },
+        {
+          "id": "opt-2",
+          "text": "Ils sont moins utiles qu’une campagne accusant les clients."
+        },
+        {
+          "id": "opt-3",
+          "text": "Ils facilitent le retour, mais leur effet doit encore être vérifié."
+        },
+        {
+          "id": "opt-4",
+          "text": "Ils doivent remplacer complètement le lavage des récipients."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "L’association approuve l’amélioration pratique sans considérer son efficacité comme démontrée.",
+      "tags": [
+        "qualified_stance",
+        "opinion_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p04",
+      "passageVersion": 1,
+      "prompt": "Que demandent principalement les gardiens ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le maintien obligatoire de tous les horaires actuels."
+        },
+        {
+          "id": "opt-2",
+          "text": "Des conditions équitables et pratiques pour assurer le service du soir."
+        },
+        {
+          "id": "opt-3",
+          "text": "L’interdiction de toute ouverture après 18 heures."
+        },
+        {
+          "id": "opt-4",
+          "text": "La réservation du vendredi aux retraités."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Les gardiens demandent une répartition négociée du travail et des possibilités de retour.",
+      "tags": [
+        "viewpoint_attribution",
+        "discussion"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p04",
+      "passageVersion": 1,
+      "prompt": "Que reproche l’éditorial à l’opposition entre modernité et immobilisme ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Elle accorde trop d’importance au prix des collections."
+        },
+        {
+          "id": "opt-2",
+          "text": "Elle empêche de prouver que les retraités refusent toute nouveauté."
+        },
+        {
+          "id": "opt-3",
+          "text": "Elle donne trop de pouvoir aux visiteurs du vendredi."
+        },
+        {
+          "id": "opt-4",
+          "text": "Elle masque les effets différents de la réforme sur les personnes concernées."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "L’éditorial veut examiner les avantages et les contraintes selon les publics et le personnel.",
+      "tags": [
+        "author_stance",
+        "discussion"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p05",
+      "passageVersion": 1,
+      "prompt": "Quelle conclusion respecte les réserves de l’enseignante ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La participation peut rendre la présence utile, mais les absences ont aussi des causes pratiques."
+        },
+        {
+          "id": "opt-2",
+          "text": "Chaque absence prouve que le cours est de mauvaise qualité."
+        },
+        {
+          "id": "opt-3",
+          "text": "Les enregistrements font baisser la présence dans tous les cours."
+        },
+        {
+          "id": "opt-4",
+          "text": "Les étudiants qui travaillent doivent renoncer aux enregistrements."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "L’intérêt de la présence compte, sans expliquer toutes les absences.",
+      "tags": [
+        "scope_of_claim",
+        "opinion_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p05",
+      "passageVersion": 1,
+      "prompt": "Quel rôle joue la remarque sur les étudiants mal connectés ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Elle montre que les exercices participatifs doivent être supprimés."
+        },
+        {
+          "id": "opt-2",
+          "text": "Elle prouve que les cours en ligne coûtent toujours plus cher."
+        },
+        {
+          "id": "opt-3",
+          "text": "Elle distingue la disponibilité du contenu de la possibilité réelle d’y accéder."
+        },
+        {
+          "id": "opt-4",
+          "text": "Elle conseille de réserver les fichiers aux étudiants vivant près du campus."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "L’accès réel suppose aussi des équipements et une connexion utilisable.",
+      "tags": [
+        "argument_function",
+        "opinion_article"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p06",
+      "passageVersion": 1,
+      "prompt": "Sur quoi porte principalement le désaccord entre les habitants ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Sur la nécessité de renforcer un toit déjà réparé."
+        },
+        {
+          "id": "opt-2",
+          "text": "Sur la place à donner à la production alimentaire par rapport aux usages collectifs."
+        },
+        {
+          "id": "opt-3",
+          "text": "Sur l’interdiction de cultiver des légumes en ville."
+        },
+        {
+          "id": "opt-4",
+          "text": "Sur le choix de vendre ou de donner une récolte abondante."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Les habitants ne donnent pas le même poids à la récolte et à la vie collective.",
+      "tags": [
+        "competing_criteria",
+        "local_report"
+      ]
+    },
+    {
+      "id": "fr-reading-b2-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-b2-p06",
+      "passageVersion": 1,
+      "prompt": "Que permettrait la comparaison proposée par la coordinatrice ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "De démontrer que le jardin doit forcément passer avant tous les autres projets."
+        },
+        {
+          "id": "opt-2",
+          "text": "De revenir à la promesse d’autonomie alimentaire."
+        },
+        {
+          "id": "opt-3",
+          "text": "De supprimer les dépenses liées aux espaces collectifs."
+        },
+        {
+          "id": "opt-4",
+          "text": "De juger le projet selon ses objectifs réels sans garantir son financement."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Comparer les usages collectifs clarifie le débat, mais ne décide pas d’avance du résultat.",
+      "tags": [
+        "purpose",
+        "local_report"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p01",
+      "passageVersion": 1,
+      "prompt": "Quel présupposé du bilan l’auteur met-il principalement en cause ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le temps non mesuré par l’administration aurait cessé d’être une charge pour quelqu’un."
+        },
+        {
+          "id": "opt-2",
+          "text": "Les gains de rapidité internes démontreraient que chaque usager est devenu autonome."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le travail des proches serait déjà intégré au coût officiel de chaque dossier."
+        },
+        {
+          "id": "opt-4",
+          "text": "Toute tâche transférée aux usagers produirait nécessairement un dossier moins conforme."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "L’auteur conteste l’assimilation entre la disparition d’une attente mesurée et la disparition du travail nécessaire.",
+      "tags": [
+        "implicit_assumption",
+        "essay"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p01",
+      "passageVersion": 1,
+      "prompt": "Que signifie le paradoxe selon lequel l’aide devient la preuve qu’elle était superflue ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La réussite d’une démarche rendrait tout soutien inutile pour les démarches suivantes."
+        },
+        {
+          "id": "opt-2",
+          "text": "L’aide serait reconnue dans le bilan, mais jugée trop coûteuse pour être maintenue."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le succès obtenu grâce à une aide extérieure peut masquer le besoin même de cette aide."
+        },
+        {
+          "id": "opt-4",
+          "text": "Les dossiers sans aide seraient considérés comme moins fiables que les dossiers accompagnés."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Le résultat visible efface le soutien invisible qui l’a permis, d’où une conclusion erronée sur son inutilité.",
+      "tags": [
+        "rhetorical_paradox",
+        "essay"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p02",
+      "passageVersion": 1,
+      "prompt": "Quel effet produit la formule sur « toute la considération due à ce qui ne sera pas compté » ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Elle annonce qu’un examen spécifique des commentaires donnera davantage de poids à cette proposition."
+        },
+        {
+          "id": "opt-2",
+          "text": "Elle souligne ironiquement qu’un accueil poli peut coexister avec une exclusion de la décision."
+        },
+        {
+          "id": "opt-3",
+          "text": "Elle dénonce la suppression matérielle des commentaires pour faciliter le dépouillement."
+        },
+        {
+          "id": "opt-4",
+          "text": "Elle suggère que les collectifs ont choisi de rester hors du vote pour protéger leur indépendance."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "La politesse affichée contraste avec l’absence d’effet de cette proposition sur le décompte.",
+      "tags": [
+        "ironic_tone",
+        "editorial"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p02",
+      "passageVersion": 1,
+      "prompt": "Quelle critique rend le mieux compte de l’ensemble de l’éditorial ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Une consultation n’est légitime que si aucune limite ne restreint les propositions possibles."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le nombre élevé de participants suffit à effacer les défauts du questionnaire initial."
+        },
+        {
+          "id": "opt-3",
+          "text": "Des résultats fidèles aux réponses garantissent que toutes les attentes ont été représentées."
+        },
+        {
+          "id": "opt-4",
+          "text": "Une consultation peut être honnêtement menée tout en limitant en amont les choix qui auront du poids."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "L’auteur distingue l’honnêteté du traitement des réponses et les effets du cadrage préalable.",
+      "tags": [
+        "scope_of_criticism",
+        "editorial"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p03",
+      "passageVersion": 1,
+      "prompt": "Pourquoi la tasse retient-elle particulièrement l’attention d’Ana ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Sa place préservée maintient une trace de vie que le classement des objets est en train d’effacer."
+        },
+        {
+          "id": "opt-2",
+          "text": "Elle offre enfin à Ana un objet personnel qu’elle pourra substituer à tous ses autres souvenirs."
+        },
+        {
+          "id": "opt-3",
+          "text": "Elle révèle à Ana un défaut de méthode qu’elle souhaite faire corriger avant de poursuivre le tri."
+        },
+        {
+          "id": "opt-4",
+          "text": "Elle confirme que son frère partage déjà son souhait de laisser la cuisine intacte."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "La tasse compte par la continuité du geste et du lieu, plus que comme objet à posséder.",
+      "tags": [
+        "literary_inference",
+        "literary_narrative"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p03",
+      "passageVersion": 1,
+      "prompt": "Dans le contexte du récit, que suggère surtout le choix final du frère de ne pas rouvrir la fenêtre ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Il cherche surtout à prouver qu’Ana devra désormais assumer seule les tâches qu’elle retarde."
+        },
+        {
+          "id": "opt-2",
+          "text": "Il renonce au projet de visite afin de préserver définitivement la maison telle qu’elle était."
+        },
+        {
+          "id": "opt-3",
+          "text": "Il accepte discrètement de suspendre sa logique d’efficacité pour laisser une place au besoin d’Ana."
+        },
+        {
+          "id": "opt-4",
+          "text": "Il estime que le classement des objets a déjà répondu à toutes les attentes de sa sœur."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Après les tensions liées au rangement, cette suspension volontaire suggère une concession silencieuse.",
+      "tags": [
+        "implicit_relationship",
+        "literary_narrative"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p04",
+      "passageVersion": 1,
+      "prompt": "Quelle est la fonction principale de la formule « une ambition, que nous partageons » ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Transformer l’accord sur l’objectif en validation des effets déjà annoncés dans le communiqué."
+        },
+        {
+          "id": "opt-2",
+          "text": "Maintenir l’accord sur l’objectif tout en contestant la solidité de l’affirmation publique."
+        },
+        {
+          "id": "opt-3",
+          "text": "Faire dépendre l’avenir du programme du retrait de toute ambition d’élargissement."
+        },
+        {
+          "id": "opt-4",
+          "text": "Présenter le désaccord comme une simple préférence stylistique sans enjeu de fond."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "La formule atténue le désaccord sur la communication en réaffirmant un objectif commun.",
+      "tags": [
+        "professional_register",
+        "professional_memo"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p04",
+      "passageVersion": 1,
+      "prompt": "Pourquoi les auteurs proposent-ils d’interroger les salariés qui ne se présentent pas spontanément ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Pour établir que le manque de disponibilité explique à lui seul l’absence de candidatures."
+        },
+        {
+          "id": "opt-2",
+          "text": "Pour confirmer, auprès d’un autre public, une efficacité déjà démontrée sur les carrières."
+        },
+        {
+          "id": "opt-3",
+          "text": "Pour remplacer les déclarations des volontaires par celles de personnes jugées plus objectives."
+        },
+        {
+          "id": "opt-4",
+          "text": "Pour éclairer des obstacles possibles que le seul retour des volontaires ne permet pas d’identifier."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Les entretiens doivent explorer plusieurs raisons possibles de non-participation, invisibles dans le bilan des volontaires.",
+      "tags": [
+        "inference_limits",
+        "professional_memo"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p05",
+      "passageVersion": 1,
+      "prompt": "Quel paradoxe soutient la conclusion du texte ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La continuité d’un lieu peut nécessiter de nouveaux usages plutôt que la reproduction de ses anciennes formes."
+        },
+        {
+          "id": "opt-2",
+          "text": "La fidélité aux usages anciens suppose de renoncer à toute amélioration du confort de la salle."
+        },
+        {
+          "id": "opt-3",
+          "text": "La restauration de l’apparence suffit à préserver le rapport collectif au lieu, malgré de nouveaux tarifs."
+        },
+        {
+          "id": "opt-4",
+          "text": "La transmission du patrimoine devient possible seulement après l’effacement des traces de son histoire."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "L’auteur distingue la fidélité à l’apparence et la continuité d’un rapport vivant au lieu.",
+      "tags": [
+        "central_paradox",
+        "cultural_criticism"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p05",
+      "passageVersion": 1,
+      "prompt": "À quoi servent les trois questions sur la ville à laquelle le cinéma serait rendu ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "À désigner les anciens habitués comme les seuls représentants légitimes de la ville."
+        },
+        {
+          "id": "opt-2",
+          "text": "À montrer que la ville actuelle se confond désormais avec les personnes qui achètent des billets."
+        },
+        {
+          "id": "opt-3",
+          "text": "À mettre en évidence les publics différents que la formule du directeur réunit sans les distinguer."
+        },
+        {
+          "id": "opt-4",
+          "text": "À établir un ordre de priorité déjà arrêté entre les archives, les clients et les futurs visiteurs."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Les questions décomposent l’apparente unité de « la ville » en publics aux rapports différents au lieu.",
+      "tags": [
+        "rhetorical_question",
+        "cultural_criticism"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p06",
+      "passageVersion": 1,
+      "prompt": "Quelle conception de l’utilisateur l’auteur critique-t-il à travers l’image de la carte ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Celle d’une personne dont les préférences seraient trop imprécises pour permettre une recommandation utile."
+        },
+        {
+          "id": "opt-2",
+          "text": "Celle d’une personne dont les goûts antérieurs délimiteraient durablement les découvertes pertinentes."
+        },
+        {
+          "id": "opt-3",
+          "text": "Celle d’une personne qui devrait oublier toute expérience antérieure pour pouvoir découvrir une œuvre."
+        },
+        {
+          "id": "opt-4",
+          "text": "Celle d’une personne dont le profil ne retiendrait que les œuvres sélectionnées au hasard."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "La métaphore remet en cause la réduction des découvertes futures au profil construit à partir du passé.",
+      "tags": [
+        "implicit_assumption",
+        "essay"
+      ]
+    },
+    {
+      "id": "fr-reading-c1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "reading",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "passageId": "fr-reading-c1-p06",
+      "passageVersion": 1,
+      "prompt": "Quelle proposition est la plus fidèle à la position de l’auteur ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Remplacer toutes les recommandations par un tirage aléatoire afin de supprimer les influences."
+        },
+        {
+          "id": "opt-2",
+          "text": "Améliorer uniquement la précision des profils pour prévoir chaque changement de goût."
+        },
+        {
+          "id": "opt-3",
+          "text": "Conserver exclusivement les œuvres correspondant aux préférences déjà enregistrées."
+        },
+        {
+          "id": "opt-4",
+          "text": "Permettre des parcours moins dépendants du profil, sans supprimer toute forme d’accompagnement."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "L’auteur propose des médiations et une suspension du profil, entre prédiction intégrale et hasard sans repères.",
+      "tags": [
+        "qualified_proposal",
+        "essay"
+      ]
+    }
+  ]
+}

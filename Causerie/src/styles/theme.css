@@ -859,7 +859,7 @@ button:disabled,
     grid-template-rows:
         auto
         minmax(150px, 1fr)
-        clamp(100px, 18dvh, 170px);
+        clamp(200px, 36dvh, 340px);
     align-items: stretch;
     justify-items: center;
     gap: 0.85rem;
@@ -876,7 +876,7 @@ button:disabled,
 }
 
 .cw .cw-stage > .cw-mascot {
-    width: min(100%, 260px);
+    width: min(100%, 520px);
     height: 100%;
     min-width: 0;
     min-height: 0;
@@ -977,9 +977,8 @@ button:disabled,
 @media (max-width: 1000px) {
     .cw .cw-practice {
         grid-template-rows:
-            auto
-            clamp(380px, 60dvh, 560px)
-            minmax(210px, auto);
+                auto minmax(150px, 1fr) 220px;
+
     }
 
     .cw .cw-stage {
@@ -989,7 +988,7 @@ button:disabled,
     }
 
     .cw .cw-stage > .cw-mascot {
-        width: min(100%, 200px);
+        width: min(100%, 400px);
     }
 }
 
@@ -1267,14 +1266,14 @@ button:disabled,
         grid-template-rows:
             auto
             minmax(110px, 1fr)
-            clamp(65px, 13dvh, 110px);
+            clamp(130px, 26dvh, 220px);
         gap: 0.5rem;
         padding: 0.65rem;
         overflow: auto;
     }
 
     .cw .cw-stage > .cw-mascot {
-        width: min(100%, 170px);
+        width: min(100%, 340px);
     }
 
     .cw .cw-composer {

@@ -1,8 +1,13 @@
 // WebKitGTK (the Linux Tauri WebView) does not reliably upload textures decoded
 // through Pixi's worker/createImageBitmap path. Use the browser Image loader instead.
-import {Application, Assets, Sprite} from "pixi.js";
+import {
+    AnimatedSprite,
+    Application,
+    Assets,
+    Rectangle,
+    Texture,
+} from "pixi.js";
 import {useEffect, useRef} from "react";
-import type { Texture } from "pixi.js";
 import type { MascotState } from "../../state/mascotMachine.ts";
 
 Assets.setPreferences({
@@ -43,13 +48,22 @@ export function MascotCanvas({ state, onError }: Props ) {
         let initialized = false;
         let observer: ResizeObserver | null = null;
 
+        const frameTextures: Texture[] = [];
+
         function destroyApplication() {
             if (!initialized) return;
 
             initialized = false;
 
-            // Destroy the children, but retain shared textures
-            app.destroy(true, {children: true});
+            // Destroy the sprite and its animation subscription
+            // Keep the shared Assets-loaded image sources
+            app.destroy(true, { children: true });
+
+            for (const texture of frameTextures) {
+                texture.destroy(false);
+            }
+
+            frameTextures.length = 0;
         }
 
         async function initialize() {
@@ -97,21 +111,84 @@ export function MascotCanvas({ state, onError }: Props ) {
 
             if (disposed) return;
 
-            const textures = {
-                idle: idleTexture,
-                respond: respondTexture,
-                wait: waitTexture,
-                error: errorTexture,
+            const COLUMNS = 4;
+            const ROWS = 3;
+
+            const framesPerSecond: Record<MascotState, number> = {
+                idle: 8,
+                respond: 8,
+                wait: 8,
+                error: 8,
+            };
+
+            function sliceSheet(sheet: Texture): Texture[] {
+                const frameWidth = sheet.width / COLUMNS;
+                const frameHeight = sheet.height / ROWS;
+
+                if (
+                    !Number.isInteger(frameWidth) ||
+                    !Number.isInteger(frameHeight)
+                ) {
+                    throw new Error(
+                        "Mascot sheets must contain 4 columns and 3 rows of equal-sized frames.",
+                    );
+                }
+
+                // Preserve crisp pixel-art edges.
+                sheet.source.scaleMode = "nearest";
+
+                return Array.from({ length: COLUMNS * ROWS }, (_, index) => {
+                    const column = index % COLUMNS;
+                    const row = Math.floor(index / COLUMNS);
+
+                    const texture = new Texture({
+                        source: sheet.source,
+                        frame: new Rectangle(
+                            column * frameWidth,
+                            row * frameHeight,
+                            frameWidth,
+                            frameHeight,
+                        ),
+                    });
+
+                    frameTextures.push(texture);
+                    return texture;
+                });
             }
 
-            // expandable and dynamic instead of static assignment
-            Object.values(textures).forEach((texture) => {
-                texture.source.scaleMode = "nearest";
-            })
+            const respondFrames = sliceSheet(respondTexture);
 
-            const sprite = new Sprite(textures[stateRef.current]);
+            const animations: Record<MascotState, Texture[]> = {
+                idle: sliceSheet(idleTexture),
+                wait: sliceSheet(waitTexture),
+                error: sliceSheet(errorTexture),
+
+                // 0 → 11 → 1, then the next cycle starts at 0
+                // Neither endpoint is duplicated when changing direction
+                respond: [
+                    ...respondFrames,
+                    ...respondFrames.slice(1, -1).reverse(),
+                ],
+            };
+
+            let activeState = stateRef.current;
+
+            const sprite = new AnimatedSprite({
+                textures: animations[activeState],
+                autoUpdate: false,
+                loop: true,
+                animationSpeed: framesPerSecond[activeState] / 60,
+            });
+
             sprite.anchor.set(0.5);
             app.stage.addChild(sprite);
+
+            // Use this application's ticker so animation stops with the renderer
+            app.ticker.add((ticker) => {
+                sprite.update(ticker);
+            });
+
+            sprite.play();
 
             function resize() {
                 if (disposed) return;
@@ -134,7 +211,15 @@ export function MascotCanvas({ state, onError }: Props ) {
             }
 
             updateSpriteRef.current = (nextState) => {
-                sprite.texture = textures[nextState];
+                if (disposed || nextState === activeState) return;
+
+                activeState = nextState;
+
+                sprite.stop();
+                sprite.textures = animations[nextState];
+                sprite.animationSpeed = framesPerSecond[nextState] / 60;
+                sprite.gotoAndPlay(0);
+
                 resize();
             };
 
