@@ -64,7 +64,7 @@
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -228,8 +228,9 @@
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "8707fc130a59e2e1",
+  "active": "fb8baf9848f58bb1",
   "lastOpenFiles": [
+    "Documentation/french-reading-question-sources.md",
     "Causerie/src/styles/theme.css~",
     "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho5xeinejc-04fmj10-f51rs59y7fs49ejg8lwpll1an/work-products.bin",
     "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho5xeinejc-04fmj10-f51rs59y7fs49ejg8lwpll1an/query-cache.bin",
@@ -240,9 +241,7 @@
     "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho5xeinejc-04fmj10-f51rs59y7fs49ejg8lwpll1an/61f47dy7hj6pjaaabmo4u4ep5.o",
     "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho5xeinejc-04fmj10-f51rs59y7fs49ejg8lwpll1an/2o8m8yk8m572sbtg8pg2p0uwc.o",
     "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho5xeinejc-04fmj10-f51rs59y7fs49ejg8lwpll1an",
-    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho5xeinejc-04fmj10.lock",
     "Documentation/french-proficiency-source-guide.md",
-    "Documentation/french-reading-question-sources.md",
     "Documentation/CEFR TESTING PLANNING.md",
     "Causerie/docs/french-proficiency-source-guide.md",
     "Documentation/Color Guide.md",
