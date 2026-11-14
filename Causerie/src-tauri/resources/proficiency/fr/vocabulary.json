@@ -1,0 +1,2057 @@
+{
+  "schemaVersion": 1,
+  "bankId": "fr-vocabulary",
+  "bankVersion": 1,
+  "language": "fr",
+  "skill": "vocabulary",
+  "levels": [
+    "A1",
+    "A2",
+    "B1",
+    "B2",
+    "C1"
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "id": "fr-vocabulary-a1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nÀ la boulangerie, je voudrais une baguette de ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "pain"
+        },
+        {
+          "id": "opt-2",
+          "text": "riz"
+        },
+        {
+          "id": "opt-3",
+          "text": "sel"
+        },
+        {
+          "id": "opt-4",
+          "text": "sucre"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Une baguette est une forme de pain.",
+      "tags": [
+        "contextual_word",
+        "food"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nJ’ai soif. Je prends un verre et je le remplis avec l’___ du robinet.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "huile"
+        },
+        {
+          "id": "opt-2",
+          "text": "orange"
+        },
+        {
+          "id": "opt-3",
+          "text": "eau"
+        },
+        {
+          "id": "opt-4",
+          "text": "encre"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "On peut remplir un verre avec l’eau du robinet.",
+      "tags": [
+        "contextual_word",
+        "daily_needs"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nMon train part à dix heures. Je vais à la ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "plage"
+        },
+        {
+          "id": "opt-2",
+          "text": "gare"
+        },
+        {
+          "id": "opt-3",
+          "text": "poste"
+        },
+        {
+          "id": "opt-4",
+          "text": "mairie"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "On prend le train à la gare.",
+      "tags": [
+        "contextual_word",
+        "transport"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nPour manger à table, je m’assieds sur une ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "lampe"
+        },
+        {
+          "id": "opt-2",
+          "text": "porte"
+        },
+        {
+          "id": "opt-3",
+          "text": "assiette"
+        },
+        {
+          "id": "opt-4",
+          "text": "chaise"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Une chaise sert à s’asseoir.",
+      "tags": [
+        "contextual_word",
+        "home"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nIl fait froid dehors. Par-dessus mon pull, je mets un long ___ bien chaud.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "manteau"
+        },
+        {
+          "id": "opt-2",
+          "text": "chapeau"
+        },
+        {
+          "id": "opt-3",
+          "text": "pantalon"
+        },
+        {
+          "id": "opt-4",
+          "text": "maillot"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Un manteau se porte par-dessus les autres vêtements pour se protéger du froid.",
+      "tags": [
+        "contextual_word",
+        "clothing"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nPour ouvrir la porte de chez moi, je mets la ___ dans la serrure et je la tourne.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "lettre"
+        },
+        {
+          "id": "opt-2",
+          "text": "photo"
+        },
+        {
+          "id": "opt-3",
+          "text": "clé"
+        },
+        {
+          "id": "opt-4",
+          "text": "cuillère"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "La clé permet d’ouvrir la serrure de la porte.",
+      "tags": [
+        "contextual_word",
+        "daily_objects"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nIl est tard. Je vais au lit pour ___ jusqu’à demain matin.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "courir"
+        },
+        {
+          "id": "opt-2",
+          "text": "dormir"
+        },
+        {
+          "id": "opt-3",
+          "text": "conduire"
+        },
+        {
+          "id": "opt-4",
+          "text": "nager"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "On va au lit pour dormir pendant la nuit.",
+      "tags": [
+        "contextual_word",
+        "daily_routine"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nAu magasin, je donne de l’argent pour ___ un livre et le garder.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "vendre"
+        },
+        {
+          "id": "opt-2",
+          "text": "prêter"
+        },
+        {
+          "id": "opt-3",
+          "text": "laver"
+        },
+        {
+          "id": "opt-4",
+          "text": "acheter"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Acheter signifie obtenir quelque chose en le payant.",
+      "tags": [
+        "contextual_word",
+        "shopping"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nEn hiver, sans mon manteau, je tremble : j’ai ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "froid"
+        },
+        {
+          "id": "opt-2",
+          "text": "chaud"
+        },
+        {
+          "id": "opt-3",
+          "text": "faim"
+        },
+        {
+          "id": "opt-4",
+          "text": "soif"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Avoir froid peut faire trembler ; un manteau aide à se réchauffer.",
+      "tags": [
+        "contextual_word",
+        "weather"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nPaul et moi avons les mêmes parents. Paul est mon ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "père"
+        },
+        {
+          "id": "opt-2",
+          "text": "fils"
+        },
+        {
+          "id": "opt-3",
+          "text": "frère"
+        },
+        {
+          "id": "opt-4",
+          "text": "oncle"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Un garçon qui a les mêmes parents que moi est mon frère.",
+      "tags": [
+        "contextual_word",
+        "family"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nAujourd’hui, c’est lundi. ___, c’est mardi.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Hier"
+        },
+        {
+          "id": "opt-2",
+          "text": "Demain"
+        },
+        {
+          "id": "opt-3",
+          "text": "Maintenant"
+        },
+        {
+          "id": "opt-4",
+          "text": "Aujourd’hui"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Demain est le jour qui suit aujourd’hui.",
+      "tags": [
+        "contextual_word",
+        "time"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nJe me lève à sept heures du ___, puis je prends mon petit-déjeuner.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "soir"
+        },
+        {
+          "id": "opt-2",
+          "text": "printemps"
+        },
+        {
+          "id": "opt-3",
+          "text": "week-end"
+        },
+        {
+          "id": "opt-4",
+          "text": "matin"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le matin est le début de la journée ; on y prend généralement le petit-déjeuner.",
+      "tags": [
+        "contextual_word",
+        "daily_routine"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nLe concert n’aura pas lieu et aucune autre date n’est prévue. Les organisateurs doivent l’___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "annuler"
+        },
+        {
+          "id": "opt-2",
+          "text": "annoncer"
+        },
+        {
+          "id": "opt-3",
+          "text": "avancer"
+        },
+        {
+          "id": "opt-4",
+          "text": "organiser"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Annuler un événement signifie décider qu’il n’aura pas lieu.",
+      "tags": [
+        "contextual_word",
+        "appointments"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nLa réunion de lundi aura finalement lieu jeudi. Nous allons la ___ de trois jours.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "prolonger"
+        },
+        {
+          "id": "opt-2",
+          "text": "avancer"
+        },
+        {
+          "id": "opt-3",
+          "text": "reporter"
+        },
+        {
+          "id": "opt-4",
+          "text": "raccourcir"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Reporter une réunion, c’est la déplacer à une date ultérieure.",
+      "tags": [
+        "contextual_word",
+        "appointments"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nJe rends cet appareil au magasin. Je ne veux pas un autre modèle ; je veux récupérer mon argent. Je demande un ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "échange"
+        },
+        {
+          "id": "opt-2",
+          "text": "remboursement"
+        },
+        {
+          "id": "opt-3",
+          "text": "supplément"
+        },
+        {
+          "id": "opt-4",
+          "text": "reçu"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Un remboursement consiste à rendre l’argent payé.",
+      "tags": [
+        "contextual_word",
+        "shopping"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nPour arriver à destination, je dois changer de train à Lyon. J’y prends ma ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "réservation"
+        },
+        {
+          "id": "opt-2",
+          "text": "livraison"
+        },
+        {
+          "id": "opt-3",
+          "text": "promenade"
+        },
+        {
+          "id": "opt-4",
+          "text": "correspondance"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Prendre une correspondance signifie prendre un autre transport pour continuer son trajet.",
+      "tags": [
+        "contextual_word",
+        "transport"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nLe médecin écrit les médicaments à prendre sur une ___. Je présente ce document à la pharmacie.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "ordonnance"
+        },
+        {
+          "id": "opt-2",
+          "text": "facture"
+        },
+        {
+          "id": "opt-3",
+          "text": "invitation"
+        },
+        {
+          "id": "opt-4",
+          "text": "carte postale"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Une ordonnance est le document sur lequel un professionnel habilité prescrit un traitement.",
+      "tags": [
+        "contextual_word",
+        "health"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nJe ne suis pas propriétaire de mon appartement. Chaque mois, je verse un ___ pour y habiter.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "salaire"
+        },
+        {
+          "id": "opt-2",
+          "text": "pourboire"
+        },
+        {
+          "id": "opt-3",
+          "text": "loyer"
+        },
+        {
+          "id": "opt-4",
+          "text": "billet"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Le loyer est la somme payée pour occuper un logement loué.",
+      "tags": [
+        "contextual_word",
+        "housing"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nNous travaillons dans la même équipe au bureau. Salomé est ma ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "cliente"
+        },
+        {
+          "id": "opt-2",
+          "text": "collègue"
+        },
+        {
+          "id": "opt-3",
+          "text": "voisine"
+        },
+        {
+          "id": "opt-4",
+          "text": "cousine"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Une collègue est une personne avec qui l’on travaille.",
+      "tags": [
+        "contextual_word",
+        "work"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nCette chambre n’est pas réservée pour ce soir. Vous pouvez la prendre : elle est ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "occupée"
+        },
+        {
+          "id": "opt-2",
+          "text": "fermée"
+        },
+        {
+          "id": "opt-3",
+          "text": "bruyante"
+        },
+        {
+          "id": "opt-4",
+          "text": "disponible"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Une chambre disponible peut être réservée ou utilisée.",
+      "tags": [
+        "contextual_word",
+        "services"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nJ’avais perdu mes lunettes. Après les avoir cherchées partout, je viens de les ___ sous le canapé.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "retrouver"
+        },
+        {
+          "id": "opt-2",
+          "text": "prêter"
+        },
+        {
+          "id": "opt-3",
+          "text": "réparer"
+        },
+        {
+          "id": "opt-4",
+          "text": "casser"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Retrouver un objet perdu signifie le découvrir après l’avoir cherché.",
+      "tags": [
+        "contextual_word",
+        "daily_objects"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nJe vais très peu au cinéma, une seule fois dans l’année. J’y vais ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "souvent"
+        },
+        {
+          "id": "opt-2",
+          "text": "quotidiennement"
+        },
+        {
+          "id": "opt-3",
+          "text": "rarement"
+        },
+        {
+          "id": "opt-4",
+          "text": "constamment"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Rarement signifie peu souvent.",
+      "tags": [
+        "contextual_word",
+        "frequency"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nLa vendeuse nous sourit et répond gentiment à nos questions. Elle est très ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "impolie"
+        },
+        {
+          "id": "opt-2",
+          "text": "aimable"
+        },
+        {
+          "id": "opt-3",
+          "text": "mécontente"
+        },
+        {
+          "id": "opt-4",
+          "text": "distraite"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Une personne aimable est agréable et gentille avec les autres.",
+      "tags": [
+        "contextual_word",
+        "description"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-a2-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nJe téléphone au cabinet du dentiste pour ___ rendez-vous.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "rendre"
+        },
+        {
+          "id": "opt-2",
+          "text": "tenir"
+        },
+        {
+          "id": "opt-3",
+          "text": "porter"
+        },
+        {
+          "id": "opt-4",
+          "text": "prendre"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "On dit « prendre rendez-vous » pour fixer un moment où rencontrer quelqu’un.",
+      "tags": [
+        "collocation",
+        "appointments"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nMarc craignait d’avoir perdu son chat. Il vient de le retrouver en bonne santé et ne ressent plus cette inquiétude : il est ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "soulagé"
+        },
+        {
+          "id": "opt-2",
+          "text": "déçu"
+        },
+        {
+          "id": "opt-3",
+          "text": "méfiant"
+        },
+        {
+          "id": "opt-4",
+          "text": "jaloux"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Être soulagé, c’est éprouver un apaisement après la fin d’une inquiétude.",
+      "tags": [
+        "contextual_word",
+        "feelings"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nLina attendait beaucoup de ce film, mais elle l’a trouvé ennuyeux. Le film n’a pas répondu à ses attentes : elle est ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "rassurée"
+        },
+        {
+          "id": "opt-2",
+          "text": "émerveillée"
+        },
+        {
+          "id": "opt-3",
+          "text": "déçue"
+        },
+        {
+          "id": "opt-4",
+          "text": "reconnaissante"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Une personne déçue constate que ce qu’elle espérait ne s’est pas réalisé.",
+      "tags": [
+        "contextual_word",
+        "culture"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Dans ce contexte, que signifie « renoncer à » ?\n\nLe voyage dépasse largement son budget. Après plusieurs calculs, Amir décide de renoncer à ce projet.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Préparer ce projet plus rapidement."
+        },
+        {
+          "id": "opt-2",
+          "text": "Abandonner ce projet."
+        },
+        {
+          "id": "opt-3",
+          "text": "Réserver ce projet pour ses amis."
+        },
+        {
+          "id": "opt-4",
+          "text": "Rendre ce projet plus coûteux."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Renoncer à un projet signifie décider de ne pas le réaliser.",
+      "tags": [
+        "meaning_in_context",
+        "plans"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Dans cette phrase, que signifie « embaucher » ?\n\nPour ouvrir un nouveau rayon, le magasin va embaucher deux vendeurs.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Mettre fin au contrat de deux personnes."
+        },
+        {
+          "id": "opt-2",
+          "text": "Accorder des congés à deux personnes."
+        },
+        {
+          "id": "opt-3",
+          "text": "Former deux clients à utiliser un produit."
+        },
+        {
+          "id": "opt-4",
+          "text": "Recruter deux personnes pour y travailler."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Embaucher quelqu’un signifie le recruter comme salarié.",
+      "tags": [
+        "meaning_in_context",
+        "work"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nNous quittons notre logement de Lille pour habiter à Rennes. Ce week-end, nous allons ___ avec tous nos meubles.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "déménager"
+        },
+        {
+          "id": "opt-2",
+          "text": "voyager"
+        },
+        {
+          "id": "opt-3",
+          "text": "bricoler"
+        },
+        {
+          "id": "opt-4",
+          "text": "camper"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Déménager signifie changer de domicile et déplacer ses affaires.",
+      "tags": [
+        "contextual_word",
+        "housing"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nPour acheter un vélo dans quelques mois, je mets chaque semaine une petite somme de côté. Je voudrais ___ assez d’argent.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "emprunter"
+        },
+        {
+          "id": "opt-2",
+          "text": "dépenser"
+        },
+        {
+          "id": "opt-3",
+          "text": "économiser"
+        },
+        {
+          "id": "opt-4",
+          "text": "rembourser"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Économiser de l’argent, dans ce contexte, signifie le mettre de côté pour un usage futur.",
+      "tags": [
+        "contextual_word",
+        "money"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui complète l’expression.\n\nEn vérifiant sa facture, Léa s’aperçoit d’une erreur. Elle vient de se rendre ___ qu’un article a été compté deux fois.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "service"
+        },
+        {
+          "id": "opt-2",
+          "text": "compte"
+        },
+        {
+          "id": "opt-3",
+          "text": "visite"
+        },
+        {
+          "id": "opt-4",
+          "text": "raison"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "« Se rendre compte » signifie prendre conscience de quelque chose ou s’en apercevoir.",
+      "tags": [
+        "collocation",
+        "daily_life"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie l’expression « se plaindre » dans ce contexte ?\n\nLe chauffage de l’hôtel ne fonctionne toujours pas. Les clients vont à l’accueil pour se plaindre.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Faire part de leur gratitude."
+        },
+        {
+          "id": "opt-2",
+          "text": "Demander pardon pour leur comportement."
+        },
+        {
+          "id": "opt-3",
+          "text": "Féliciter le personnel pour son travail."
+        },
+        {
+          "id": "opt-4",
+          "text": "Exprimer leur mécontentement."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Se plaindre consiste ici à exprimer son insatisfaction à propos du chauffage.",
+      "tags": [
+        "meaning_in_context",
+        "services"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie « en panne » ici ?\n\nLa voiture est en panne : le moteur ne démarre plus.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Elle ne fonctionne plus normalement."
+        },
+        {
+          "id": "opt-2",
+          "text": "Elle est arrivée après l’heure prévue."
+        },
+        {
+          "id": "opt-3",
+          "text": "Elle est garée à l’endroit prévu."
+        },
+        {
+          "id": "opt-4",
+          "text": "Elle est en vente chez un professionnel."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Un appareil ou un véhicule en panne ne fonctionne plus correctement.",
+      "tags": [
+        "meaning_in_context",
+        "daily_life"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que veut dire « d’occasion » dans cette annonce ?\n\nVélo d’occasion : acheté neuf il y a deux ans, utilisé chaque semaine, bon état.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Fabriqué spécialement pour une fête."
+        },
+        {
+          "id": "opt-2",
+          "text": "Jamais utilisé depuis sa fabrication."
+        },
+        {
+          "id": "opt-3",
+          "text": "Déjà utilisé par un propriétaire précédent."
+        },
+        {
+          "id": "opt-4",
+          "text": "Disponible uniquement à la location."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Un objet d’occasion a déjà appartenu ou servi à quelqu’un avant sa revente.",
+      "tags": [
+        "meaning_in_context",
+        "shopping"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie « s’entendent bien » dans cette phrase ?\n\nMême s’ils ne sont pas toujours du même avis, les deux collègues s’entendent bien et aiment travailler ensemble.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Ils ont exactement les mêmes opinions."
+        },
+        {
+          "id": "opt-2",
+          "text": "Ils ont de bonnes relations."
+        },
+        {
+          "id": "opt-3",
+          "text": "Ils parlent assez fort pour être entendus."
+        },
+        {
+          "id": "opt-4",
+          "text": "Ils travaillent toujours dans le même bureau."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Bien s’entendre avec quelqu’un signifie avoir de bonnes relations avec cette personne.",
+      "tags": [
+        "meaning_in_context",
+        "relationships"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nAprès la visite, chacun peut dire ce qu’il a aimé ou non et donner son ___ sur l’exposition.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "devis"
+        },
+        {
+          "id": "opt-2",
+          "text": "préavis"
+        },
+        {
+          "id": "opt-3",
+          "text": "récit"
+        },
+        {
+          "id": "opt-4",
+          "text": "avis"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Donner son avis signifie exprimer son opinion.",
+      "tags": [
+        "collocation",
+        "opinions"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le verbe le plus précis.\n\nLa nouvelle aide ne supprime pas les difficultés des familles, mais elle en réduit l’intensité. Elle permet de les ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "atténuer"
+        },
+        {
+          "id": "opt-2",
+          "text": "aggraver"
+        },
+        {
+          "id": "opt-3",
+          "text": "résoudre"
+        },
+        {
+          "id": "opt-4",
+          "text": "dissimuler"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Atténuer signifie rendre moins intense, sans nécessairement supprimer.",
+      "tags": [
+        "semantic_precision",
+        "social_issues"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nChaque partie accepte d’abandonner une partie de ses exigences pour parvenir à un accord. Elles trouvent un ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "ultimatum"
+        },
+        {
+          "id": "opt-2",
+          "text": "report"
+        },
+        {
+          "id": "opt-3",
+          "text": "compromis"
+        },
+        {
+          "id": "opt-4",
+          "text": "constat"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Un compromis est un accord obtenu grâce à des concessions réciproques.",
+      "tags": [
+        "contextual_word",
+        "negotiation"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui complète l’expression.\n\nPour décider des horaires, la mairie doit prendre en ___ les besoins des habitants, c’est-à-dire les considérer dans sa réflexion.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "cause"
+        },
+        {
+          "id": "opt-2",
+          "text": "compte"
+        },
+        {
+          "id": "opt-3",
+          "text": "place"
+        },
+        {
+          "id": "opt-4",
+          "text": "charge"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Prendre en compte un élément signifie le considérer dans sa réflexion ou sa décision.",
+      "tags": [
+        "collocation",
+        "decision_making"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui complète l’expression.\n\nLe plan a été approuvé. Les équipes vont maintenant le mettre en ___, c’est-à-dire passer à son application.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "doute"
+        },
+        {
+          "id": "opt-2",
+          "text": "vente"
+        },
+        {
+          "id": "opt-3",
+          "text": "cause"
+        },
+        {
+          "id": "opt-4",
+          "text": "œuvre"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Mettre en œuvre un plan signifie l’appliquer concrètement.",
+      "tags": [
+        "collocation",
+        "work"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le verbe qui convient.\n\nL’association affirme que la décision est injustifiée et demande qu’elle soit réexaminée. Elle la ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "conteste"
+        },
+        {
+          "id": "opt-2",
+          "text": "approuve"
+        },
+        {
+          "id": "opt-3",
+          "text": "applique"
+        },
+        {
+          "id": "opt-4",
+          "text": "reproduit"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Contester une décision signifie en remettre en cause le bien-fondé ou la validité.",
+      "tags": [
+        "semantic_precision",
+        "argumentation"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie « marge de manœuvre » ici ?\n\nLe budget total est fixé, mais la responsable garde une marge de manœuvre pour répartir les dépenses entre les activités.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Une somme supplémentaire qui augmente automatiquement le budget."
+        },
+        {
+          "id": "opt-2",
+          "text": "Un délai obligatoire avant toute décision."
+        },
+        {
+          "id": "opt-3",
+          "text": "Une liberté de décision à l’intérieur de certaines limites."
+        },
+        {
+          "id": "opt-4",
+          "text": "Une obligation de répartir toutes les dépenses à parts égales."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Une marge de manœuvre est une possibilité d’agir ou de choisir malgré des contraintes.",
+      "tags": [
+        "meaning_in_context",
+        "work"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez l’adjectif qui convient.\n\nCet exemple répond directement à la question discutée et aide à comprendre l’argument. Il est particulièrement ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "rentable"
+        },
+        {
+          "id": "opt-2",
+          "text": "pertinent"
+        },
+        {
+          "id": "opt-3",
+          "text": "provisoire"
+        },
+        {
+          "id": "opt-4",
+          "text": "anecdotique"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Un exemple pertinent est adapté à la question et utile pour l’éclairer.",
+      "tags": [
+        "semantic_precision",
+        "argumentation"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le mot qui convient.\n\nLes besoins en logements dépassent largement le nombre de logements disponibles. La ville connaît une ___ de logements.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "abondance"
+        },
+        {
+          "id": "opt-2",
+          "text": "stabilité"
+        },
+        {
+          "id": "opt-3",
+          "text": "diversité"
+        },
+        {
+          "id": "opt-4",
+          "text": "pénurie"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Une pénurie est une insuffisance de ressources disponibles par rapport aux besoins.",
+      "tags": [
+        "semantic_precision",
+        "economy"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Dans ce contexte, que désigne « une source » ?\n\nAvant de publier l’article, la journaliste vérifie la fiabilité de chaque source utilisée pour établir les faits.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Une personne ou un document dont provient une information."
+        },
+        {
+          "id": "opt-2",
+          "text": "Un lieu où l’eau sort naturellement du sol."
+        },
+        {
+          "id": "opt-3",
+          "text": "Une version imprimée du journal destinée aux lecteurs."
+        },
+        {
+          "id": "opt-4",
+          "text": "Une correction de la mise en page avant l’impression."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "En journalisme, une source est à l’origine d’une information utilisée.",
+      "tags": [
+        "meaning_in_context",
+        "media"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez l’adjectif qui convient.\n\nLa commune cherche une solution qui puisse fonctionner longtemps sans épuiser les ressources dont elle dépend : une solution ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "provisoire"
+        },
+        {
+          "id": "opt-2",
+          "text": "instantanée"
+        },
+        {
+          "id": "opt-3",
+          "text": "durable"
+        },
+        {
+          "id": "opt-4",
+          "text": "éphémère"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Durable désigne ici une solution qui peut se maintenir dans le temps en préservant ses ressources.",
+      "tags": [
+        "semantic_precision",
+        "environment"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie « remettre en question » dans cette phrase ?\n\nCes nouveaux résultats conduisent les chercheurs à remettre en question leur première explication.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La répéter sous la forme d’une question sans en changer l’évaluation."
+        },
+        {
+          "id": "opt-2",
+          "text": "Réexaminer sa validité au lieu de la tenir pour acquise."
+        },
+        {
+          "id": "opt-3",
+          "text": "La considérer comme définitivement démontrée."
+        },
+        {
+          "id": "opt-4",
+          "text": "Interdire à d’autres personnes de l’étudier."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Remettre une explication en question, c’est réexaminer son bien-fondé.",
+      "tags": [
+        "collocation",
+        "argumentation"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-b2-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez l’adjectif le plus précis.\n\nLa mesure offre une réduction aux personnes qui choisissent le vélo, sans imposer ce choix ni sanctionner les autres. Ce dispositif est ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "coercitif"
+        },
+        {
+          "id": "opt-2",
+          "text": "répressif"
+        },
+        {
+          "id": "opt-3",
+          "text": "dissuasif"
+        },
+        {
+          "id": "opt-4",
+          "text": "incitatif"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Un dispositif incitatif encourage un comportement, notamment par un avantage, sans l’imposer.",
+      "tags": [
+        "semantic_precision",
+        "public_policy"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le verbe le plus précis.\n\nDeux témoignages indépendants concordent avec l’hypothèse initiale et lui apportent un soutien supplémentaire, sans constituer à eux seuls une démonstration définitive. Ils viennent la ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "corroborer"
+        },
+        {
+          "id": "opt-2",
+          "text": "réfuter"
+        },
+        {
+          "id": "opt-3",
+          "text": "présupposer"
+        },
+        {
+          "id": "opt-4",
+          "text": "relativiser"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Corroborer signifie renforcer une affirmation par des éléments concordants, sans impliquer nécessairement une preuve définitive.",
+      "tags": [
+        "semantic_precision",
+        "evidence"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le verbe le plus précis.\n\nLa chercheuse n’a pas observé directement le départ des habitants. Elle le déduit de plusieurs indices concordants relevés dans les archives. Ces indices lui permettent de l’___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "observer"
+        },
+        {
+          "id": "opt-2",
+          "text": "ordonner"
+        },
+        {
+          "id": "opt-3",
+          "text": "inférer"
+        },
+        {
+          "id": "opt-4",
+          "text": "inventer"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Inférer consiste à tirer une conclusion à partir d’indices ou de propositions.",
+      "tags": [
+        "semantic_precision",
+        "reasoning"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez l’adjectif le plus précis.\n\nLa réponse a été rédigée de telle façon qu’elle peut se comprendre comme un accord ou comme un refus ; sa formulation laisse subsister les deux lectures. Elle est ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "explicite"
+        },
+        {
+          "id": "opt-2",
+          "text": "équivoque"
+        },
+        {
+          "id": "opt-3",
+          "text": "catégorique"
+        },
+        {
+          "id": "opt-4",
+          "text": "péremptoire"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Une réponse équivoque permet plusieurs interprétations et entretient une ambiguïté.",
+      "tags": [
+        "semantic_precision",
+        "communication"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez l’adjectif qui décrit le mieux le ton.\n\n« Il n’y a rien à discuter : j’ai raison, un point c’est tout. » L’intervenant assène son avis comme une vérité qui n’admet aucune objection. Son ton est ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "circonspect"
+        },
+        {
+          "id": "opt-2",
+          "text": "conciliant"
+        },
+        {
+          "id": "opt-3",
+          "text": "nuancé"
+        },
+        {
+          "id": "opt-4",
+          "text": "péremptoire"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Un ton péremptoire présente une affirmation comme incontestable et ferme la discussion.",
+      "tags": [
+        "connotation",
+        "argumentation"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Dans un compte rendu professionnel, quelle formulation exprime des doutes précis sans transformer ceux-ci en refus définitif ?\n\nLe comité soutient l’objectif, mais doute de la faisabilité du calendrier et demande des garanties avant de s’engager.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le comité émet des réserves sur le calendrier proposé."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le comité oppose un refus catégorique au calendrier proposé."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le comité donne son aval sans réserve au calendrier proposé."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le comité se désintéresse du calendrier proposé."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Émettre des réserves signifie formuler des objections ou des limites à son adhésion, sans nécessairement refuser.",
+      "tags": [
+        "register",
+        "professional_communication"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le verbe le plus précis.\n\nL’autrice maintient son analyse générale, mais distingue désormais plusieurs cas et ajoute des limites à certaines conclusions. Elle souhaite ainsi ___ son propos.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "rétracter"
+        },
+        {
+          "id": "opt-2",
+          "text": "réitérer"
+        },
+        {
+          "id": "opt-3",
+          "text": "nuancer"
+        },
+        {
+          "id": "opt-4",
+          "text": "escamoter"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Nuancer consiste à introduire des distinctions ou des réserves qui rendent un propos moins absolu.",
+      "tags": [
+        "semantic_precision",
+        "argumentation"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie « se prévaloir de » dans ce contexte ?\n\nPour défendre sa candidature, elle se prévaut de son expérience à l’étranger, qu’elle présente comme un atout décisif.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Prendre ses distances avec cette expérience."
+        },
+        {
+          "id": "opt-2",
+          "text": "Faire valoir cette expérience à son avantage."
+        },
+        {
+          "id": "opt-3",
+          "text": "S’excuser d’avoir vécu cette expérience."
+        },
+        {
+          "id": "opt-4",
+          "text": "Vérifier auprès d’un tiers que cette expérience a bien eu lieu."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Se prévaloir de quelque chose signifie l’invoquer pour en tirer un avantage ou justifier une prétention.",
+      "tags": [
+        "meaning_in_context",
+        "professional_communication"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie « faire la part des choses » dans ce contexte ?\n\nLe bilan comporte des erreurs, mais le projet a aussi produit des résultats utiles. Pour l’évaluer, il faut faire la part des choses.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Partager les responsabilités en parts strictement égales."
+        },
+        {
+          "id": "opt-2",
+          "text": "Choisir les seuls résultats favorables pour défendre le projet."
+        },
+        {
+          "id": "opt-3",
+          "text": "Suspendre toute appréciation tant qu’il reste une erreur."
+        },
+        {
+          "id": "opt-4",
+          "text": "Distinguer les différents aspects pour porter un jugement équilibré."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Faire la part des choses signifie distinguer les éléments d’une situation sans les confondre dans un jugement global simplificateur.",
+      "tags": [
+        "idiom",
+        "judgment"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Que signifie « tirer leur épingle du jeu » dans cette critique ?\n\nLa mise en scène manque de cohérence, mais les deux interprètes principaux tirent leur épingle du jeu : leur prestation reste convaincante.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Réussir à bien s’en sortir malgré un contexte défavorable."
+        },
+        {
+          "id": "opt-2",
+          "text": "Se retirer du spectacle avant sa première représentation."
+        },
+        {
+          "id": "opt-3",
+          "text": "Profiter des faiblesses du spectacle pour éviter de jouer."
+        },
+        {
+          "id": "opt-4",
+          "text": "S’attribuer le mérite de l’ensemble de la mise en scène."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Tirer son épingle du jeu signifie réussir à se sortir avantageusement d’une situation difficile.",
+      "tags": [
+        "idiom",
+        "culture"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Dans cette description d’une œuvre, que signifie « dépouillé » ?\n\nLe dessin évite tout ornement. Quelques lignes soigneusement choisies suffisent à créer l’émotion ; ce style dépouillé est pleinement maîtrisé.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Inachevé faute de maîtrise technique."
+        },
+        {
+          "id": "opt-2",
+          "text": "Surchargé d’éléments décoratifs."
+        },
+        {
+          "id": "opt-3",
+          "text": "Sobre et réduit à l’essentiel."
+        },
+        {
+          "id": "opt-4",
+          "text": "Privé de sa valeur après une dégradation."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Dépouillé qualifie ici un style volontairement sobre, sans ornements superflus.",
+      "tags": [
+        "connotation",
+        "culture"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez le nom le plus précis.\n\nTout le raisonnement repose sur une idée tenue pour vraie dès le départ, mais jamais démontrée dans le texte. Cette idée constitue un ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "aboutissement"
+        },
+        {
+          "id": "opt-2",
+          "text": "présupposé"
+        },
+        {
+          "id": "opt-3",
+          "text": "démenti"
+        },
+        {
+          "id": "opt-4",
+          "text": "corollaire"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Un présupposé est une idée admise au départ, souvent sans être explicitement justifiée.",
+      "tags": [
+        "semantic_precision",
+        "reasoning"
+      ]
+    },
+    {
+      "id": "fr-vocabulary-c1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "vocabulary",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez l’adjectif le plus précis.\n\nLe dossier contient des éléments vérifiables et convergents qui étayent solidement la conclusion. Leur force de démonstration, et non leur caractère surprenant, les rend particulièrement ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "spectaculaires"
+        },
+        {
+          "id": "opt-2",
+          "text": "plausibles"
+        },
+        {
+          "id": "opt-3",
+          "text": "accessoires"
+        },
+        {
+          "id": "opt-4",
+          "text": "probants"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Des éléments probants apportent une preuve ou un appui convaincant à une conclusion.",
+      "tags": [
+        "semantic_precision",
+        "evaluation"
+      ]
+    }
+  ]
+}

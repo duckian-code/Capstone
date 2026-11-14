@@ -1,0 +1,2057 @@
+{
+  "schemaVersion": 1,
+  "bankId": "fr-grammar",
+  "bankVersion": 1,
+  "language": "fr",
+  "skill": "grammar",
+  "levels": [
+    "A1",
+    "A2",
+    "B1",
+    "B2",
+    "C1"
+  ],
+  "passages": [],
+  "questions": [
+    {
+      "id": "fr-grammar-a1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez au présent.\n\nMa sœur et moi, nous ___ à la maison.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "sommes"
+        },
+        {
+          "id": "opt-2",
+          "text": "suis"
+        },
+        {
+          "id": "opt-3",
+          "text": "êtes"
+        },
+        {
+          "id": "opt-4",
+          "text": "sont"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Avec nous, le verbe être au présent se conjugue sommes.",
+      "tags": [
+        "completion",
+        "present_etre"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez au présent.\n\nLes enfants ___ un ballon.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "a"
+        },
+        {
+          "id": "opt-2",
+          "text": "avons"
+        },
+        {
+          "id": "opt-3",
+          "text": "ont"
+        },
+        {
+          "id": "opt-4",
+          "text": "avez"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Les enfants peut être remplacé par ils : ils ont.",
+      "tags": [
+        "completion",
+        "present_avoir"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez au présent.\n\nTu ___ français avec ton amie.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "parle"
+        },
+        {
+          "id": "opt-2",
+          "text": "parles"
+        },
+        {
+          "id": "opt-3",
+          "text": "parlons"
+        },
+        {
+          "id": "opt-4",
+          "text": "parlent"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Au présent, parler se conjugue tu parles.",
+      "tags": [
+        "completion",
+        "present_regular"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez avec l’article indéfini qui convient.\n\nDans mon sac, il y a ___ pomme.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "un"
+        },
+        {
+          "id": "opt-2",
+          "text": "des"
+        },
+        {
+          "id": "opt-3",
+          "text": "du"
+        },
+        {
+          "id": "opt-4",
+          "text": "une"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Pomme est un nom féminin singulier : une pomme.",
+      "tags": [
+        "completion",
+        "indefinite_article"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez avec la forme correcte de petit.\n\nCes deux maisons sont ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "petites"
+        },
+        {
+          "id": "opt-2",
+          "text": "petit"
+        },
+        {
+          "id": "opt-3",
+          "text": "petite"
+        },
+        {
+          "id": "opt-4",
+          "text": "petits"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Maisons est féminin pluriel : l’adjectif devient petites.",
+      "tags": [
+        "completion",
+        "adjective_agreement"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez pour dire que les clés sont à moi.\n\nVoici ___ clés.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "mon"
+        },
+        {
+          "id": "opt-2",
+          "text": "ma"
+        },
+        {
+          "id": "opt-3",
+          "text": "mes"
+        },
+        {
+          "id": "opt-4",
+          "text": "tes"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Mes est le possessif de première personne pour un nom pluriel.",
+      "tags": [
+        "completion",
+        "possessive_determiner"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez la phrase négative correcte en français écrit standard. Utilisez ne… pas.\n\nJe travaille dimanche.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Je pas travaille dimanche."
+        },
+        {
+          "id": "opt-2",
+          "text": "Je ne travaille pas dimanche."
+        },
+        {
+          "id": "opt-3",
+          "text": "Je ne pas travaille dimanche."
+        },
+        {
+          "id": "opt-4",
+          "text": "Je travaille ne pas dimanche."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Dans cette phrase, ne précède travaille et pas le suit.",
+      "tags": [
+        "transformation",
+        "negation_ne_pas"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez la question qui demande le lieu.\n\n— ___ habites-tu ?\n— À Lyon.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Quand"
+        },
+        {
+          "id": "opt-2",
+          "text": "Comment"
+        },
+        {
+          "id": "opt-3",
+          "text": "Pourquoi"
+        },
+        {
+          "id": "opt-4",
+          "text": "Où"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Où permet de demander un lieu.",
+      "tags": [
+        "completion",
+        "interrogative_location"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez.\n\nElle habite ___ France.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "en"
+        },
+        {
+          "id": "opt-2",
+          "text": "au"
+        },
+        {
+          "id": "opt-3",
+          "text": "aux"
+        },
+        {
+          "id": "opt-4",
+          "text": "à"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Avec le nom de pays féminin France, on emploie en : en France.",
+      "tags": [
+        "completion",
+        "country_preposition"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez avec le pronom qui convient.\n\nNous ___ levons à sept heures.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "se"
+        },
+        {
+          "id": "opt-2",
+          "text": "me"
+        },
+        {
+          "id": "opt-3",
+          "text": "nous"
+        },
+        {
+          "id": "opt-4",
+          "text": "vous"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Le pronom réfléchi reprend la personne du sujet : nous nous levons.",
+      "tags": [
+        "completion",
+        "reflexive_pronoun"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez cette phrase au futur proche.\n\nCe soir, je vais ___ un film.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "regarde"
+        },
+        {
+          "id": "opt-2",
+          "text": "regarder"
+        },
+        {
+          "id": "opt-3",
+          "text": "regardé"
+        },
+        {
+          "id": "opt-4",
+          "text": "regardons"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Le futur proche se forme avec aller au présent suivi de l’infinitif : je vais regarder.",
+      "tags": [
+        "completion",
+        "near_future_infinitive"
+      ]
+    },
+    {
+      "id": "fr-grammar-a1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez.\n\nAvant de sortir, il faut ___ la porte.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "ferme"
+        },
+        {
+          "id": "opt-2",
+          "text": "fermons"
+        },
+        {
+          "id": "opt-3",
+          "text": "fermé"
+        },
+        {
+          "id": "opt-4",
+          "text": "fermer"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "On emploie l’infinitif après il faut : il faut fermer.",
+      "tags": [
+        "completion",
+        "impersonal_infinitive"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez au passé composé.\n\nHier, nous avons ___ le travail à dix-sept heures.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "fini"
+        },
+        {
+          "id": "opt-2",
+          "text": "finir"
+        },
+        {
+          "id": "opt-3",
+          "text": "finissons"
+        },
+        {
+          "id": "opt-4",
+          "text": "finissait"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Le passé composé de finir avec nous est nous avons fini.",
+      "tags": [
+        "completion",
+        "passe_compose_avoir"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez au passé composé.\n\nLéa et sa sœur sont ___ au marché.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "allé"
+        },
+        {
+          "id": "opt-2",
+          "text": "allée"
+        },
+        {
+          "id": "opt-3",
+          "text": "allées"
+        },
+        {
+          "id": "opt-4",
+          "text": "allés"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Avec être, le participe passé aller s’accorde ici avec Léa et sa sœur : allées.",
+      "tags": [
+        "completion",
+        "passe_compose_etre_agreement"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez à l’imparfait pour décrire une habitude passée.\n\nQuand nous étions enfants, nous ___ au parc tous les mercredis.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "jouons"
+        },
+        {
+          "id": "opt-2",
+          "text": "jouions"
+        },
+        {
+          "id": "opt-3",
+          "text": "jouerons"
+        },
+        {
+          "id": "opt-4",
+          "text": "jouerions"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "L’imparfait de jouer avec nous est jouions ; il décrit ici une habitude passée.",
+      "tags": [
+        "completion",
+        "imparfait_habit"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez au futur simple.\n\nL’année prochaine, nous ___ dans une autre ville.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "habitons"
+        },
+        {
+          "id": "opt-2",
+          "text": "habitions"
+        },
+        {
+          "id": "opt-3",
+          "text": "habiterions"
+        },
+        {
+          "id": "opt-4",
+          "text": "habiterons"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le futur simple de habiter avec nous est habiterons.",
+      "tags": [
+        "completion",
+        "future_simple"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Remplacez uniquement « cette voisine » par un pronom.\n\nJe vois cette voisine chaque matin. → Je ___ vois chaque matin.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "la"
+        },
+        {
+          "id": "opt-2",
+          "text": "lui"
+        },
+        {
+          "id": "opt-3",
+          "text": "leur"
+        },
+        {
+          "id": "opt-4",
+          "text": "les"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Cette voisine est un complément d’objet direct féminin singulier : la.",
+      "tags": [
+        "completion",
+        "direct_object_pronoun"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Remplacez uniquement « à mes parents » par un pronom.\n\nJe parle à mes parents. → Je ___ parle.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "les"
+        },
+        {
+          "id": "opt-2",
+          "text": "lui"
+        },
+        {
+          "id": "opt-3",
+          "text": "leur"
+        },
+        {
+          "id": "opt-4",
+          "text": "le"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "À mes parents est un complément indirect pluriel : je leur parle.",
+      "tags": [
+        "completion",
+        "indirect_object_pronoun"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Remplacez « des pommes » par un pronom et gardez la quantité.\n\n— Vous achetez des pommes ?\n— Oui, nous ___ achetons trois.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "y"
+        },
+        {
+          "id": "opt-2",
+          "text": "en"
+        },
+        {
+          "id": "opt-3",
+          "text": "les"
+        },
+        {
+          "id": "opt-4",
+          "text": "leur"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "En reprend les pommes tandis que trois indique la quantité : nous en achetons trois.",
+      "tags": [
+        "completion",
+        "en_quantity"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Remplacez uniquement « à la piscine » par un pronom.\n\nNous allons à la piscine le mardi. → Nous ___ allons le mardi.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "en"
+        },
+        {
+          "id": "opt-2",
+          "text": "la"
+        },
+        {
+          "id": "opt-3",
+          "text": "lui"
+        },
+        {
+          "id": "opt-4",
+          "text": "y"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Y reprend ici le lieu introduit par à : nous y allons.",
+      "tags": [
+        "completion",
+        "y_location"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez avec le pronom relatif qui convient.\n\nC’est la personne ___ travaille à l’accueil.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "qui"
+        },
+        {
+          "id": "opt-2",
+          "text": "que"
+        },
+        {
+          "id": "opt-3",
+          "text": "où"
+        },
+        {
+          "id": "opt-4",
+          "text": "dont"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Qui est le sujet de travaille et reprend la personne.",
+      "tags": [
+        "completion",
+        "relative_qui"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez avec le pronom relatif qui convient.\n\nVoici le livre ___ tu cherches.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "qui"
+        },
+        {
+          "id": "opt-2",
+          "text": "où"
+        },
+        {
+          "id": "opt-3",
+          "text": "que"
+        },
+        {
+          "id": "opt-4",
+          "text": "dont"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "On cherche quelque chose : le livre est repris par le relatif objet que.",
+      "tags": [
+        "completion",
+        "relative_que"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez.\n\nPaul a vingt ans et Léa a dix-huit ans. Paul est plus âgé ___ Léa.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "de"
+        },
+        {
+          "id": "opt-2",
+          "text": "que"
+        },
+        {
+          "id": "opt-3",
+          "text": "à"
+        },
+        {
+          "id": "opt-4",
+          "text": "comme"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "La comparaison se construit avec plus… que : plus âgé que Léa.",
+      "tags": [
+        "completion",
+        "comparison"
+      ]
+    },
+    {
+      "id": "fr-grammar-a2-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "A2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Vous vous adressez à plusieurs personnes. Choisissez la consigne à l’impératif présent.\n\nFermer la porte.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Fermer la porte."
+        },
+        {
+          "id": "opt-2",
+          "text": "Ferment la porte."
+        },
+        {
+          "id": "opt-3",
+          "text": "Fermais la porte."
+        },
+        {
+          "id": "opt-4",
+          "text": "Fermez la porte."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "À l’impératif présent correspondant à vous, on dit fermez.",
+      "tags": [
+        "transformation",
+        "imperative_vous"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez les deux formes, dans l’ordre des blancs. La préparation du repas était déjà en cours quand le téléphone a sonné une fois.\n\nJe ___ le repas quand le téléphone ___.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "préparais / a sonné"
+        },
+        {
+          "id": "opt-2",
+          "text": "ai préparé / sonnait"
+        },
+        {
+          "id": "opt-3",
+          "text": "préparerai / a sonné"
+        },
+        {
+          "id": "opt-4",
+          "text": "prépare / sonnera"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "L’imparfait préparais décrit l’action en cours ; le passé composé a sonné présente l’événement ponctuel.",
+      "tags": [
+        "completion",
+        "past_background_event"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez pour indiquer une action déjà terminée avant notre arrivée passée.\n\nQuand nous sommes arrivés, Nora ___ déjà le repas ; tout était prêt.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "préparera"
+        },
+        {
+          "id": "opt-2",
+          "text": "préparerait"
+        },
+        {
+          "id": "opt-3",
+          "text": "avait préparé"
+        },
+        {
+          "id": "opt-4",
+          "text": "prépare"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Le plus-que-parfait avait préparé situe la préparation avant notre arrivée passée.",
+      "tags": [
+        "completion",
+        "past_anteriority"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez cette hypothèse imaginaire sur la situation actuelle.\n\nNous n’avons pas assez d’argent. Si nous en avions davantage, nous ___ plus souvent.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "voyagerons"
+        },
+        {
+          "id": "opt-2",
+          "text": "voyagerions"
+        },
+        {
+          "id": "opt-3",
+          "text": "voyageons"
+        },
+        {
+          "id": "opt-4",
+          "text": "avons voyagé"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Dans cette hypothèse, si + imparfait est suivi du conditionnel présent : nous voyagerions.",
+      "tags": [
+        "completion",
+        "present_hypothesis"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez.\n\nPour finir à temps, il faut que tu ___ cet exercice maintenant.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "fais"
+        },
+        {
+          "id": "opt-2",
+          "text": "feras"
+        },
+        {
+          "id": "opt-3",
+          "text": "faire"
+        },
+        {
+          "id": "opt-4",
+          "text": "fasses"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Après il faut que, on utilise le subjonctif : que tu fasses.",
+      "tags": [
+        "completion",
+        "subjunctive_obligation"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez en employant le futur simple après espérer à la forme affirmative.\n\nJ’espère que Nora ___ demain.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "viendra"
+        },
+        {
+          "id": "opt-2",
+          "text": "vienne"
+        },
+        {
+          "id": "opt-3",
+          "text": "venir"
+        },
+        {
+          "id": "opt-4",
+          "text": "venue"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "À la forme affirmative, espérer que se construit normalement avec l’indicatif ; viendra est au futur simple.",
+      "tags": [
+        "completion",
+        "indicative_hope"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Mettez la phrase à la voix passive en conservant le passé composé.\n\nLa secrétaire a envoyé les invitations.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Les invitations ont envoyé la secrétaire."
+        },
+        {
+          "id": "opt-2",
+          "text": "Les invitations sont envoyées par la secrétaire."
+        },
+        {
+          "id": "opt-3",
+          "text": "Les invitations ont été envoyées par la secrétaire."
+        },
+        {
+          "id": "opt-4",
+          "text": "Les invitations ont été envoyé par la secrétaire."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Le passif au passé composé se forme avec ont été et le participe accordé : envoyées.",
+      "tags": [
+        "transformation",
+        "passive_past"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle reformulation conserve le sujet des actions et leur relation dans le temps ?\n\nEn préparant le repas, Léa écoute la radio.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Une autre personne écoute la radio pendant que Léa prépare le repas."
+        },
+        {
+          "id": "opt-2",
+          "text": "Léa écoute la radio pendant qu’elle prépare le repas."
+        },
+        {
+          "id": "opt-3",
+          "text": "Léa écoute la radio seulement après avoir fini de préparer le repas."
+        },
+        {
+          "id": "opt-4",
+          "text": "Une autre personne écoute la radio après le départ de Léa."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Le gérondif en préparant a le même sujet que écoute, Léa, et marque ici la simultanéité.",
+      "tags": [
+        "interpretation",
+        "gerund_subject"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez avec la forme correcte du participe passé.\n\nLes lettres que j’ai ___ sont sur la table.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "écrit"
+        },
+        {
+          "id": "opt-2",
+          "text": "écrits"
+        },
+        {
+          "id": "opt-3",
+          "text": "écrite"
+        },
+        {
+          "id": "opt-4",
+          "text": "écrites"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Que reprend les lettres, complément direct placé avant ai écrit : on écrit écrites.",
+      "tags": [
+        "completion",
+        "avoir_preceding_object_agreement"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Reliez les idées : « Voici le projet. Je te parle de ce projet. »\n\nVoici le projet ___ je te parle.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "dont"
+        },
+        {
+          "id": "opt-2",
+          "text": "que"
+        },
+        {
+          "id": "opt-3",
+          "text": "qui"
+        },
+        {
+          "id": "opt-4",
+          "text": "où"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Dont reprend de ce projet : le projet dont je te parle.",
+      "tags": [
+        "completion",
+        "relative_dont"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Remplacez « le livre » et « à ma sœur » par des pronoms, sans changer le sens.\n\nJe donne le livre à ma sœur.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Je lui le donne."
+        },
+        {
+          "id": "opt-2",
+          "text": "Je la lui donne."
+        },
+        {
+          "id": "opt-3",
+          "text": "Je le lui donne."
+        },
+        {
+          "id": "opt-4",
+          "text": "Je le leur donne."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Le reprend le livre ; lui reprend à ma sœur. L’ordre est le lui avant donne.",
+      "tags": [
+        "transformation",
+        "double_pronouns"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Rapportez cette question sans changer le temps du verbe.\n\nPaul me demande : « Est-ce que tu viens ? »\nPaul me demande ___ je viens.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "que"
+        },
+        {
+          "id": "opt-2",
+          "text": "si"
+        },
+        {
+          "id": "opt-3",
+          "text": "ce que"
+        },
+        {
+          "id": "opt-4",
+          "text": "qu’est-ce que"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Pour rapporter une question à laquelle on peut répondre oui ou non, on emploie si.",
+      "tags": [
+        "completion",
+        "indirect_yes_no_question"
+      ]
+    },
+    {
+      "id": "fr-grammar-b1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle phrase conserve exactement le sens de la phrase suivante ?\n\nLe musée n’ouvre que le dimanche.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le musée n’ouvre jamais le dimanche."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le musée ouvre tous les jours sauf le dimanche."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le musée ouvre aussi le dimanche, comme les autres jours."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le musée ouvre seulement le dimanche."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Ne… que exprime une restriction, équivalente ici à seulement.",
+      "tags": [
+        "interpretation",
+        "restriction_ne_que"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez avec le futur antérieur pour présenter le travail comme achevé avant un moment futur.\n\nDemain à dix-huit heures, nous ___ le rapport ; il pourra alors être envoyé.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "aurons terminé"
+        },
+        {
+          "id": "opt-2",
+          "text": "avons terminé"
+        },
+        {
+          "id": "opt-3",
+          "text": "avions terminé"
+        },
+        {
+          "id": "opt-4",
+          "text": "aurions terminé"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Le futur antérieur aurons terminé présente le travail comme achevé au repère futur indiqué.",
+      "tags": [
+        "completion",
+        "future_anterior"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez pour indiquer que Léa reçoit la confirmation avant de réserver.\n\nAprès ___ la confirmation, Léa a réservé son billet.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "recevoir"
+        },
+        {
+          "id": "opt-2",
+          "text": "avoir recevoir"
+        },
+        {
+          "id": "opt-3",
+          "text": "avoir reçu"
+        },
+        {
+          "id": "opt-4",
+          "text": "ayant reçu"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Après avoir reçu emploie l’infinitif passé et marque l’antériorité de la réception.",
+      "tags": [
+        "completion",
+        "past_infinitive"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez pour exprimer une conséquence qui ne s’est pas réalisée dans le passé.\n\nNous n’avons pas été prévenus. Si nous l’avions été, nous ___ nos billets plus tôt.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "avons réservé"
+        },
+        {
+          "id": "opt-2",
+          "text": "aurions réservé"
+        },
+        {
+          "id": "opt-3",
+          "text": "réserverons"
+        },
+        {
+          "id": "opt-4",
+          "text": "réservons"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Si + plus-que-parfait peut introduire une condition passée non réalisée ; la conséquence passée se met ici au conditionnel passé.",
+      "tags": [
+        "completion",
+        "past_counterfactual"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Une semaine plus tard, rapportez les paroles de Nora en faisant la concordance des temps et en adaptant le repère temporel.\n\nLundi, Nora a dit : « Je partirai demain. »",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Nora a dit lundi qu’elle partira demain."
+        },
+        {
+          "id": "opt-2",
+          "text": "Nora a dit lundi qu’elle était partie la veille."
+        },
+        {
+          "id": "opt-3",
+          "text": "Nora a dit lundi que je partirais le lendemain."
+        },
+        {
+          "id": "opt-4",
+          "text": "Nora a dit lundi qu’elle partirait le lendemain."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Dans cette transposition, partirai devient partirait, je devient elle et demain devient le lendemain.",
+      "tags": [
+        "transformation",
+        "past_reported_speech"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez en français écrit standard.\n\nGardez mon numéro au cas où vous ___ besoin de me joindre.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "auriez"
+        },
+        {
+          "id": "opt-2",
+          "text": "avez"
+        },
+        {
+          "id": "opt-3",
+          "text": "aurez"
+        },
+        {
+          "id": "opt-4",
+          "text": "ayez"
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Dans cet emploi, au cas où introduit une éventualité au conditionnel : vous auriez.",
+      "tags": [
+        "completion",
+        "conditional_au_cas_ou"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez.\n\nBien que le trajet ___ long, nous acceptons de venir.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "est"
+        },
+        {
+          "id": "opt-2",
+          "text": "sera"
+        },
+        {
+          "id": "opt-3",
+          "text": "soit"
+        },
+        {
+          "id": "opt-4",
+          "text": "être"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Bien que introduit une concession et se construit avec le subjonctif : soit.",
+      "tags": [
+        "completion",
+        "subjunctive_concession"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Conservez la construction « compter sur ces documents ».\n\nVoici les documents sur ___ nous comptons pour préparer le dossier.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "lesquelles"
+        },
+        {
+          "id": "opt-2",
+          "text": "lesquels"
+        },
+        {
+          "id": "opt-3",
+          "text": "lequel"
+        },
+        {
+          "id": "opt-4",
+          "text": "dont"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Après sur, le relatif composé s’accorde avec documents : sur lesquels.",
+      "tags": [
+        "completion",
+        "compound_relative"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez les deux formes, dans l’ordre.\n\nCes journées sont ___ ; les tâches ___ le plus les équipes seront réorganisées.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "fatiguant / fatigantes"
+        },
+        {
+          "id": "opt-2",
+          "text": "fatiguantes / fatigants"
+        },
+        {
+          "id": "opt-3",
+          "text": "fatigante / fatiguants"
+        },
+        {
+          "id": "opt-4",
+          "text": "fatigantes / fatiguant"
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Fatigantes est un adjectif verbal accordé avec journées ; fatiguant est un participe présent invariable qui prend les équipes comme objet.",
+      "tags": [
+        "completion",
+        "participle_adjective"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Remplacez « ces documents » et « à Paul » par des pronoms, en conservant l’impératif affirmatif.\n\nDonnez ces documents à Paul.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Donnez-les-lui."
+        },
+        {
+          "id": "opt-2",
+          "text": "Les lui donnez."
+        },
+        {
+          "id": "opt-3",
+          "text": "Donnez-lui-les."
+        },
+        {
+          "id": "opt-4",
+          "text": "Donnez-les-leur."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "À l’impératif affirmatif, les pronoms suivent le verbe avec des traits d’union : donnez-les-lui.",
+      "tags": [
+        "transformation",
+        "double_pronouns_imperative"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez en conservant la construction « avoir besoin de soutien ».\n\n___ nous avons besoin, c’est de soutien.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Ce que"
+        },
+        {
+          "id": "opt-2",
+          "text": "Ce qui"
+        },
+        {
+          "id": "opt-3",
+          "text": "Ce dont"
+        },
+        {
+          "id": "opt-4",
+          "text": "Ce où"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Ce dont reprend le complément introduit par de dans avoir besoin de.",
+      "tags": [
+        "completion",
+        "emphasis_ce_dont"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle reformulation conserve le reproche exprimé ?\n\nTu aurais dû nous prévenir avant de modifier le programme.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Tu nous as prévenus comme il le fallait."
+        },
+        {
+          "id": "opt-2",
+          "text": "Il aurait été préférable que tu nous préviennes, mais tu ne l’as pas fait."
+        },
+        {
+          "id": "opt-3",
+          "text": "Tu devras nous prévenir avant une modification à venir."
+        },
+        {
+          "id": "opt-4",
+          "text": "Tu n’avais pas le droit de nous prévenir."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Le conditionnel passé de devoir exprime ici un reproche concernant une action souhaitable non accomplie.",
+      "tags": [
+        "interpretation",
+        "conditional_past_reproach"
+      ]
+    },
+    {
+      "id": "fr-grammar-b2-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "B2",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Choisissez la phrase qui transforme le groupe « malgré la pluie » en proposition de concession, sans changer le sens.\n\nMalgré la pluie, le match a continué.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Parce qu’il a plu, le match a continué."
+        },
+        {
+          "id": "opt-2",
+          "text": "Pour qu’il pleuve, le match a continué."
+        },
+        {
+          "id": "opt-3",
+          "text": "S’il avait plu, le match aurait continué."
+        },
+        {
+          "id": "opt-4",
+          "text": "Bien qu’il ait plu, le match a continué."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Malgré introduit une concession ; bien que + subjonctif conserve cette relation entre la pluie et la poursuite du match.",
+      "tags": [
+        "transformation",
+        "causal_vs_concessive"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-001",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle chronologie respecte les temps du récit ?\n\nLorsque Nora entra dans la salle, le comité avait déjà arrêté sa décision. Les membres discutaient encore de la façon de l’annoncer. Elle comprit alors que son intervention ne pourrait plus en modifier le contenu.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La décision précède l’entrée de Nora ; la discussion sur l’annonce est en cours à son entrée ; Nora comprend ensuite la situation."
+        },
+        {
+          "id": "opt-2",
+          "text": "Nora entre, puis le comité prend sa décision pendant qu’elle intervient."
+        },
+        {
+          "id": "opt-3",
+          "text": "La discussion et l’annonce sont achevées avant que Nora entre dans la salle."
+        },
+        {
+          "id": "opt-4",
+          "text": "Nora comprend d’abord la situation, puis entre pendant que le comité choisit le contenu de sa décision."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Le plus-que-parfait marque l’antériorité, l’imparfait l’arrière-plan en cours, et les passés simples font avancer le récit.",
+      "tags": [
+        "interpretation",
+        "literary_temporal_structure"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-002",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Complétez par le conditionnel présent pour exprimer la conséquence actuelle d’une condition passée non réalisée.\n\nL’accord n’a pas été signé l’an dernier. S’il l’avait été, nous ___ aujourd’hui en mesure de financer les travaux.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "aurions été"
+        },
+        {
+          "id": "opt-2",
+          "text": "serons"
+        },
+        {
+          "id": "opt-3",
+          "text": "serions"
+        },
+        {
+          "id": "opt-4",
+          "text": "étions"
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Une condition passée non réalisée peut avoir une conséquence actuelle : si + plus-que-parfait, puis conditionnel présent.",
+      "tags": [
+        "completion",
+        "mixed_counterfactual"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-003",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Le 20 juin, vous rapportez les propos tenus par Léa le 10 juin. Transposez les temps et les repères temporels en conservant la chronologie.\n\nLéa a déclaré le 10 juin : « J’ai reçu le dossier hier et je le présenterai demain. »",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Léa a déclaré le 10 juin qu’elle recevrait le dossier la veille et qu’elle l’avait présenté le lendemain."
+        },
+        {
+          "id": "opt-2",
+          "text": "Léa a déclaré le 10 juin qu’elle avait reçu le dossier la veille et qu’elle le présenterait le lendemain."
+        },
+        {
+          "id": "opt-3",
+          "text": "Léa a déclaré le 10 juin qu’elle avait reçu le dossier le lendemain et qu’elle le présenterait la veille."
+        },
+        {
+          "id": "opt-4",
+          "text": "Léa a déclaré le 10 juin qu’elle a reçu le dossier hier et qu’elle le présentera demain."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Par rapport aux paroles du 10 juin, la réception est antérieure et la présentation future : avait reçu la veille, présenterait le lendemain.",
+      "tags": [
+        "transformation",
+        "reported_speech_multiple_times"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-004",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle reformulation respecte le sens de cette phrase ? Le ne est ici explétif.\n\nLe comité a prolongé le délai de crainte que certains candidats ne renoncent à déposer leur dossier.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le comité a prolongé le délai parce qu’il souhaitait que certains candidats renoncent."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le comité a prolongé le délai pour éviter que certains candidats ne renoncent pas."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le comité a prolongé le délai après avoir constaté que tous les candidats avaient déjà renoncé."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le comité a prolongé le délai pour éviter que certains candidats renoncent à déposer leur dossier."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Dans cette construction, ne est explétif : il ne nie pas renoncent. Le renoncement est l’événement redouté.",
+      "tags": [
+        "interpretation",
+        "expletive_ne_fear"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-005",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Reformulez sans changer qui accomplit chaque action : le comité simplifie le formulaire ; les candidats doivent pouvoir le remplir sans aide.\n\nLe comité a simplifié le formulaire afin que les candidats puissent le remplir sans aide.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le comité a simplifié le formulaire pour permettre aux candidats de le remplir sans aide."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le comité a simplifié le formulaire afin de pouvoir le remplir sans aide."
+        },
+        {
+          "id": "opt-3",
+          "text": "Les candidats ont simplifié le formulaire pour que le comité puisse le remplir sans aide."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le comité a simplifié le formulaire parce que les candidats pouvaient déjà le remplir sans aide."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Permettre aux candidats de conserve leur rôle comme sujet de remplir, tandis que le comité reste l’auteur de la simplification.",
+      "tags": [
+        "transformation",
+        "purpose_subject_control"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-006",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle analyse respecte la relation introduite par encore que ?\n\nLa solution paraît satisfaisante, encore que son coût doive être réévalué avant toute décision définitive.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "La seconde proposition donne la cause certaine de l’appréciation positive."
+        },
+        {
+          "id": "opt-2",
+          "text": "La seconde proposition exprime le but pour lequel la solution paraît satisfaisante."
+        },
+        {
+          "id": "opt-3",
+          "text": "La seconde proposition apporte une réserve qui limite l’appréciation positive de la première."
+        },
+        {
+          "id": "opt-4",
+          "text": "La seconde proposition affirme que le coût a déjà été réévalué et validé."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Encore que introduit une concession ; le subjonctif doive s’inscrit dans cette réserve à l’appréciation initiale.",
+      "tags": [
+        "interpretation",
+        "concessive_qualification"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-007",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle reformulation conserve la relation exprimée par d’autant plus que ?\n\nNous devons vérifier ces chiffres, d’autant plus qu’ils serviront à répartir les aides.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Nous devons vérifier ces chiffres bien qu’ils ne servent pas à répartir les aides."
+        },
+        {
+          "id": "opt-2",
+          "text": "Nous devons vérifier ces chiffres ; leur utilisation pour répartir les aides renforce encore cette nécessité."
+        },
+        {
+          "id": "opt-3",
+          "text": "Nous vérifierons ces chiffres uniquement s’ils ont déjà servi à répartir les aides."
+        },
+        {
+          "id": "opt-4",
+          "text": "Plus nous vérifions ces chiffres, plus le montant des aides augmente."
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "D’autant plus que ajoute une raison qui renforce la nécessité déjà affirmée.",
+      "tags": [
+        "transformation",
+        "reinforced_cause"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-008",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Les reports successifs ont eu une conséquence imprévue, et non recherchée. Choisissez la reformulation qui conserve cette relation.\n\nLe chantier a été retardé au point que le financement initial n’était plus suffisant.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Le chantier a été retardé pour que le financement initial ne soit plus suffisant."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le chantier a été retardé à condition que le financement initial ne soit plus suffisant."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le chantier a été retardé parce que le financement initial n’était déjà plus suffisant."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le chantier a pris tellement de retard que le financement initial n’était plus suffisant."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Au point que et tellement… que expriment ici le degré de retard et sa conséquence, sans intention de la produire.",
+      "tags": [
+        "transformation",
+        "result_vs_purpose"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-009",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Quelle reformulation conserve les relations grammaticales et la chronologie ?\n\nLe comité a réexaminé les projets dont le coût avait été sous-estimé lors de la première sélection.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Lors de la première sélection, le coût des projets concernés avait été sous-estimé ; le comité a ensuite réexaminé ces projets."
+        },
+        {
+          "id": "opt-2",
+          "text": "Le comité avait sous-estimé le coût de certains projets, puis il les a réexaminés."
+        },
+        {
+          "id": "opt-3",
+          "text": "Le comité a réexaminé tous les projets, puis leur coût a été sous-estimé lors d’une sélection ultérieure."
+        },
+        {
+          "id": "opt-4",
+          "text": "Le comité a réexaminé uniquement le coût des projets après la première sélection."
+        }
+      ],
+      "correctOptionId": "opt-1",
+      "explanation": "Dont exprime ici le coût des projets ; avait été sous-estimé situe cette sous-estimation avant le réexamen.",
+      "tags": [
+        "transformation",
+        "embedded_relative_reference"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-010",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Le dossier indique que trois propositions sur cinq ont été retenues. Quelle phrase est compatible avec ce bilan et exprime une sélection partielle ?",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "Aucune proposition n’a été retenue."
+        },
+        {
+          "id": "opt-2",
+          "text": "Pas une seule proposition n’a été retenue."
+        },
+        {
+          "id": "opt-3",
+          "text": "Toutes les propositions n’ont pas été retenues."
+        },
+        {
+          "id": "opt-4",
+          "text": "Toutes les propositions ont été retenues."
+        }
+      ],
+      "correctOptionId": "opt-3",
+      "explanation": "Dans le contexte explicite de trois propositions sur cinq, toutes… ne… pas exprime une négation partielle : certaines n’ont pas été retenues.",
+      "tags": [
+        "interpretation",
+        "quantified_negation_scope"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-011",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Les documents ont été transmis hier, sans autorisation. La directrice exprime aujourd’hui son regret au sujet de cet envoi déjà effectué. Complétez.\n\nElle regrette que les documents ___ avant son accord.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "soient transmis"
+        },
+        {
+          "id": "opt-2",
+          "text": "aient été transmis"
+        },
+        {
+          "id": "opt-3",
+          "text": "aient transmis"
+        },
+        {
+          "id": "opt-4",
+          "text": "ont été transmis"
+        }
+      ],
+      "correctOptionId": "opt-2",
+      "explanation": "Le regret appelle le subjonctif ; l’action antérieure et passive se construit avec aient été transmis.",
+      "tags": [
+        "completion",
+        "past_subjunctive_passive"
+      ]
+    },
+    {
+      "id": "fr-grammar-c1-012",
+      "version": 1,
+      "language": "fr",
+      "skill": "grammar",
+      "level": "C1",
+      "format": "single_choice",
+      "status": "draft",
+      "prompt": "Reformulez avec un gérondif, en conservant les personnes qui accomplissent les actions.\n\nPendant que les auditrices examinaient les comptes, elles ont découvert plusieurs anomalies.",
+      "options": [
+        {
+          "id": "opt-1",
+          "text": "En examinant les comptes, plusieurs anomalies ont été découvertes par les auditrices."
+        },
+        {
+          "id": "opt-2",
+          "text": "En découvrant plusieurs anomalies, les auditrices ont décidé d’examiner les comptes."
+        },
+        {
+          "id": "opt-3",
+          "text": "Après avoir examiné les comptes, les auditrices ont découvert plusieurs anomalies."
+        },
+        {
+          "id": "opt-4",
+          "text": "En examinant les comptes, les auditrices ont découvert plusieurs anomalies."
+        }
+      ],
+      "correctOptionId": "opt-4",
+      "explanation": "Le sujet implicite du gérondif doit ici être celui du verbe principal : les auditrices. Le gérondif conserve la simultanéité.",
+      "tags": [
+        "transformation",
+        "gerund_attachment"
+      ]
+    }
+  ]
+}
