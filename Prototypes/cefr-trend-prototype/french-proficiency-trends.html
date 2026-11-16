@@ -1,0 +1,177 @@
+<div id="causerie-trends-demo">
+  <style>
+    #causerie-trends-demo { display: grid; gap: calc(var(--font-size-base) * 1); color: var(--foreground); }
+    #causerie-trends-demo .heading { padding-right: 96px; display: grid; gap: calc(var(--font-size-base) * .35); }
+    #causerie-trends-demo .chart-area { width: 100%; }
+    #causerie-trends-demo .chart-area svg { display: block; width: 100%; overflow: visible; }
+    #causerie-trends-demo .chart-area text { fill: var(--muted-foreground); font-family: inherit; font-weight: 400; }
+    #causerie-trends-demo .legend { display:flex; flex-wrap:wrap; gap:calc(var(--font-size-base) * 1); }
+    #causerie-trends-demo .legend-item { display:inline-flex; align-items:center; gap:calc(var(--font-size-base) * .4); }
+    #causerie-trends-demo .key { width:22px; height:12px; }
+    #causerie-trends-demo .readout { display:flex; flex-wrap:wrap; gap:calc(var(--font-size-base) * .8); }
+    #causerie-trends-demo .section-title { display:grid; gap:calc(var(--font-size-base) * .25); }
+  </style>
+  <div class="heading">
+    <h2>French placement progress</h2>
+    <span class="text-small text-muted">Illustrative data · November 2025–November 2026 · Demo cutoff: at least 75% with 4+ items</span>
+  </div>
+  <div class="viz-controls">
+    <label class="form-label">Show
+      <select class="form-select" id="ct-view">
+        <option value="all">All skills + overall index</option>
+        <option value="reading">Reading</option>
+        <option value="grammar">Grammar</option>
+        <option value="vocabulary">Vocabulary</option>
+        <option value="overall">Overall index only</option>
+      </select>
+    </label>
+    <label class="form-label">Assessment
+      <select class="form-select" id="ct-test"></select>
+    </label>
+  </div>
+  <div class="legend text-small" id="ct-legend"></div>
+  <div class="chart-area" id="ct-main"></div>
+  <div class="readout text-small tabular-nums" id="ct-readout" aria-live="polite"></div>
+  <div class="text-small text-muted">Estimated level + progress toward next placement · Hollow marks = next level not assessed · Dashed line = weighted display index, not CEFR proficiency</div>
+  <hr>
+  <div class="section-title">
+    <h3>Selected assessment evidence</h3>
+    <label class="form-label">Skill
+      <select class="form-select" id="ct-skill"><option value="reading">Reading</option><option value="grammar" selected>Grammar</option><option value="vocabulary">Vocabulary</option></select>
+    </label>
+  </div>
+  <div class="card" aria-live="polite">
+    <div id="ct-detail-title"></div>
+    <div class="text-small tabular-nums" id="ct-evidence"></div>
+    <div class="text-small" id="ct-cutoff"></div>
+    <div class="text-small tabular-nums" id="ct-progress-label"></div>
+    <div class="progress" id="ct-progress" role="progressbar" aria-label="Progress toward next placement threshold" aria-valuemin="0" aria-valuemax="100"><div class="progress-bar" id="ct-progress-fill"></div></div>
+    <div class="text-small" id="ct-needed"></div>
+  </div>
+  <div class="section-title">
+    <h3>Try the B1 → B2 boundary</h3>
+    <label class="form-label" for="ct-score">November grammar · B2 questions correct: <span id="ct-score-label" class="tabular-nums"></span></label>
+    <input class="form-range" id="ct-score" type="range" min="0" max="8" step="1" value="5">
+    <div id="ct-demo-result" class="text-small" aria-live="polite"></div>
+  </div>
+  <span class="text-small text-muted">Placement progress measures proximity to this demo’s scoring cutoff, not language mastery. Missing evidence is not 0%. C1 is the current test ceiling.</span>
+</div>
+<script>
+(() => {
+ const root=document.getElementById('causerie-trends-demo');
+ const levels=['A1','A2','B1','B2','C1'];
+ const skills=['reading','grammar','vocabulary'];
+ const names={reading:'Reading',grammar:'Grammar',vocabulary:'Vocabulary',overall:'Overall index'};
+ const colors={reading:'var(--viz-series-1)',grammar:'var(--viz-series-2)',vocabulary:'var(--viz-series-3)',overall:'var(--foreground)'};
+ // Synthetic evidence for this cutoff demo, not a simulation of the earlier adaptive routing.
+ const THRESHOLD=.75, MIN_ITEMS=4;
+ const raw=[
+ ['2026-01-12',{A2:[3,4],B1:[2,8]},{A2:[3,4],B1:[1,8]},{A2:[3,4],B1:[3,8]}],
+ ['2026-02-23',{B1:[3,4],B2:[1,8]},{A2:[3,4],B1:[4,8]},{A2:[3,4],B1:[4,8]}],
+ ['2026-04-06',{B1:[3,4],B2:[3,8]},{B1:[3,4],B2:[1,8]},{A2:[3,4],B1:[5,8]}],
+ ['2026-05-18',{B1:[3,4],B2:[4,8]},{B1:[3,4],B2:[2,8]},{B1:[3,4],B2:[1,8]}],
+ ['2026-06-29',{B1:[3,4],B2:[5,8]},{B1:[3,4],B2:[3,8]},{B1:[3,4],B2:[3,8]}],
+ ['2026-08-10',{B2:[6,8],C1:[1,4]},{B1:[3,4],B2:[4,8]},{B1:[3,4],B2:[5,8]}],
+ ['2026-09-21',{B2:[6,8]},{B1:[3,4],B2:[3,8]},{B2:[6,8],C1:[0,4]}],
+ ['2026-11-16',{B2:[3,4],C1:[3,4]},{B1:[3,4],B2:[5,8]},{B2:[6,8],C1:[2,4]}]];
+ function placement(evidence){
+  let index=-1;
+  levels.forEach((l,i)=>{const a=evidence[l];if(a&&a[1]>=MIN_ITEMS&&a[0]>=Math.ceil(THRESHOLD*a[1]))index=i;});
+  if(index<0)return {level:null,rank:null,position:null,progress:null,status:'insufficient'};
+  const rank=index+1,current=evidence[levels[index]];
+  if(index===levels.length-1)return {level:levels[index],rank,current,position:rank,progress:null,status:'ceiling'};
+  const nextLevel=levels[index+1],a=evidence[nextLevel];
+  if(!a||a[1]<MIN_ITEMS)return {level:levels[index],rank,current,nextLevel,position:null,progress:null,status:'unassessed'};
+  const required=Math.ceil(THRESHOLD*a[1]),progress=a[0]/required;
+  return {level:levels[index],rank,current,nextLevel,correct:a[0],answered:a[1],required,accuracy:a[0]/a[1],progress,position:rank+progress,status:'measured'};
+ }
+ const rows=raw.map(([date,r,g,v])=>({date,time:Date.parse(date+'T00:00:00Z'),reading:r,grammar:g,vocabulary:v}));
+ const start=Date.parse('2025-11-17T00:00:00Z'),end=Date.parse('2026-11-16T00:00:00Z');
+ const view=root.querySelector('#ct-view'),test=root.querySelector('#ct-test'),skill=root.querySelector('#ct-skill'),score=root.querySelector('#ct-score');
+ const dateText=d=>new Date(d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
+ const percent=n=>new Intl.NumberFormat('en-US',{style:'percent',maximumFractionDigits:1}).format(n);
+ rows.forEach((r,i)=>{const o=document.createElement('option');o.value=String(i);o.textContent=dateText(r.date);test.append(o);});
+ let state={view:'all',test:7,skill:'grammar',score:5};
+ function restore(snapshot){const s=snapshot?.privateContent;if(!s||s.version!==2)return;
+  if(['all',...skills,'overall'].includes(s.view))state.view=s.view;
+  if(Number.isInteger(s.test)&&s.test>=0&&s.test<rows.length)state.test=s.test;
+  if(skills.includes(s.skill))state.skill=s.skill;
+  if(Number.isInteger(s.score)&&s.score>=0&&s.score<=8)state.score=s.score;
+ }
+ restore(window.openai?.widgetState);
+ function sync(){view.value=state.view;test.value=String(state.test);skill.value=state.skill;score.value=String(state.score);}
+ function calculate(){
+  rows[7].grammar.B2=[state.score,8];
+  rows.forEach(r=>{r.results=Object.fromEntries(skills.map(k=>[k,placement(r[k])]));r.overall=skills.every(k=>r.results[k].position!==null)?(25*r.results.reading.position+20*r.results.grammar.position+20*r.results.vocabulary.position)/65:null;});
+ }
+ function describe(r,k){
+  if(k==='overall')return r.overall===null?'Overall index: unavailable (missing next-level evidence)':`Overall index: ${r.overall.toFixed(2)}`;
+  const a=r.results[k];let text=`${names[k]}: estimated ${a.level??'unplaced'}`;
+  if(a.status==='measured')return text+` · ${a.nextLevel}: ${a.correct}/${a.answered} correct (${percent(a.accuracy)}) · cutoff ${a.required}/${a.answered} · placement progress ${percent(a.progress)}`;
+  if(a.status==='ceiling')return text+' · current test ceiling';
+  return text+' · next-level progress not assessed';
+ }
+ const ns='http://www.w3.org/2000/svg';
+ function el(tag,attrs={},text){const n=document.createElementNS(ns,tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(text!==undefined)n.textContent=text;return n;}
+ function mark(svg,x,y,key,tooltip,hollow=false){
+  const attrs={fill:hollow?'var(--background)':colors[key],stroke:hollow?colors[key]:'var(--background)','stroke-width':hollow?2:1.3,'data-tooltip':tooltip};
+  let n;
+  if(key==='grammar')n=el('rect',{...attrs,x:x-4.5,y:y-4.5,width:9,height:9});
+  else if(key==='vocabulary')n=el('path',{...attrs,d:`M ${x} ${y-6} L ${x+6} ${y} L ${x} ${y+6} L ${x-6} ${y} Z`});
+  else n=el('circle',{...attrs,cx:x,cy:y,r:key==='overall'?3.5:5});
+  svg.append(n);
+ }
+ function base(container,detail){
+  const w=Math.max(280,Math.floor(container.getBoundingClientRect().width)),h=detail?200:300,left=45,right=22,top=25,bottom=37;
+  const svg=el('svg',{width:w,height:h,role:'img','aria-label':detail?'Illustrative accuracy':'Estimated level plus evidence-based progress toward the next demo placement cutoff. Hollow marks show missing next-level evidence; lines break at those assessments.'});
+  svg.append(el('title',{},detail?'Accuracy at a fixed question difficulty':'Estimated level by assessment date'));
+  const x=t=>left+(t-start)/(end-start)*(w-left-right);
+  const y=v=>top+(detail?(100-v)/100:(5-v)/4)*(h-top-bottom);
+  const ticks=detail?[0,50,100]:[1,2,3,4,5];
+  ticks.forEach(v=>{svg.append(el('line',{x1:left,x2:w-right,y1:y(v),y2:y(v),stroke:'var(--border)','stroke-width':1}));svg.append(el('text',{x:left-10,y:y(v)+4,'text-anchor':'end',class:'text-small'},detail?v+'%':levels[v-1]));});
+  const dates=w<460?['2025-12-01','2026-04-01','2026-08-01','2026-11-01']:['2025-12-01','2026-02-01','2026-04-01','2026-06-01','2026-08-01','2026-10-01','2026-11-01'];
+  dates.forEach(d=>svg.append(el('text',{x:x(Date.parse(d+'T00:00:00Z')),y:h-12,'text-anchor':'middle',class:'text-small'},new Date(d+'T00:00:00Z').toLocaleDateString('en-US',{month:'short',timeZone:'UTC'}))));
+  svg.append(el('line',{x1:x(rows[state.test].time),x2:x(rows[state.test].time),y1:top-5,y2:h-bottom,stroke:'var(--border)','stroke-width':1}));
+  container.replaceChildren(svg);return {svg,x,y,w,h};
+ }
+ function drawLine(svg,points,key){
+  let segment=[];
+  function flush(){if(segment.length>1)svg.append(el('polyline',{points:segment.map(p=>p.join(',')).join(' '),fill:'none',stroke:colors[key],'stroke-width':key==='overall'?1.7:2,'stroke-dasharray':key==='overall'?'5 5':'none','pointer-events':'none'}));segment=[];}
+  points.forEach(p=>{if(p)segment.push(p);else flush();});flush();
+ }
+ function render(){
+  sync();calculate();const selected=rows[state.test];
+  const visible=state.view==='all'?[...skills,'overall']:[state.view];
+  const legend=root.querySelector('#ct-legend');legend.replaceChildren();
+  visible.forEach(k=>{const span=document.createElement('span');span.className='legend-item';const sw=el('svg',{width:22,height:12,class:'key','aria-hidden':'true'});sw.append(el('line',{x1:0,x2:22,y1:6,y2:6,stroke:colors[k],'stroke-width':2,'stroke-dasharray':k==='overall'?'4 3':'none'}));mark(sw,11,6,k,'');span.append(sw,document.createTextNode(names[k]));legend.append(span);});
+  const {svg,x,y}=base(root.querySelector('#ct-main'),false);
+  visible.forEach(k=>drawLine(svg,rows.map(r=>{const v=k==='overall'?r.overall:r.results[k].position;return v===null?null:[x(r.time),y(v)];}),k));
+  rows.forEach(r=>{
+   const tip=dateText(r.date)+' · '+[...skills,'overall'].map(k=>describe(r,k)).join(' · ');
+   visible.forEach(k=>{
+    if(k==='overall'){if(r.overall!==null)mark(svg,x(r.time),y(r.overall),k,tip);return;}
+    const a=r.results[k];if(a.rank!==null)mark(svg,x(r.time),y(a.position??a.rank),k,tip,a.position===null);
+   });
+  });
+  const readout=root.querySelector('#ct-readout');readout.replaceChildren();
+  visible.forEach(k=>{const n=document.createElement('span');n.textContent=describe(selected,k);readout.append(n);});
+  const a=selected.results[state.skill];
+  root.querySelector('#ct-detail-title').textContent=`${dateText(selected.date)} · ${names[state.skill]} · Estimated ${a.level??'unplaced'}`;
+  const bar=root.querySelector('#ct-progress'),fill=root.querySelector('#ct-progress-fill');
+  bar.hidden=a.status!=='measured';fill.style.width=a.status==='measured'?percent(a.progress):'0%';
+  bar.setAttribute('aria-valuenow',a.status==='measured'?100*a.progress:0);
+  root.querySelector('#ct-evidence').textContent=a.status==='measured'?`${a.nextLevel} questions: ${a.correct}/${a.answered} correct · ${percent(a.accuracy)} accuracy`:(a.current?`${a.level} evidence: ${a.current[0]}/${a.current[1]} correct`:'Insufficient placement evidence');
+  root.querySelector('#ct-cutoff').textContent=a.status==='measured'?`${a.nextLevel} placement threshold: ${a.required}/${a.answered} correct · ${percent(a.required/a.answered)}`:a.status==='ceiling'?'C1 is the current test ceiling. C2 is not assessed.':`${a.nextLevel??'Next level'} progress not assessed; no percentage inferred.`;
+  root.querySelector('#ct-progress-label').textContent=a.status==='measured'?`Placement progress: ${percent(a.progress)} of the next cutoff`:'Placement progress: not available';
+  root.querySelector('#ct-needed').textContent=a.status==='measured'?`${a.required-a.correct} additional correct answer${a.required-a.correct===1?'':'s'} would meet the cutoff on this assessment.`:'';
+  root.querySelector('#ct-score-label').textContent=`${state.score}/8 · ${percent(state.score/8)} accuracy`;
+  root.querySelector('#ct-demo-result').textContent=state.score<6?`Estimated B1 · ${percent(state.score/6)} toward the B2 cutoff of 6/8 (75%).`:'B2 threshold met · Estimated B2 · C1 progress not assessed.';
+ }
+ function save(){window.openai?.setWidgetState?.({modelContent:{illustrative:true,scoring:'75% with at least 4 items',selectedAssessment:rows[state.test].date,view:state.view,detailSkill:state.skill,novemberGrammarCorrect:state.score},privateContent:{version:2,...state}})?.catch(()=>{});}
+ [view,test,skill].forEach(c=>c.addEventListener('change',()=>{state.view=view.value;state.test=Number(test.value);state.skill=skill.value;render();save();}));
+ score.addEventListener('input',()=>{state.score=Number(score.value);state.test=7;state.skill='grammar';state.view='grammar';render();});
+ score.addEventListener('change',save);
+ const globals=e=>{restore(e.detail?.globals?.widgetState);render();};window.addEventListener('openai:set_globals',globals);
+ render();let lastWidth=0;const observer=new ResizeObserver(entries=>{const width=Math.round(entries[0].contentRect.width);if(width!==lastWidth){lastWidth=width;render();}});observer.observe(root);
+})();
+</script>
