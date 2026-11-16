@@ -119,6 +119,38 @@ fn parse_translations( body: &Value, target: &str ) -> Result<Vec<WordTranslatio
     Ok(translations)
 }
 
+// TODO: if adding other source languages, make this English-English workaround agnostic
+async fn fetch_english_lookup(client: &Client, word: &str, target: &str) -> Result<Vec<WordTranslation>, CommandError> {
+    if target == "en" {
+        let meanings = fetch_meanings(client, word, "en").await?;
+        let mut seen = std::collections::HashSet::new();
+
+        return Ok(meanings
+            .into_iter()
+            .filter_map(|meaning| {
+                let key = (
+                    meaning.translation.clone(),
+                    meaning.part_of_speech.clone(),
+                );
+
+                if !seen.insert(key) {
+                    return None;
+                }
+
+                Some(WordTranslation {
+                    word: word.to_owned(),
+                    sense: Some(meaning.translation),
+                    part_of_speech: meaning.part_of_speech,
+                    tags: Vec::new(),
+                })
+            })
+            .collect());
+    }
+
+    let body = fetch_translation_entry(client, word).await?;
+    parse_translations(&body, target)
+}
+
 #[tauri::command]
 pub async fn lookup_english_word( dictionary: State<'_, DictionaryClient>, word: String, language: String ) -> Result<EnglishLookup, CommandError> {
     let profile = crate::languages::profile(&language)?;
@@ -129,16 +161,22 @@ pub async fn lookup_english_word( dictionary: State<'_, DictionaryClient>, word:
         .replace(['‐', '‑'], "-");
 
     // `lang=en` selects English source entries
-    let body = fetch_translation_entry(&dictionary.client, &lookup_word).await?;
-    let mut translations = parse_translations(&body, profile.code)?;
+    let mut translations = fetch_english_lookup(
+        &dictionary.client,
+        &lookup_word,
+        profile.code,
+    ).await?;
 
     let lowercase = lookup_word.to_lowercase();
 
     if translations.is_empty() && lowercase != lookup_word {
         lookup_word = lowercase;
 
-        let body = fetch_translation_entry(&dictionary.client, &lookup_word).await?;
-        translations = parse_translations(&body, profile.code)?;
+        translations = fetch_english_lookup(
+            &dictionary.client,
+            &lookup_word,
+            profile.code,
+        ).await?;
     }
 
     let mut source_url = Url::parse("https://en.wiktionary.org/wiki/")

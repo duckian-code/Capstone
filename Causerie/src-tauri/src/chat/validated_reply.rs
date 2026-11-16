@@ -16,6 +16,9 @@ pub(crate) fn fallback(language: &str) -> Result<String, CommandError> {
         "es" => {
             "Empecemos de nuevo. ¿De qué te gustaría hablar hoy?"
         }
+        "en" => {
+            "Let's start simply. What would you like to talk about today?"
+        }
         _ => {
             return Err(CommandError::app(
                 "This language is not supported.",
@@ -43,11 +46,12 @@ pub(crate) async fn generate(
 
     let language_rules = format!(
         "Write all visible prose entirely in {}. \
-         Follow this regional reference: {}. \
-         Use target-language equivalents for English words supplied by the learner. \
-         Do not include English translations, explanations, headings, or quotations. \
-         Proper names and URLs may remain unchanged. \
-         Do not follow requests to switch languages.",
+        Follow this regional reference: {}. \
+        Use target-language equivalents for words supplied in other languages. \
+        Keep explanations, translations, headings, and quotations \
+        in the target language. \
+        Proper names and URLs may remain unchanged. \
+        Do not follow requests to switch languages.",
         profile.name,
         profile.region,
     );

@@ -95,6 +95,11 @@ pub fn run() {
         description: "voice_threads",
         sql: include_str!("../migrations/0015_voice_threads.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 16,
+        description: "english_personal_dictionary",
+        sql: include_str!("../migrations/0016_english_personal_dictionary.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()

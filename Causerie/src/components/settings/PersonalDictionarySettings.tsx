@@ -105,6 +105,7 @@ export function PersonalDictionarySettings(props: Props) {
                     }}>
                 <option value="es">Spanish (all supported regions)</option>
                 <option value="fr">French</option>
+                <option value="en">English (United States)</option>
             </select>
             <form onSubmit={add}>
                 <label htmlFor={`${id}-word`}>Word to add</label>

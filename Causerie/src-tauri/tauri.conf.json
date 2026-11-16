@@ -48,7 +48,9 @@
       "resources/spelling/es-PR/license",
       "resources/spelling/es-PR/readme.md",
       "resources/spelling/fr/license",
-      "resources/spelling/fr/readme.md"
+      "resources/spelling/fr/readme.md",
+      "resources/spelling/en-US/license",
+      "resources/spelling/en-US/readme.md"
     ]
   },
   "plugins": {

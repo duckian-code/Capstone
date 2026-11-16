@@ -37,6 +37,14 @@ const SPANISH: [&str; 5] = [
     "Una buena sorpresa, un pequeño lío, una idea curiosa… ¿Me cuentas?",
 ];
 
+const ENGLISH: [&str; 5] = [
+    "Got five minutes? Come tell me a little about your day.",
+    "I feel like chatting. Open Causerie and tell me what's on your mind.",
+    "How about a little English practice? We don't need an extraordinary topic.",
+    "Your keyboard and I are waiting for your next message. Want to chat?",
+    "A nice surprise, a small problem, a strange idea... Tell me about it!",
+];
+
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
 pub struct ReminderSettings {
@@ -403,6 +411,7 @@ async fn deliver_due(db: &Path) -> Result<(), String> {
     let messages = match profile.code {
         "fr" => &FRENCH,
         "es" => &SPANISH,
+        "en" => &ENGLISH,
         _ => return Err("No reminder messages exist for this language.".into()),
     };
 

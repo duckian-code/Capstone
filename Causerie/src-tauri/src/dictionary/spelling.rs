@@ -17,6 +17,7 @@ const MAX_SUGGESTIONS: usize = 5;
 static SPANISH: OnceLock<Result<Dictionary, String>> = OnceLock::new();
 static PUERTO_RICAN: OnceLock<Result<Dictionary, String>> = OnceLock::new();
 static FRENCH: OnceLock<Result<Dictionary, String>> = OnceLock::new();
+static ENGLISH_US: OnceLock<Result<Dictionary, String>> = OnceLock::new();
 
 #[derive(Debug, Serialize)]
 pub struct SpellingIssue {
@@ -56,6 +57,14 @@ fn dictionary(locale: &str) -> Result<&'static Dictionary, CommandError> {
             Dictionary::new(
                 include_str!("../../resources/spelling/fr/index.aff"),
                 include_str!("../../resources/spelling/fr/index.dic"),
+            )
+                .map_err(|error| error.to_string())
+        }),
+
+        "en-US" => ENGLISH_US.get_or_init(|| {
+            Dictionary::new(
+                include_str!("../../resources/spelling/en-US/index.aff"),
+                include_str!("../../resources/spelling/en-US/index.dic"),
             )
                 .map_err(|error| error.to_string())
         }),

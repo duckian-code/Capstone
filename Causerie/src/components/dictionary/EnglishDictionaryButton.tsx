@@ -223,10 +223,21 @@ function LookupPanel({ id, anchor, language, label, onClose }: PanelProps) {
             {result && (
                 <>
                     <p role="status">
-                        {result.translations.length
-                            ? `Translations for “${result.word}”`
-                            : "No translation found. Try another spelling or the base form of the word."}
+                        {result.target_locale === "en-US"
+                            ? result.translations.length
+                                ? `English definitions for “${result.word}”`
+                                : "No English definition found. Try another spelling or the base form."
+                            : result.translations.length
+                                ? `Translations for “${result.word}”`
+                                : "No translation found. Try another spelling or the base form of the word."}
                     </p>
+
+                    {result.target_locale === "en-US" && (
+                        <p className="english-dictionary-note">
+                            English → English keeps the word unchanged and shows its
+                            meanings. Dictionary entries may include regional variants.
+                        </p>
+                    )}
 
                     {result.target_locale === "es-PR" && (
                         <p className="english-dictionary-note">

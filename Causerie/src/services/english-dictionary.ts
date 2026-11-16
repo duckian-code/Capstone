@@ -9,7 +9,7 @@ export interface WordTranslation {
 
 export interface EnglishLookup {
     word: string;
-    target_locale: "fr" | "es" | "es-PR";
+    target_locale: "fr" | "es" | "es-PR" | "en-US";
     translations: WordTranslation[];
     source_url: string;
 }

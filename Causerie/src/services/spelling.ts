@@ -1,6 +1,6 @@
 import { callBackend } from "../data/dao/base";
 
-export type SpellingLocale = "es" | "es-PR" | "fr";
+export type SpellingLocale = "es" | "es-PR" | "fr" | "en-US";
 
 export interface SpellingIssue {
     start: number;

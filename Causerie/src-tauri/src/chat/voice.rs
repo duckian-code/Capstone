@@ -315,6 +315,9 @@ pub async fn speak_message(
     let accent = match profile.locale {
         "fr" => "French as spoken in France, with natural metropolitan French pronunciation.",
         "es-PR" => "Spanish as spoken in Puerto Rico, with natural Puerto Rican rhythm and pronunciation. Avoid caricature.",
+        "en-US" => "English as spoken in the United States, with natural \
+            General American pronunciation and conversational rhythm. \
+            Avoid exaggerated regional accents.",
         _ => "Broadly understandable Latin American Spanish with seseo and restrained regional pronunciation.",
     };
 

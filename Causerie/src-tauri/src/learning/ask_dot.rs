@@ -171,9 +171,12 @@ pub async fn ask_dot(
             "fr" => "Ici, je réponds aux questions sur le français. \
                      Pose-moi une question sur un mot, une expression \
                      ou une règle de grammaire !",
+            "en" => "Here, I answer questions about English. \
+                    Ask me about a word, an expression, pronunciation, \
+                    or a grammar rule!",
             _ => "Aquí respondo preguntas sobre el español. \
-                  ¡Pregúntame sobre una palabra, una expresión \
-                  o una regla gramatical!",
+                    ¡Pregúntame sobre una palabra, una expresión \
+                    o una regla gramatical!",
         }.to_owned());
     }
 

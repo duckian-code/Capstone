@@ -33,6 +33,13 @@ export const LANGUAGE_OPTIONS = [
         code: "es",
         locale: "es-PR",
     },
+    // FOR DEV TESTING
+    {
+        value: "English (United States)",
+        label: "English (United States)",
+        code: "en",
+        locale: "en-US",
+    },
 ] as const;
 
 export interface OnboardingInput {

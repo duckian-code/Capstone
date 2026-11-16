@@ -72,6 +72,7 @@ fn target_language(language: &str) -> Result<Language, CommandError> {
     match crate::languages::profile(language)?.code {
         "fr" => Ok(Language::French),
         "es" => Ok(Language::Spanish),
+        "en" => Ok(Language::English),
         _ => Err(CommandError::app("This language is not supported.")),
     }
 }
@@ -202,10 +203,7 @@ pub(crate) async fn assess_output(
     assess(text, language, true).await
 }
 
-pub(crate) async fn assess_input(
-    text: &str,
-    language: &str,
-) -> Result<InputValidation, CommandError> {
+pub(crate) async fn assess_input( text: &str, language: &str ) -> Result<InputValidation, CommandError> {
     if text.trim().is_empty() {
         return Err(CommandError::app("Please enter a message."));
     }
@@ -220,8 +218,7 @@ pub(crate) async fn assess_input(
 
     let message = (decision == Decision::Rejected).then(|| {
         format!(
-            "Try writing most of your message in {}. You can still use \
-             English for words you haven't learned yet.",
+            "Try writing most of your message in {}. You can still substitute words from another language when you haven't learned them yet.",
             profile.name,
         )
     });

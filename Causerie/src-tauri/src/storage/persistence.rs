@@ -914,6 +914,15 @@ pub async fn complete_onboarding(databases: State<'_, DbInstances>, user_id: Str
              Cuéntame un poco de ti: ¿cómo te llamas y por qué quieres aprender español? \
              ¿Qué te gustaría poder hacer en español?",
         ),
+        "en" => (
+            "Welcome to Causerie!",
+            "A first conversation with Dot to get to know each other.",
+            "Hi! I'm Dot, your digital conversation partner. \
+     We'll practice English together at your pace. \
+     Tell me a little about yourself: what's your name, \
+     and why would you like to practice English? \
+     What would you like to feel more comfortable doing in English?",
+        ),
         _ => {
             return Err(CommandError::app(
                 "An introductory conversation is not available for this language.",

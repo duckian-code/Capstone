@@ -63,7 +63,27 @@ Do not mark a valid regional variant as an error solely because it differs
 from the configured reference.
 "#,
             })
-        }
+        },
+        "en"
+        | "en-us"
+        | "english"
+        | "english (united states)"
+        | "american english" => Ok(LanguageProfile {
+            name: "English",
+            code: "en",
+            locale: "en-US",
+            region: "the United States",
+            rules: r#"
+Use American English as the regional reference.
+Prefer standard American spelling, vocabulary, and punctuation.
+Use natural, broadly understandable American expressions.
+Avoid exaggerated regional slang or stereotyped accents.
+Do not assume that the learner is American.
+
+When reviewing learner text, distinguish valid regional variants from
+actual errors. Explain the American equivalent when helpful.
+"#,
+        }),
 
         _ => Err(CommandError::app("This language is not supported.")),
     }
