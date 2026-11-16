@@ -1,0 +1,18 @@
+.assessment-content { padding: 1rem; overflow-wrap: anywhere; }
+.assessment-dialog { max-height: 90dvh; overflow-y: auto; }
+.assessment-item { margin-block: 1rem; padding: 1rem; min-width: 0; }
+.assessment-option { display: flex; gap: .6rem; align-items: baseline; padding: .5rem; cursor: pointer; }
+.assessment-option input { flex: 0 0 auto; }
+.assessment-passage { border-inline-start: .25rem solid currentColor; padding-inline: 1rem; margin-block: 1rem; }
+.assessment-passage p, .assessment-question { white-space: pre-wrap; }
+.assessment-results table { width: 100%; border-collapse: collapse; margin-block: 1rem; }
+.assessment-results th, .assessment-results td { text-align: start; border-bottom: 1px solid currentColor; padding: .4rem; overflow-wrap: anywhere; }
+.assessment-results details, .assessment-history > details { padding-block: .6rem; }
+.assessment-results summary, .assessment-history summary { cursor: pointer; }
+.assessment-results section { margin-block: 1rem; }
+.assessment-content progress { width: 100%; }
+@media (max-width: 520px) {
+    .assessment-content { padding: .6rem; }
+    .assessment-item { padding: .5rem; }
+    .assessment-results table { font-size: .8rem; }
+}

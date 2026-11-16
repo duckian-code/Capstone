@@ -1,3 +1,5 @@
+import { AssessmentHistory } from "../assessment/AssessmentResults";
+import { AssessmentDialog } from "../assessment/AssessmentDialog";
 import { createContext, useContext, useEffect, useRef, useState} from "react";
 import type {FormEvent, ReactNode} from "react";
 import { createPortal } from "react-dom";
@@ -32,6 +34,8 @@ interface SettingsContextValue {
     user: User;
     openProfile: () => void;
     openSettings: () => void;
+    openAssessment: () => void;
+    assessmentRevision: number;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -48,6 +52,9 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
     const [menu, setMenu] = useState<"profile" | "settings" | null>(
         null,
     );
+
+    const [assessmentOpen, setAssessmentOpen] = useState(false);
+    const [assessmentRevision, setAssessmentRevision] = useState(0);
 
     useEffect(() => {
         function openApiSettings() {
@@ -77,6 +84,8 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
                 user,
                 openProfile: () => setMenu("profile"),
                 openSettings: () => setMenu("settings"),
+                openAssessment: () => setAssessmentOpen(true),
+                assessmentRevision,
             }}
         >
             {children}
@@ -98,6 +107,11 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
                     onGoalsSaved={(settings) => onGoalsChange(user.id, settings)}
                 />
             )}
+            {assessmentOpen && <AssessmentDialog
+                key={user.id} userId={user.id}
+                onClose={() => setAssessmentOpen(false)}
+                onCompleted={() => setAssessmentRevision(n => n + 1)}
+            />}
         </SettingsContext.Provider>
     );
 }
@@ -368,6 +382,7 @@ async function readAvatar(file: File): Promise<string> {
 }
 
 function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
+    const { openAssessment, assessmentRevision } = useSettings();
     const fileRef = useRef<HTMLInputElement>(null);
     const busyRef = useRef(false);
 
@@ -451,6 +466,10 @@ function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
 
     return (
         <SettingsModal title="Your profile" dirty={dirty} busy={busy} onClose={onClose}>
+            <section className="settings-section" aria-label="Latest French assessment">
+                <AssessmentHistory key={user.id} userId={user.id} revision={assessmentRevision}
+                    compact onStart={openAssessment} />
+            </section>
             <form className="settings-form" onSubmit={save}>
             <fieldset disabled={busy}>
                     <legend className="settings-sr-only">
@@ -545,11 +564,13 @@ interface FullSettingsProps extends EditorProps {
 
 const SETTINGS_NAVIGATION = [
     ...SETTINGS_SECTIONS.map(({ id, label }) => ({ id, label })),
+    { id: "assessments", label: "Assessment history" },
     { id: "personal-dictionary", label: "Personal dictionary" },
     { id: "reset", label: "Reset application" },
 ];
 
 function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }: FullSettingsProps ) {
+    const { openAssessment, assessmentRevision } = useSettings();
     const [dictionaryOpen, setDictionaryOpen] = useState(false);
     const [dictionaryBusy, setDictionaryBusy] = useState(false);
     const [dictionaryDirty, setDictionaryDirty] = useState(false);
@@ -990,6 +1011,11 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                                 </section>
                             ),
                         )}
+
+                        <section id="settings-section-assessments" className="settings-section" aria-labelledby="settings-section-title-assessments">
+                            <h3 id="settings-section-title-assessments">Assessment history</h3>
+                            <AssessmentHistory key={user.id} userId={user.id} revision={assessmentRevision} onStart={openAssessment} />
+                        </section>
 
                         <section
                             id="settings-section-personal-dictionary"

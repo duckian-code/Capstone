@@ -10,6 +10,7 @@
     "opener:default",
     "shell:default",
     "log:default",
-    "notification:default"
+    "notification:default",
+    "core:window:allow-close"
   ]
 }

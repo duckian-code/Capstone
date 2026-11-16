@@ -100,9 +100,15 @@ pub fn run() {
         description: "english_personal_dictionary",
         sql: include_str!("../migrations/0016_english_personal_dictionary.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 17,
+        description: "proficiency_assessments",
+        sql: include_str!("../migrations/0017_proficiency_assessments.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
+        .manage(learning::assessment::AssessmentState::default())
         .plugin(tauri_plugin_single_instance::init(|app, _, _| {
             if let Some(window) = app.get_webview_window("main") {
                 let _ = window.show();
@@ -164,6 +170,11 @@ pub fn run() {
             chat::thread_starters::create_generated_thread,
             reminders::get_practice_reminders,
             reminders::save_practice_reminders,
+            learning::assessment::french_assessment_info,
+            learning::assessment::start_french_assessment,
+            learning::assessment::submit_assessment_block,
+            learning::assessment::cancel_assessment,
+            learning::assessment::list_assessments,
             learning::proficiency::get_proficiency,
             learning::proficiency::save_proficiency,
             learning::feedback::list_feedback_states,

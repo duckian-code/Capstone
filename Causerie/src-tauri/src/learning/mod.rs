@@ -5,3 +5,5 @@ pub(crate) mod goals;
 pub(crate) mod hints;
 pub(crate) mod proficiency;
 pub(crate) mod ask_dot;
+
+pub(crate) mod assessment;
