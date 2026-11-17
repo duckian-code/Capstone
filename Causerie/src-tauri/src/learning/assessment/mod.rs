@@ -43,7 +43,7 @@ async fn saved(
     json.map(|s| {
         serde_json::from_str(&s).map_err(|_| invalid("The stored assessment could not be read."))
     })
-    .transpose()
+        .transpose()
 }
 async fn seen(tx: &mut Transaction<'_, Sqlite>, user: &str) -> Result<Seen, CommandError> {
     let rows: Vec<(String, String, String)> = sqlx::query_as("SELECT bank_id, question_id, last_seen_at FROM proficiency_question_exposure WHERE user_id=? AND language='fr'")
@@ -137,16 +137,19 @@ async fn submit(
     if a.user_id != user {
         return Err(invalid("This attempt belongs to another profile."));
     }
+    let previous_blocks = a.blocks.len();
     a.submit(block_index, &answers, now()).map_err(invalid)?;
-    if a.status == "completed" {
-        persist(&mut tx, &a).await?;
-    } else if a.blocks.last().is_some_and(|b| b.submitted_at.is_some()) {
+    if a.status != "completed" && a.blocks.last().is_some_and(|b| b.submitted_at.is_some()) {
         a.next_block(
             &engine::banks().map_err(invalid)?,
             &seen(&mut tx, user).await?,
             now(),
         )
-        .map_err(invalid)?;
+            .map_err(invalid)?;
+    }
+    if a.status == "completed" {
+        persist(&mut tx, &a).await?;
+    } else if a.blocks.len() > previous_blocks {
         expose(&mut tx, &a).await?;
     }
     tx.commit().await.map_err(database::error)?;
@@ -171,7 +174,7 @@ pub async fn start_french_assessment(
         &user_id,
         &attempt_id,
     )
-    .await
+        .await
 }
 #[tauri::command]
 pub async fn submit_assessment_block(
@@ -190,7 +193,7 @@ pub async fn submit_assessment_block(
         block_index,
         answers,
     )
-    .await
+        .await
 }
 #[tauri::command]
 pub async fn cancel_assessment(

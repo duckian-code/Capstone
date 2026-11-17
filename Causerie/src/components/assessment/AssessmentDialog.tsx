@@ -115,10 +115,14 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
     }
     const active = view?.status === "in_progress" ? view : null;
     const total = active ? active.config.blocks * active.config.questionsPerSkill * active.scoringPolicy.includedSkills.length : 0;
+    const isFollowUp = active?.block.phase === "follow_up";
+    const roundLabel = active ? isFollowUp
+        ? `Follow-up ${active.block.index - active.config.blocks + 1}`
+        : `Block ${active.block.index + 1} of ${active.config.blocks}` : "";
     const answered = active ? active.block.items.filter(i => answers[i.id]).length : 0;
     return createPortal(<dialog ref={dialog} className="settings-modal settings-modal-wide assessment-dialog"
-        aria-labelledby="assessment-title" aria-busy={busy}
-        onCancel={event => { event.preventDefault(); requestClose(); }}>
+                                aria-labelledby="assessment-title" aria-busy={busy}
+                                onCancel={event => { event.preventDefault(); requestClose(); }}>
         <header className="settings-modal-header"><h2 id="assessment-title">French proficiency test</h2>
             <button type="button" disabled={busy} onClick={requestClose} aria-label="Close French proficiency test">×</button></header>
         <div className="assessment-content">
@@ -130,9 +134,13 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             {error && <p className="settings-error" role="alert">{error}</p>}
             {!view && !info && <p role="status">{error ? <button type="button" onClick={() => setInfoRetry(n => n+1)}>Retry assessment setup</button> : "Checking assessment configuration and question banks…"}</p>}
             {!view && info && <>
-                <p>Answer {info.config.blocks * info.config.questionsPerSkill * info.scoringPolicy.includedSkills.length} questions in {info.config.blocks} blocks:
+                <p>Start with {info.config.blocks * info.config.questionsPerSkill * info.scoringPolicy.includedSkills.length} questions in {info.config.blocks} blocks:
                     {" "}{info.config.questionsPerSkill} questions per skill per block ({info.scoringPolicy.includedSkills.map(skillName).join(", ")}).
                     Each skill starts at {info.config.startingLevel} and adapts independently within {info.config.levels[0]}–{info.config.levels[info.config.levels.length-1]}.</p>
+                {info.config.followUp && <p>If a skill routes to a lower level after the final main block and still has no placement,
+                    you will receive {info.config.questionsPerSkill} follow-up questions for that skill per round.
+                    Follow-ups continue until that skill has a placement or no full set of unused questions remains.
+                    Established skills receive no extra questions. If questions run out, the result is saved as “Placement not established”.</p>}
                 <p>You can change answers within a block. Submitted blocks are locked. Answers and explanations are shown after completion.</p>
                 <p><strong>Unfinished tests are discarded if you cancel, close, or restart the app.</strong> Completed results are saved to this profile’s assessment history.</p>
                 <p>These draft questions provide an estimate based on the assessed skills. Your conversation proficiency setting will not change.</p>
@@ -142,9 +150,13 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                 }}>{busy ? "Starting…" : started ? "Retry starting assessment" : "Begin assessment"}</button>
             </>}
             {active && <>
-                <p role="status">Block {active.block.index + 1} of {active.config.blocks} · {answered} of {active.block.items.length} answered in this block.</p>
-                <progress aria-label="Assessment questions answered" max={total}
-                    value={active.block.index * active.block.items.length + answered} />
+                <p role="status">{roundLabel} · {answered} of {active.block.items.length} answered in this round.</p>
+                {isFollowUp && <p>Additional questions for {Array.from(new Set(active.block.items.map(item => item.skill))).map(skillName).join(", ")}.
+                    More follow-up rounds may be needed.</p>}
+                <p>{active.answeredQuestionCount + answered} questions answered across this assessment.</p>
+                <progress aria-label={isFollowUp ? "Current follow-up questions answered" : "Main assessment questions answered"}
+                          max={isFollowUp ? active.block.items.length : total}
+                          value={isFollowUp ? answered : active.answeredQuestionCount + answered} />
                 <form onSubmit={event => {
                     event.preventDefault();
                     if (busyRef.current || confirmExit || answered !== active.block.items.length) return;
@@ -154,20 +166,20 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                     void run(() => assessments.submit(userId, id, submission.blockIndex, submission.answers));
                 }}>
                     <fieldset disabled={busy || retryingSubmission || !!confirmExit}>
-                        <legend>Block {active.block.index + 1} questions</legend>
+                        <legend>{roundLabel} questions</legend>
                         {active.block.items.map((item, index) => <fieldset className="assessment-item" key={item.id}>
                             <legend>{index + 1}. {skillName(item.skill)}</legend>
                             <PassageText passage={item.passage} />
                             <p className="assessment-question" lang="fr">{item.prompt}</p>
                             {item.options.map(option => <label key={option.id} className="assessment-option" lang="fr">
                                 <input type="radio" name={item.id} value={option.id} required checked={answers[item.id] === option.id}
-                                    onChange={() => setAnswers(previous => ({ ...previous, [item.id]: option.id }))} />
+                                       onChange={() => setAnswers(previous => ({ ...previous, [item.id]: option.id }))} />
                                 <span>{option.text}</span>
                             </label>)}
                         </fieldset>)}
                     </fieldset>
                     <button type="submit" disabled={busy || !!confirmExit || answered !== active.block.items.length}>
-                        {busy ? "Saving…" : retryingSubmission ? "Retry this submission" : active.block.index + 1 === active.config.blocks ? "Complete assessment" : "Submit block"}
+                        {busy ? "Saving…" : retryingSubmission ? "Retry this submission" : isFollowUp ? "Submit follow-up" : "Submit block"}
                     </button>
                     {retryingSubmission && !busy && <p>Your submitted answers are locked while the save is retried. Retry uses the same submission and cannot create duplicate results.</p>}
                 </form>

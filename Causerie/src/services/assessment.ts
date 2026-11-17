@@ -4,6 +4,11 @@ export interface AssessmentConfig {
     blocks: number; questionsPerSkill: number; startingLevel: AssessmentLevel;
     decreaseBelow: number; increaseAt: number; minimumEvidence: number;
     placementThreshold: number; levels: AssessmentLevel[];
+    followUp?: {
+        trigger: "unplaced_after_final_main_block_drop";
+        exhaustedLevelRouting: "nearest_lower_then_higher";
+        exhaustionOutcome: "save_placement_not_established";
+    } | null;
 }
 export interface ScoringPolicy { version: string; includedSkills: string[]; overallMethod: string }
 export interface Counts { correct: number; answered: number }
@@ -27,20 +32,22 @@ export interface Question {
 export interface AssessmentRecord {
     schemaVersion: number; id: string; userId: string; language: string; status: "completed";
     startedAt: string; completedAt: string; config: AssessmentConfig; scoringPolicy: ScoringPolicy;
+    followUpSkills?: string[]; exhaustedSkills?: string[];
     banks: { bankId: string; bankVersion: number; skill: string }[];
-    blocks: { index: number; shownAt: string; submittedAt: string; items: {
-        bankId: string; bankVersion: number; skill: string; administeredDifficulty: AssessmentLevel;
-        question: Question; passage: Passage | null; displayedOptionOrder: string[];
-        submittedOptionId: string; correct: boolean;
-    }[] }[];
+    blocks: { index: number; phase?: "main" | "follow_up"; shownAt: string; submittedAt: string; items: {
+            bankId: string; bankVersion: number; skill: string; administeredDifficulty: AssessmentLevel;
+            question: Question; passage: Passage | null; displayedOptionOrder: string[];
+            submittedOptionId: string; correct: boolean;
+        }[] }[];
     results: { skills: Record<string, SkillResult>; overall: {
-        status: "available" | "unavailable"; meanRank: number | null; category: AssessmentLevel | null;
-    } };
+            status: "available" | "unavailable"; meanRank: number | null; category: AssessmentLevel | null;
+        } };
 }
 export interface ActiveAssessment {
     id: string; userId: string; language: string; status: "in_progress";
     config: AssessmentConfig; scoringPolicy: ScoringPolicy;
-    block: { index: number; items: { id: string; skill: string; prompt: string; passage: Passage | null; options: OptionItem[] }[] };
+    answeredQuestionCount: number;
+    block: { index: number; phase: "main" | "follow_up"; items: { id: string; skill: string; prompt: string; passage: Passage | null; options: OptionItem[] }[] };
 }
 export type AssessmentResponse = ActiveAssessment | AssessmentRecord;
 export const skillName = (skill: string) => ({ reading: "Reading comprehension", vocabulary: "Vocabulary", grammar: "Grammar" }[skill] ?? skill);

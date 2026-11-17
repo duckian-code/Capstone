@@ -21,6 +21,8 @@ export function AssessmentResults({ record, compact = false }: { record: Assessm
             const r = result.skills[skill];
             return <section key={skill}>
                 <h4>{skillName(skill)}: {r.category ?? "Placement not established"}</h4>
+                {record.exhaustedSkills?.includes(skill) && <p>Follow-up questions exhausted: no full set of unused questions remained at any level.
+                    The available evidence did not establish placement.</p>}
                 {!compact && <>
                     <p>Estimated category: {r.category ?? "Placement not established"}</p>
                     {r.progressStatus === "measured" ? <>
@@ -30,8 +32,8 @@ export function AssessmentResults({ record, compact = false }: { record: Assessm
                             Display position: {r.displayPosition!.toFixed(2)}.</p>
                     </> : r.progressStatus === "ceiling" ? <p>C1 is the highest assessed level. No next-level progress.</p>
                         : r.progressStatus === "not_assessed" ? <p>{r.nextLevel} accuracy and placement progress: Not assessed.
-                            {r.nextLevelCounts ? ` Only ${r.nextLevelCounts.answered} questions answered; ${record.config.minimumEvidence} required.` : " No questions at this level."}</p>
-                        : <p>Next-level placement progress: Not assessed because placement is not established.</p>}
+                                {r.nextLevelCounts ? ` Only ${r.nextLevelCounts.answered} questions answered; ${record.config.minimumEvidence} required.` : " No questions at this level."}</p>
+                            : <p>Next-level placement progress: Not assessed because placement is not established.</p>}
                     <table><caption>Evidence across the full assessment</caption><thead><tr><th>Level</th><th>Correct / answered</th><th>Accuracy</th><th>Placement evidence</th></tr></thead>
                         <tbody>{record.config.levels.map(level => {
                             const c = r.evidence[level];
@@ -49,7 +51,7 @@ export function AssessmentResults({ record, compact = false }: { record: Assessm
             <p>This assessment uses draft questions and provides an estimate, not a certified CEFR result. Your conversation proficiency setting is unchanged.</p>
             <h3>Questions and answers</h3>
             {record.blocks.map(block => <section key={block.index}>
-                <h4>Block {block.index + 1}</h4>
+                <h4>{block.phase === "follow_up" ? `Follow-up ${block.index - record.config.blocks + 1}` : `Block ${block.index + 1}`}</h4>
                 {block.items.map((item, index) => <details key={item.question.id}>
                     <summary>{index + 1}. {skillName(item.skill)} · {item.administeredDifficulty} · {item.correct ? "Correct" : "Incorrect"}</summary>
                     <PassageText passage={item.passage} />
@@ -83,11 +85,11 @@ export function AssessmentHistory({ userId, revision, compact = false, onStart }
         <button type="button" onClick={onStart}>Take French proficiency test</button>
         {error ? <p role="alert">{error} <button type="button" onClick={() => setRetry(n => n+1)}>Retry loading assessments</button></p>
             : records === null ? <p role="status">Loading French assessments…</p>
-            : records.length === 0 ? <p>No French assessment completed yet.</p>
-            : compact ? <AssessmentResults record={records[0]} compact />
-            : records.map(record => <details key={record.id}>
-                <summary>{date(record.completedAt)} — Overall estimate: {record.results.overall.category ?? "Unavailable"}</summary>
-                <AssessmentResults record={record} />
-            </details>)}
+                : records.length === 0 ? <p>No French assessment completed yet.</p>
+                    : compact ? <AssessmentResults record={records[0]} compact />
+                        : records.map(record => <details key={record.id}>
+                            <summary>{date(record.completedAt)} — Overall estimate: {record.results.overall.category ?? "Unavailable"}</summary>
+                            <AssessmentResults record={record} />
+                        </details>)}
     </div>;
 }

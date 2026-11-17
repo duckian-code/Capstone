@@ -17,6 +17,16 @@ pub struct Config {
     pub minimum_evidence: usize,
     pub placement_threshold: f64,
     pub levels: Vec<String>,
+    // Missing in historical v1 records: retain their original three-block policy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub follow_up: Option<FollowUpPolicy>,
+}
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct FollowUpPolicy {
+    pub trigger: String,
+    pub exhausted_level_routing: String,
+    pub exhaustion_outcome: String,
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -35,11 +45,16 @@ pub fn config() -> Config {
         minimum_evidence: 4,
         placement_threshold: 0.75,
         levels: LEVELS.map(String::from).to_vec(),
+        follow_up: Some(FollowUpPolicy {
+            trigger: "unplaced_after_final_main_block_drop".into(),
+            exhausted_level_routing: "nearest_lower_then_higher".into(),
+            exhaustion_outcome: "save_placement_not_established".into(),
+        }),
     }
 }
 pub fn policy() -> Policy {
     Policy {
-        version: "fr-wave1-equal-category-ranks-v1".into(),
+        version: "fr-wave1-equal-category-ranks-followups-v2".into(),
         included_skills: ["reading", "vocabulary", "grammar"]
             .map(String::from)
             .to_vec(),
@@ -115,9 +130,14 @@ pub struct Item {
 #[serde(rename_all = "camelCase")]
 pub struct Block {
     pub index: usize,
+    #[serde(default = "main_phase")]
+    pub phase: String,
     pub shown_at: String,
     pub submitted_at: Option<String>,
     pub items: Vec<Item>,
+}
+fn main_phase() -> String {
+    "main".into()
 }
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct Counts {
@@ -167,6 +187,10 @@ pub struct Attempt {
     pub banks: Vec<BankRef>,
     pub blocks: Vec<Block>,
     pub results: Option<Results>,
+    #[serde(default)]
+    pub follow_up_skills: Vec<String>,
+    #[serde(default)]
+    pub exhausted_skills: Vec<String>,
 }
 
 pub fn banks() -> Result<Vec<Bank>, String> {
@@ -175,9 +199,9 @@ pub fn banks() -> Result<Vec<Bank>, String> {
         include_str!("../../../resources/proficiency/fr/vocabulary.json"),
         include_str!("../../../resources/proficiency/fr/grammar.json"),
     ]
-    .iter()
-    .map(|s| serde_json::from_str(s).map_err(|e| format!("Invalid assessment bank: {e}")))
-    .collect()
+        .iter()
+        .map(|s| serde_json::from_str(s).map_err(|e| format!("Invalid assessment bank: {e}")))
+        .collect()
 }
 fn rank(level: &str, cfg: &Config) -> usize {
     cfg.levels
@@ -235,6 +259,11 @@ pub fn validate(banks: &[Bank], cfg: &Config, policy: &Policy) -> Result<(), Str
         || cfg.blocks > 10
         || cfg.questions_per_skill == 0
         || cfg.minimum_evidence == 0
+        || cfg.follow_up.as_ref().is_some_and(|p| {
+        p.trigger != "unplaced_after_final_main_block_drop"
+            || p.exhausted_level_routing != "nearest_lower_then_higher"
+            || p.exhaustion_outcome != "save_placement_not_established"
+    })
         || cfg.levels != LEVELS.map(String::from)
         || !cfg.levels.contains(&cfg.starting_level)
         || !(0.0..=1.0).contains(&cfg.decrease_below)
@@ -244,7 +273,7 @@ pub fn validate(banks: &[Bank], cfg: &Config, policy: &Policy) -> Result<(), Str
         || cfg.placement_threshold == 0.0
         || policy.included_skills.is_empty()
         || policy.included_skills.iter().collect::<BTreeSet<_>>().len()
-            != policy.included_skills.len()
+        != policy.included_skills.len()
     {
         return Err("Invalid assessment configuration.".into());
     }
@@ -292,22 +321,22 @@ pub fn validate(banks: &[Bank], cfg: &Config, policy: &Policy) -> Result<(), Str
                 || ids.len() < 2
                 || !ids.contains(&q.correct_option_id)
                 || q.options
-                    .iter()
-                    .any(|o| o.id.is_empty() || o.text.trim().is_empty())
+                .iter()
+                .any(|o| o.id.is_empty() || o.text.trim().is_empty())
             {
                 return Err(format!("Invalid question: {}", q.id));
             }
             match (&q.passage_id, q.passage_version) {
                 (Some(id), Some(version))
-                    if b.passages.iter().any(|p| {
-                        &p.id == id
-                            && p.version == version
-                            && p.level == q.level
-                            && p.language == q.language
-                    }) =>
-                {
-                    ()
-                }
+                if b.passages.iter().any(|p| {
+                    &p.id == id
+                        && p.version == version
+                        && p.level == q.level
+                        && p.language == q.language
+                }) =>
+                    {
+                        ()
+                    }
                 (None, None) if skill != "reading" => (),
                 _ => return Err(format!("Invalid passage association: {}", q.id)),
             }
@@ -350,7 +379,7 @@ impl Attempt {
         let scoring_policy = policy();
         validate(banks, &cfg, &scoring_policy)?;
         Ok(Self {
-            schema_version: 1,
+            schema_version: 2,
             id,
             user_id,
             language: "fr".into(),
@@ -369,14 +398,56 @@ impl Attempt {
                 .collect(),
             blocks: vec![],
             results: None,
+            follow_up_skills: vec![],
+            exhausted_skills: vec![],
         })
     }
+    /// Routing always uses the last submitted batch for this particular skill
+    fn requested_level(&self, skill: &str) -> String {
+        for b in self
+            .blocks
+            .iter()
+            .rev()
+            .filter(|b| b.submitted_at.is_some())
+        {
+            let group: Vec<_> = b.items.iter().filter(|i| i.skill == skill).collect();
+            if !group.is_empty() {
+                return route(
+                    &group[0].administered_difficulty,
+                    group.iter().filter(|i| i.correct == Some(true)).count(),
+                    group.len(),
+                    &self.config,
+                );
+            }
+        }
+        self.config.starting_level.clone()
+    }
+    fn pending_skills(&self) -> Vec<String> {
+        let results = score(self);
+        self.follow_up_skills
+            .iter()
+            .filter(|s| results.skills[*s].category.is_none() && !self.exhausted_skills.contains(s))
+            .cloned()
+            .collect()
+    }
+    fn finish(&mut self, now: String) {
+        self.results = Some(score(self));
+        self.status = "completed".into();
+        self.completed_at = Some(now);
+    }
     pub fn next_block(&mut self, banks: &[Bank], seen: &Seen, now: String) -> Result<(), String> {
-        if self.blocks.len() >= self.config.blocks
+        let follow_up = self.blocks.len() >= self.config.blocks;
+        if self.status == "completed"
             || self.blocks.last().is_some_and(|b| b.submitted_at.is_none())
+            || (follow_up && self.config.follow_up.is_none())
         {
             return Err("No new block is available.".into());
         }
+        let skills = if follow_up {
+            self.pending_skills()
+        } else {
+            self.scoring_policy.included_skills.clone()
+        };
         let used: BTreeSet<_> = self
             .blocks
             .iter()
@@ -384,22 +455,41 @@ impl Attempt {
             .map(|i| &i.question.id)
             .collect();
         let mut items = vec![];
-        for skill in &self.scoring_policy.included_skills {
-            let level = if let Some(b) = self.blocks.last() {
-                let group: Vec<_> = b.items.iter().filter(|i| &i.skill == skill).collect();
-                route(
-                    &group[0].administered_difficulty,
-                    group.iter().filter(|i| i.correct == Some(true)).count(),
-                    group.len(),
-                    &self.config,
-                )
-            } else {
-                self.config.starting_level.clone()
-            };
+        let mut exhausted = vec![];
+        for skill in &skills {
+            let requested = self.requested_level(skill);
             let bank = banks
                 .iter()
                 .find(|b| &b.skill == skill)
                 .ok_or("Missing bank.")?;
+            // Prefer the normally routed level. Only on exhaustion search lower levels,
+            // nearest first, then higher levels. Never repeat or shorten a skill batch.
+            let requested_index = rank(&requested, &self.config);
+            let candidates: Vec<usize> = if follow_up {
+                std::iter::once(requested_index)
+                    .chain((0..requested_index).rev())
+                    .chain(requested_index + 1..self.config.levels.len())
+                    .collect()
+            } else {
+                vec![requested_index]
+            };
+            let available = candidates.into_iter().find(|&index| {
+                bank.questions
+                    .iter()
+                    .filter(|q| q.level == self.config.levels[index] && !used.contains(&q.id))
+                    .count()
+                    >= self.config.questions_per_skill
+            });
+            let Some(index) = available else {
+                if follow_up {
+                    exhausted.push(skill.clone());
+                    continue;
+                }
+                return Err(format!(
+                    "Insufficient unused {skill} {requested} questions."
+                ));
+            };
+            let level = self.config.levels[index].clone();
             let mut pool: Vec<_> = bank
                 .questions
                 .iter()
@@ -437,8 +527,17 @@ impl Attempt {
                 });
             }
         }
+        self.exhausted_skills.extend(exhausted);
+        if items.is_empty() {
+            if follow_up {
+                self.finish(now);
+                return Ok(());
+            }
+            return Err("No assessment questions available.".into());
+        }
         self.blocks.push(Block {
             index: self.blocks.len(),
+            phase: if follow_up { "follow_up" } else { "main" }.into(),
             shown_at: now,
             submitted_at: None,
             items,
@@ -449,10 +548,10 @@ impl Attempt {
         let block = self.blocks.get_mut(index).ok_or("Invalid block.")?;
         if answers.len() != block.items.len()
             || block.items.iter().any(|i| {
-                !answers
-                    .get(&i.question.id)
-                    .is_some_and(|id| i.displayed_option_order.contains(id))
-            })
+            !answers
+                .get(&i.question.id)
+                .is_some_and(|id| i.displayed_option_order.contains(id))
+        })
         {
             return Err("Answer every question with a valid option before submitting.".into());
         }
@@ -473,10 +572,30 @@ impl Attempt {
             item.submitted_option_id = Some(id);
         }
         block.submitted_at = Some(now.clone());
-        if self.blocks.len() == self.config.blocks {
-            self.results = Some(score(self));
-            self.status = "completed".into();
-            self.completed_at = Some(now);
+        if self.blocks.len() >= self.config.blocks {
+            if self.blocks.len() == self.config.blocks && self.config.follow_up.is_some() {
+                let results = score(self);
+                let final_block = self.blocks.last().expect("submitted main block");
+                self.follow_up_skills = self
+                    .scoring_policy
+                    .included_skills
+                    .iter()
+                    .filter(|skill| {
+                        let previous = final_block
+                            .items
+                            .iter()
+                            .find(|i| &i.skill == *skill)
+                            .expect("main blocks assess every skill");
+                        results.skills[*skill].category.is_none()
+                            && rank(&self.requested_level(skill), &self.config)
+                            < rank(&previous.administered_difficulty, &self.config)
+                    })
+                    .cloned()
+                    .collect();
+            }
+            if self.pending_skills().is_empty() {
+                self.finish(now);
+            }
         }
         Ok(())
     }
@@ -496,7 +615,7 @@ pub fn placement(evidence: BTreeMap<String, Counts>, cfg: &Config) -> SkillResul
         } else {
             "not_established"
         }
-        .into(),
+            .into(),
         evidence,
         next_level: None,
         next_level_counts: None,
@@ -581,7 +700,7 @@ pub fn score(a: &Attempt) -> Results {
     }
 }
 
-/// Never expose answer keys, previous-block correctness or explanations during a test.
+/// Never expose answer keys, previous-block correctness or explanations during a test
 pub fn public_view(a: &Attempt) -> serde_json::Value {
     if a.status == "completed" {
         return serde_json::to_value(a).expect("serializable attempt");
@@ -589,7 +708,8 @@ pub fn public_view(a: &Attempt) -> serde_json::Value {
     let b = a.blocks.last().expect("issued block");
     serde_json::json!({ "id": a.id, "userId": a.user_id, "language": a.language,
         "status": a.status, "config": a.config, "scoringPolicy": a.scoring_policy,
-        "block": { "index": b.index, "items": b.items.iter().map(|i| serde_json::json!({
+        "answeredQuestionCount": a.blocks.iter().filter(|b| b.submitted_at.is_some()).map(|b| b.items.len()).sum::<usize>(),
+        "block": { "index": b.index, "phase": b.phase, "items": b.items.iter().map(|i| serde_json::json!({
             "id": i.question.id, "skill": i.skill, "prompt": i.question.prompt, "passage": i.passage,
             "options": i.displayed_option_order.iter().map(|id| i.question.options.iter().find(|o| &o.id == id).unwrap()).collect::<Vec<_>>()
         })).collect::<Vec<_>>() } })

@@ -143,7 +143,7 @@ fn final_block_route_does_not_award_untested_level() {
             &answers_for(&a, if block < 2 { [0; 3] } else { [4; 3] }),
             now(),
         )
-        .unwrap();
+            .unwrap();
         if block < 2 {
             a.next_block(&b, &Seen::new(), now()).unwrap();
         }
@@ -341,9 +341,9 @@ async fn schema(pool: &SqlitePool) {
     sqlx::raw_sql(include_str!(
         "../../../migrations/0017_proficiency_assessments.sql"
     ))
-    .execute(pool)
-    .await
-    .unwrap();
+        .execute(pool)
+        .await
+        .unwrap();
 }
 fn runtime() -> tokio::runtime::Runtime {
     tokio::runtime::Builder::new_current_thread()
@@ -354,43 +354,43 @@ fn runtime() -> tokio::runtime::Runtime {
 #[test]
 fn atomic_completion_retries_failure_and_restart_snapshots() {
     runtime().block_on(async {
-    let path=std::env::temp_dir().join(format!("causerie-assessment-{}-{}.db",std::process::id(),chrono::Utc::now().timestamp_nanos_opt().unwrap()));
-    let url=format!("sqlite:{}?mode=rwc",path.display());
-    let pool=db(&url).await; schema(&pool).await; let state=AssessmentState::default();
-    let first=start(&pool,&state,"alice",ID).await.unwrap();
-    assert_eq!(first,start(&pool,&state,"alice",ID).await.unwrap());
-    assert!(start(&pool,&state,"alice",OTHER_ID).await.is_err());
-    let mut final_answers=Answers::new();
-    for index in 0..3 {
-        let a=state.0.lock().await[ID].clone(); let answers=answers_for(&a,[4;3]);
-        if index==2 {
-            final_answers=answers.clone();
-            sqlx::raw_sql("CREATE TRIGGER reject_assessment BEFORE INSERT ON proficiency_assessments BEGIN SELECT RAISE(ABORT,'simulated failure'); END;").execute(&pool).await.unwrap();
-            assert!(submit(&pool,&state,"alice",ID,index,answers.clone()).await.is_err());
-            assert!(state.0.lock().await[ID].blocks[2].submitted_at.is_none());
-            let n:i64=sqlx::query_scalar("SELECT COUNT(*) FROM proficiency_assessments").fetch_one(&pool).await.unwrap(); assert_eq!(n,0);
-            sqlx::raw_sql("DROP TRIGGER reject_assessment").execute(&pool).await.unwrap();
+        let path=std::env::temp_dir().join(format!("causerie-assessment-{}-{}.db",std::process::id(),chrono::Utc::now().timestamp_nanos_opt().unwrap()));
+        let url=format!("sqlite:{}?mode=rwc",path.display());
+        let pool=db(&url).await; schema(&pool).await; let state=AssessmentState::default();
+        let first=start(&pool,&state,"alice",ID).await.unwrap();
+        assert_eq!(first,start(&pool,&state,"alice",ID).await.unwrap());
+        assert!(start(&pool,&state,"alice",OTHER_ID).await.is_err());
+        let mut final_answers=Answers::new();
+        for index in 0..3 {
+            let a=state.0.lock().await[ID].clone(); let answers=answers_for(&a,[4;3]);
+            if index==2 {
+                final_answers=answers.clone();
+                sqlx::raw_sql("CREATE TRIGGER reject_assessment BEFORE INSERT ON proficiency_assessments BEGIN SELECT RAISE(ABORT,'simulated failure'); END;").execute(&pool).await.unwrap();
+                assert!(submit(&pool,&state,"alice",ID,index,answers.clone()).await.is_err());
+                assert!(state.0.lock().await[ID].blocks[2].submitted_at.is_none());
+                let n:i64=sqlx::query_scalar("SELECT COUNT(*) FROM proficiency_assessments").fetch_one(&pool).await.unwrap(); assert_eq!(n,0);
+                sqlx::raw_sql("DROP TRIGGER reject_assessment").execute(&pool).await.unwrap();
+            }
+            let result=submit(&pool,&state,"alice",ID,index,answers.clone()).await.unwrap();
+            assert_eq!(result,submit(&pool,&state,"alice",ID,index,answers).await.unwrap());
         }
-        let result=submit(&pool,&state,"alice",ID,index,answers.clone()).await.unwrap();
-        assert_eq!(result,submit(&pool,&state,"alice",ID,index,answers).await.unwrap());
-    }
-    let n:i64=sqlx::query_scalar("SELECT COUNT(*) FROM proficiency_assessments").fetch_one(&pool).await.unwrap(); assert_eq!(n,1);
-    let original:String=sqlx::query_scalar("SELECT record_json FROM proficiency_assessments").fetch_one(&pool).await.unwrap();
-    pool.close().await;
-    let pool=db(&url).await; let restarted=AssessmentState::default();
-    let result=submit(&pool,&restarted,"alice",ID,2,final_answers).await.unwrap();
-    assert_eq!(result,serde_json::from_str::<serde_json::Value>(&original).unwrap());
-    let record:Attempt=serde_json::from_str(&original).unwrap();
-    assert_eq!(record.blocks.len(),3); assert!(record.results.is_some());
-    let mut changed_banks=banks().unwrap(); changed_banks[0].questions[0].prompt="changed".into();
-    assert_eq!(start(&pool,&restarted,"alice",ID).await.unwrap(),result); // no bank-dependent review
-    let mut changed_policy=record.scoring_policy.clone(); changed_policy.included_skills.push("writing".into());
-    assert_eq!(record.scoring_policy.included_skills.len(),3);
-    sqlx::query("UPDATE app_state SET active_user_id='bob'").execute(&pool).await.unwrap();
-    assert!(start(&pool,&restarted,"alice",ID).await.is_err());
-    let mut tx=pool.begin().await.unwrap(); assert!(saved(&mut tx,"bob",ID).await.unwrap().is_none()); tx.rollback().await.unwrap();
-    pool.close().await; let _=std::fs::remove_file(path);
-});
+        let n:i64=sqlx::query_scalar("SELECT COUNT(*) FROM proficiency_assessments").fetch_one(&pool).await.unwrap(); assert_eq!(n,1);
+        let original:String=sqlx::query_scalar("SELECT record_json FROM proficiency_assessments").fetch_one(&pool).await.unwrap();
+        pool.close().await;
+        let pool=db(&url).await; let restarted=AssessmentState::default();
+        let result=submit(&pool,&restarted,"alice",ID,2,final_answers).await.unwrap();
+        assert_eq!(result,serde_json::from_str::<serde_json::Value>(&original).unwrap());
+        let record:Attempt=serde_json::from_str(&original).unwrap();
+        assert_eq!(record.blocks.len(),3); assert!(record.results.is_some());
+        let mut changed_banks=banks().unwrap(); changed_banks[0].questions[0].prompt="changed".into();
+        assert_eq!(start(&pool,&restarted,"alice",ID).await.unwrap(),result); // no bank-dependent review
+        let mut changed_policy=record.scoring_policy.clone(); changed_policy.included_skills.push("writing".into());
+        assert_eq!(record.scoring_policy.included_skills.len(),3);
+        sqlx::query("UPDATE app_state SET active_user_id='bob'").execute(&pool).await.unwrap();
+        assert!(start(&pool,&restarted,"alice",ID).await.is_err());
+        let mut tx=pool.begin().await.unwrap(); assert!(saved(&mut tx,"bob",ID).await.unwrap().is_none()); tx.rollback().await.unwrap();
+        pool.close().await; let _=std::fs::remove_file(path);
+    });
 }
 #[test]
 fn exposure_survives_discard_and_profiles_are_isolated() {
@@ -426,8 +426,8 @@ fn exposure_survives_discard_and_profiles_are_isolated() {
                 0,
                 answers_for(&next, [4; 3])
             )
-            .await
-            .is_err()
+                .await
+                .is_err()
         );
         assert!(start(&pool, &state, "bob", OTHER_ID).await.is_err());
         let mut tx = pool.begin().await.unwrap();
@@ -443,8 +443,307 @@ fn exposure_survives_discard_and_profiles_are_isolated() {
                 0,
                 answers_for(&next, [4; 3])
             )
-            .await
-            .is_err()
+                .await
+                .is_err()
         );
+    });
+}
+
+/// The user's reported result: reading established; vocabulary and grammar drop to A2.
+fn reported_attempt() -> Attempt {
+    let mut a = attempt();
+    let banks = banks().unwrap();
+    for (index, correct) in [[3, 4, 2], [2, 1, 2], [0, 1, 0]].into_iter().enumerate() {
+        a.submit(index, &answers_for(&a, correct), now()).unwrap();
+        if index < 2 {
+            a.next_block(&banks, &Seen::new(), now()).unwrap();
+        }
+    }
+    a
+}
+
+#[test]
+fn reported_scores_get_a2_followups_only_for_unplaced_skills() {
+    let mut a = reported_attempt();
+    let banks = banks().unwrap();
+    assert_eq!(a.status, "in_progress");
+    assert!(a.results.is_none());
+    assert_eq!(a.follow_up_skills, ["vocabulary", "grammar"]);
+    let original_reading = serde_json::to_value(&score(&a).skills["reading"]).unwrap();
+    a.next_block(&banks, &Seen::new(), now()).unwrap();
+    assert_eq!(a.blocks[3].phase, "follow_up");
+    assert_eq!(a.blocks[3].items.len(), 8);
+    assert!(
+        a.blocks[3]
+            .items
+            .iter()
+            .all(|i| i.skill != "reading" && i.administered_difficulty == "A2")
+    );
+    let view = public_view(&a);
+    assert_eq!(view["answeredQuestionCount"], 36);
+    assert_eq!(view["block"]["phase"], "follow_up");
+    assert!(!view.to_string().contains("correctOptionId"));
+    a.submit(3, &answers_for(&a, [0, 3, 2]), now()).unwrap();
+    assert_eq!(a.status, "in_progress");
+    a.next_block(&banks, &Seen::new(), now()).unwrap();
+    assert_eq!(a.blocks[4].items.len(), 4);
+    assert!(
+        a.blocks[4]
+            .items
+            .iter()
+            .all(|i| i.skill == "grammar" && i.administered_difficulty == "A2")
+    );
+    a.submit(4, &answers_for(&a, [0, 0, 4]), now()).unwrap();
+    assert_eq!(a.status, "completed");
+    let results = a.results.as_ref().unwrap();
+    assert_eq!(
+        serde_json::to_value(&results.skills["reading"]).unwrap(),
+        original_reading
+    );
+    assert_eq!(results.skills["vocabulary"].category.as_deref(), Some("A2"));
+    assert_eq!(results.skills["grammar"].category.as_deref(), Some("A2"));
+    assert_eq!(results.skills["grammar"].evidence["A2"].correct, 6);
+    assert_eq!(results.skills["grammar"].evidence["A2"].answered, 8);
+    assert_eq!(results.overall.category.as_deref(), Some("A2"));
+    assert_eq!(results.overall.mean_rank, Some(7.0 / 3.0));
+    assert_eq!(a.blocks.iter().map(|b| b.items.len()).sum::<usize>(), 48);
+}
+
+#[test]
+fn followups_can_drop_again_and_stop_only_on_tested_evidence() {
+    let mut a = reported_attempt();
+    let banks = banks().unwrap();
+    a.next_block(&banks, &Seen::new(), now()).unwrap();
+    a.submit(3, &answers_for(&a, [0, 0, 0]), now()).unwrap();
+    assert_eq!(a.status, "in_progress");
+    assert!(score(&a).skills["grammar"].category.is_none());
+    a.next_block(&banks, &Seen::new(), now()).unwrap();
+    assert!(
+        a.blocks[4]
+            .items
+            .iter()
+            .all(|i| i.administered_difficulty == "A1")
+    );
+    a.submit(4, &answers_for(&a, [0, 3, 3]), now()).unwrap();
+    assert_eq!(a.status, "completed");
+    assert_eq!(
+        a.results.as_ref().unwrap().skills["grammar"]
+            .category
+            .as_deref(),
+        Some("A1")
+    );
+}
+
+#[test]
+fn no_followup_without_final_drop_and_no_followup_for_placed_skills() {
+    let banks = banks().unwrap();
+    let mut a = attempt();
+    for index in 0..3 {
+        a.submit(index, &answers_for(&a, [2; 3]), now()).unwrap();
+        if index < 2 {
+            a.next_block(&banks, &Seen::new(), now()).unwrap();
+        }
+    }
+    assert_eq!(a.status, "completed"); // B1 50% stayed at B1, so the requested drop trigger did not fire.
+    assert!(a.follow_up_skills.is_empty());
+    assert_eq!(a.results.unwrap().overall.status, "unavailable");
+    let mut a = attempt();
+    for (index, correct) in [4, 2, 0].into_iter().enumerate() {
+        a.submit(index, &answers_for(&a, [correct; 3]), now())
+            .unwrap();
+        if index < 2 {
+            a.next_block(&banks, &Seen::new(), now()).unwrap();
+        }
+    }
+    assert_eq!(a.status, "completed");
+    assert!(a.follow_up_skills.is_empty()); // All three still have an established B1.
+}
+
+#[test]
+fn exhaustion_uses_remaining_levels_and_preserves_unestablished_results() {
+    let mut a = reported_attempt();
+    let banks = banks().unwrap();
+    let mut iterations = 0;
+    while a.status != "completed" {
+        a.next_block(&banks, &Seen::new(), now()).unwrap();
+        if a.status == "completed" {
+            break;
+        }
+        let index = a.blocks.len() - 1;
+        a.submit(index, &answers_for(&a, [0; 3]), now()).unwrap();
+        iterations += 1;
+        assert!(
+            iterations <= 30,
+            "follow-ups must terminate with finite banks"
+        );
+    }
+    assert_eq!(a.exhausted_skills, ["vocabulary", "grammar"]);
+    assert_eq!(a.results.as_ref().unwrap().overall.status, "unavailable");
+    for skill in ["vocabulary", "grammar"] {
+        let r = &a.results.as_ref().unwrap().skills[skill];
+        assert!(r.category.is_none());
+        for level in LEVELS {
+            assert_eq!(r.evidence[level].answered, 12);
+        }
+    }
+    let ids: std::collections::BTreeSet<_> = a
+        .blocks
+        .iter()
+        .flat_map(|b| &b.items)
+        .map(|i| &i.question.id)
+        .collect();
+    assert_eq!(ids.len(), 132);
+    assert_eq!(
+        a.blocks.iter().map(|b| b.items.len()).sum::<usize>(),
+        ids.len()
+    );
+    assert!(a.blocks.iter().all(|b| !b.items.is_empty()));
+}
+
+#[test]
+fn one_exhausted_skill_does_not_prevent_other_followups() {
+    let mut a = reported_attempt();
+    let mut banks = banks().unwrap();
+    // Simulate no unused grammar questions; vocabulary still has its full bank.
+    let used: std::collections::BTreeSet<_> = a
+        .blocks
+        .iter()
+        .flat_map(|b| &b.items)
+        .map(|i| i.question.id.clone())
+        .collect();
+    banks
+        .iter_mut()
+        .find(|b| b.skill == "grammar")
+        .unwrap()
+        .questions
+        .retain(|q| used.contains(&q.id));
+    a.next_block(&banks, &Seen::new(), now()).unwrap();
+    assert_eq!(a.exhausted_skills, ["grammar"]);
+    assert_eq!(a.blocks[3].items.len(), 4);
+    assert!(a.blocks[3].items.iter().all(|i| i.skill == "vocabulary"));
+    a.submit(3, &answers_for(&a, [0, 3, 0]), now()).unwrap();
+    assert_eq!(a.status, "completed");
+    assert_eq!(
+        a.results.as_ref().unwrap().skills["vocabulary"]
+            .category
+            .as_deref(),
+        Some("A2")
+    );
+    assert_eq!(a.results.as_ref().unwrap().overall.status, "unavailable");
+}
+
+#[test]
+fn legacy_records_keep_their_policy_and_results() {
+    let mut a = attempt();
+    let banks = banks().unwrap();
+    a.config.follow_up = None;
+    a.schema_version = 1;
+    a.scoring_policy.version = "fr-wave1-equal-category-ranks-v1".into();
+    for (index, correct) in [[3, 4, 2], [2, 1, 2], [0, 1, 0]].into_iter().enumerate() {
+        a.submit(index, &answers_for(&a, correct), now()).unwrap();
+        if index < 2 {
+            a.next_block(&banks, &Seen::new(), now()).unwrap();
+        }
+    }
+    assert_eq!(a.status, "completed");
+    let original_results = serde_json::to_value(&a.results).unwrap();
+    let mut json = serde_json::to_value(&a).unwrap();
+    json.as_object_mut().unwrap().remove("followUpSkills");
+    json.as_object_mut().unwrap().remove("exhaustedSkills");
+    for b in json["blocks"].as_array_mut().unwrap() {
+        b.as_object_mut().unwrap().remove("phase");
+    }
+    let mut historic: Attempt = serde_json::from_value(json).unwrap();
+    assert!(historic.config.follow_up.is_none());
+    assert_eq!(
+        historic.scoring_policy.version,
+        "fr-wave1-equal-category-ranks-v1"
+    );
+    assert_eq!(historic.blocks[0].phase, "main");
+    historic
+        .submit(2, &answers_for(&historic, [0, 1, 0]), now())
+        .unwrap();
+    assert_eq!(
+        serde_json::to_value(&historic.results).unwrap(),
+        original_results
+    );
+    assert_eq!(historic.blocks.len(), 3);
+}
+
+#[test]
+fn followup_completion_is_atomic_retryable_and_survives_restart() {
+    runtime().block_on(async {
+        let pool = db("sqlite::memory:").await; schema(&pool).await;
+        let state = AssessmentState::default();
+        start(&pool, &state, "alice", ID).await.unwrap();
+        for (index, correct) in [[3, 4, 2], [2, 1, 2], [0, 1, 0]].into_iter().enumerate() {
+            let a = state.0.lock().await[ID].clone();
+            let answers = answers_for(&a, correct);
+            let response = submit(&pool, &state, "alice", ID, index, answers.clone()).await.unwrap();
+            assert_eq!(response, submit(&pool, &state, "alice", ID, index, answers).await.unwrap());
+        }
+        let n: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM proficiency_assessments").fetch_one(&pool).await.unwrap();
+        assert_eq!(n, 0);
+        let a = state.0.lock().await[ID].clone();
+        let answers = answers_for(&a, [0, 3, 3]);
+        sqlx::raw_sql("CREATE TRIGGER reject_assessment BEFORE INSERT ON proficiency_assessments BEGIN SELECT RAISE(ABORT,'simulated failure'); END;").execute(&pool).await.unwrap();
+        assert!(submit(&pool, &state, "alice", ID, 3, answers.clone()).await.is_err());
+        assert!(state.0.lock().await[ID].blocks[3].submitted_at.is_none());
+        sqlx::raw_sql("DROP TRIGGER reject_assessment").execute(&pool).await.unwrap();
+        let result = submit(&pool, &state, "alice", ID, 3, answers.clone()).await.unwrap();
+        assert_eq!(result["status"], "completed");
+        assert_eq!(result["blocks"].as_array().unwrap().len(), 4);
+        let restarted = AssessmentState::default();
+        assert_eq!(result, submit(&pool, &restarted, "alice", ID, 3, answers).await.unwrap());
+        let n: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM proficiency_assessments").fetch_one(&pool).await.unwrap();
+        assert_eq!(n, 1);
+    });
+}
+
+#[test]
+fn exhaustion_completion_is_saved_without_issuing_an_empty_block() {
+    runtime().block_on(async {
+        let pool = db("sqlite::memory:").await;
+        schema(&pool).await;
+        let state = AssessmentState::default();
+        start(&pool, &state, "alice", ID).await.unwrap();
+        for (index, correct) in [[3, 4, 2], [2, 1, 2], [0, 1, 0]].into_iter().enumerate() {
+            let a = state.0.lock().await[ID].clone();
+            submit(&pool, &state, "alice", ID, index, answers_for(&a, correct))
+                .await
+                .unwrap();
+        }
+        let result = loop {
+            let a = state.0.lock().await[ID].clone();
+            let index = a.blocks.len() - 1;
+            assert!(index < 30);
+            let answers = answers_for(&a, [0; 3]);
+            let response = submit(&pool, &state, "alice", ID, index, answers.clone())
+                .await
+                .unwrap();
+            assert_eq!(
+                response,
+                submit(&pool, &state, "alice", ID, index, answers)
+                    .await
+                    .unwrap()
+            );
+            if response["status"] == "completed" {
+                break response;
+            }
+        };
+        assert_eq!(result["exhaustedSkills"].as_array().unwrap().len(), 2);
+        assert_eq!(result["results"]["overall"]["status"], "unavailable");
+        assert!(
+            result["blocks"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .all(|b| !b["items"].as_array().unwrap().is_empty())
+        );
+        let n: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM proficiency_assessments")
+            .fetch_one(&pool)
+            .await
+            .unwrap();
+        assert_eq!(n, 1);
     });
 }
