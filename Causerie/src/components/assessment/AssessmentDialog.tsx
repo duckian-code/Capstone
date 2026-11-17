@@ -80,7 +80,9 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             frozenSubmission.current = null; setRetryingSubmission(false);
             setView(response); setAnswers({});
             if (response.status === "completed") { dirtyRef.current = false; onCompleted(); }
-            dialog.current?.scrollTo({ top: 0 });
+            dialog.current
+                ?.querySelector<HTMLElement>(".assessment-content")
+                ?.scrollTo({ top: 0 });
         } catch (e) {
             if (alive.current) setError(parseCommandError(e).message);
         } finally {
