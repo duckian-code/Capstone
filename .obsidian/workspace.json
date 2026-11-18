@@ -20,8 +20,37 @@
               "icon": "lucide-file",
               "title": "french-proficiency-source-guide"
             }
+          },
+          {
+            "id": "ec08ea3a7719643d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Documentation/CEFR TESTING PLANNING.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "CEFR TESTING PLANNING"
+            }
+          },
+          {
+            "id": "f33f2a99dccfd070",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Documentation/french-proficiency-source-guide.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "french-proficiency-source-guide"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -185,23 +214,25 @@
       "bases:Créer une nouvelle base": false
     }
   },
-  "active": "fb8baf9848f58bb1",
+  "active": "ec08ea3a7719643d",
   "lastOpenFiles": [
-    "Prototypes/cefr-trend-prototype/README.md",
-    "Documentation/CEFR TESTING PLANNING.md",
-    "Prototypes/cefr-trend-prototype/index.html",
-    "Prototypes/cefr-trend-prototype/french-proficiency-trends.html",
-    "Prototypes/cefr-trend-prototype",
-    "Causerie/output/visualizations/french-proficiency-trends.html",
-    "Causerie/output/visualizations",
-    "Causerie/output",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/work-products.bin",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/query-cache.bin",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/dep-graph.bin",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/cqfvqzt24sz9yk6by6kyu8y6u.o",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/9p9f7z3231c20a1o6lrfc125f.o",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/7fujcb434bk16xmpkeucdxzp3.o",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/61f47dy7hj6pjaaabmo4u4ep5.o",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/2o8m8yk8m572sbtg8pg2p0uwc.o",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0",
+    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a.lock",
+    "Causerie/src-tauri/target/debug/deps/libcauserie_lib.rlib",
     "Documentation/french-proficiency-source-guide.md",
+    "Documentation/CEFR TESTING PLANNING.md",
+    "Documentation/FINAL PRESENTATION GUIDE.md",
     "Documentation/french-reading-question-sources.md",
-    "Causerie/src-tauri/target/debug/incremental/causerie-2kzumzip05iw4/s-ho847fr2q3-0cyygtw-5p8b1j2vs820jlyu6abmyz7ae/work-products.bin",
-    "Causerie/src-tauri/target/debug/incremental/causerie-2kzumzip05iw4/s-ho847fr2q3-0cyygtw-5p8b1j2vs820jlyu6abmyz7ae/query-cache.bin",
-    "Causerie/src-tauri/target/debug/incremental/causerie-2kzumzip05iw4/s-ho847fr2q3-0cyygtw-5p8b1j2vs820jlyu6abmyz7ae/dep-graph.bin",
-    "Causerie/src-tauri/target/debug/incremental/causerie-2kzumzip05iw4/s-ho847fr2q3-0cyygtw-5p8b1j2vs820jlyu6abmyz7ae",
     "Documentation/french-grammar-question-sources.md",
+    "Prototypes/cefr-trend-prototype/README.md",
     "Documentation/french-vocabulary-question-sources.md",
     "Causerie/docs/french-proficiency-source-guide.md",
     "Documentation/Color Guide.md",
@@ -221,8 +252,6 @@
     "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/transforms.md",
     "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/scene-management.md",
     "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/render-groups.md",
-    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/layers.md",
-    "Causerie/node_modules/pixi.js/skills/pixijs-scene-core-concepts/references/masking.md",
     "Causerie/node_modules/js-binary-schema-parser/example/horses.gif",
     "Causerie/node_modules/js-binary-schema-parser/example/dog.gif",
     "Causerie/node_modules/js-binary-schema-parser/example/box.gif",
