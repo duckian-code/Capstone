@@ -1,3 +1,4 @@
+import { ProfileAssessmentHistory } from "../assessment/AssessmentTrends";
 import { AssessmentHistory } from "../assessment/AssessmentResults";
 import { AssessmentDialog } from "../assessment/AssessmentDialog";
 import { createContext, useContext, useEffect, useRef, useState} from "react";
@@ -35,6 +36,8 @@ interface SettingsContextValue {
     openProfile: () => void;
     openSettings: () => void;
     openAssessment: () => void;
+    openAssessmentHistory: () => void;
+    openAssessmentFromSettings: () => void;
     assessmentRevision: number;
 }
 
@@ -55,6 +58,13 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
 
     const [assessmentOpen, setAssessmentOpen] = useState(false);
     const [assessmentRevision, setAssessmentRevision] = useState(0);
+    const [historyRequest, setHistoryRequest] = useState(0);
+
+    function visitAssessmentHistory(startTest: boolean) {
+        setHistoryRequest(n => n + 1);
+        setMenu("profile");
+        if (startTest) setAssessmentOpen(true);
+    }
 
     useEffect(() => {
         function openApiSettings() {
@@ -82,9 +92,11 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
         <SettingsContext.Provider
             value={{
                 user,
-                openProfile: () => setMenu("profile"),
+                openProfile: () => { setHistoryRequest(0); setMenu("profile"); },
                 openSettings: () => setMenu("settings"),
                 openAssessment: () => setAssessmentOpen(true),
+                openAssessmentHistory: () => visitAssessmentHistory(false),
+                openAssessmentFromSettings: () => visitAssessmentHistory(true),
                 assessmentRevision,
             }}
         >
@@ -92,6 +104,8 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
 
             {menu === "profile" && (
                 <ProfileMenu
+                    historyRequest={historyRequest}
+                    assessmentOpen={assessmentOpen}
                     user={user}
                     onSaved={applyChanges}
                     onClose={() => setMenu(null)}
@@ -209,6 +223,7 @@ export function AccountPanel({disabled = false}: { disabled?: boolean; }) {
 
 interface ModalProps {
     title: string;
+    className?: string;
     wide?: boolean;
     dirty: boolean;
     busy: boolean;
@@ -216,7 +231,7 @@ interface ModalProps {
     children: ReactNode;
 }
 
-function SettingsModal({title, wide = false, dirty, busy, onClose, children,}: ModalProps) {
+function SettingsModal({title, className = "", wide = false, dirty, busy, onClose, children,}: ModalProps) {
     const dialogRef = useRef<HTMLDialogElement>(null);
     const [confirmClose, setConfirmClose] = useState(false);
 
@@ -259,7 +274,7 @@ function SettingsModal({title, wide = false, dirty, busy, onClose, children,}: M
         <dialog
             ref={dialogRef}
             className={
-                `settings-modal ${wide ? "settings-modal-wide" : ""}`
+                `settings-modal ${wide ? "settings-modal-wide" : ""} ${className}`
             }
             aria-labelledby="settings-modal-title"
             aria-busy={busy}
@@ -381,8 +396,17 @@ async function readAvatar(file: File): Promise<string> {
     return dataUrl;
 }
 
-function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
+function ProfileMenu({ user, onSaved, onClose, historyRequest, assessmentOpen }: EditorProps & { historyRequest: number; assessmentOpen: boolean }) {
     const { openAssessment, assessmentRevision } = useSettings();
+    const historyHeading = useRef<HTMLHeadingElement>(null);
+    useEffect(() => {
+        if (!historyRequest || assessmentOpen) return;
+        const timer = window.setTimeout(() => {
+            historyHeading.current?.scrollIntoView({ block: "start" });
+            historyHeading.current?.focus({ preventScroll: true });
+        }, 0);
+        return () => window.clearTimeout(timer);
+    }, [historyRequest, assessmentOpen]);
     const fileRef = useRef<HTMLInputElement>(null);
     const busyRef = useRef(false);
 
@@ -465,13 +489,9 @@ function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
     }
 
     return (
-        <SettingsModal title="Your profile" dirty={dirty} busy={busy} onClose={onClose}>
-            <section className="settings-section" aria-label="Latest French assessment">
-                <AssessmentHistory key={user.id} userId={user.id} revision={assessmentRevision}
-                    compact onStart={openAssessment} />
-            </section>
+        <SettingsModal title="Your profile" className="assessment-profile-modal" dirty={dirty} busy={busy} onClose={onClose}>
             <form className="settings-form" onSubmit={save}>
-            <fieldset disabled={busy}>
+                <fieldset disabled={busy}>
                     <legend className="settings-sr-only">
                         Profile fields
                     </legend>
@@ -505,7 +525,7 @@ function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
 
                     <div className="settings-fields">
                         <label htmlFor="profile-name">Name</label>
-                        <input id="profile-name" autoFocus value={name} maxLength={80} required autoComplete="given-name"
+                        <input id="profile-name" autoFocus={!historyRequest} value={name} maxLength={80} required autoComplete="given-name"
                                onChange={(event) => {
                                    setName(event.currentTarget.value);
                                    setSaved(false);
@@ -553,6 +573,10 @@ function ProfileMenu({ user, onSaved, onClose }: EditorProps) {
                     <p role="status">Profile saved.</p>
                 )}
             </form>
+            <section className="settings-section assessment-profile-history" aria-labelledby="profile-assessment-history-title">
+                <h3 id="profile-assessment-history-title" ref={historyHeading} tabIndex={-1}>French assessment history</h3>
+                <ProfileAssessmentHistory key={user.id} userId={user.id} revision={assessmentRevision} onStart={openAssessment} />
+            </section>
         </SettingsModal>
     );
 }
@@ -570,7 +594,8 @@ const SETTINGS_NAVIGATION = [
 ];
 
 function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }: FullSettingsProps ) {
-    const { openAssessment, assessmentRevision } = useSettings();
+    const { openAssessmentHistory, openAssessmentFromSettings, assessmentRevision } = useSettings();
+    const [pendingHistoryNavigation, setPendingHistoryNavigation] = useState<"history" | "test" | null>(null);
     const [dictionaryOpen, setDictionaryOpen] = useState(false);
     const [dictionaryBusy, setDictionaryBusy] = useState(false);
     const [dictionaryDirty, setDictionaryDirty] = useState(false);
@@ -824,6 +849,12 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
         || proficiencyDirty
     ;
 
+    function navigateToHistory(destination: "history" | "test") {
+        if (busyRef.current || dictionaryBusy) return;
+        if (dirty || dictionaryDirty) { setPendingHistoryNavigation(destination); return; }
+        if (destination === "test") openAssessmentFromSettings(); else openAssessmentHistory();
+    }
+
     async function save(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
@@ -982,7 +1013,7 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
                     className="settings-content"
                     onSubmit={save}
                 >
-                <fieldset disabled={busy}>
+                    <fieldset disabled={busy}>
                         <legend className="settings-sr-only">
                             Application settings
                         </legend>
@@ -1014,7 +1045,16 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
 
                         <section id="settings-section-assessments" className="settings-section" aria-labelledby="settings-section-title-assessments">
                             <h3 id="settings-section-title-assessments">Assessment history</h3>
-                            <AssessmentHistory key={user.id} userId={user.id} revision={assessmentRevision} onStart={openAssessment} />
+                            <p className="settings-help">View the year-by-year proficiency graph below your profile information.</p>
+                            <button type="button" disabled={busy || dictionaryBusy} onClick={() => navigateToHistory("history")}>View Assessment History</button>
+                            {pendingHistoryNavigation && <div className="settings-close-confirmation" role="alert">
+                                <p>You have unsaved settings. Discard them and {pendingHistoryNavigation === "test" ? "open the proficiency test from your profile" : "view your profile assessment history"}?</p>
+                                <button type="button" onClick={() => setPendingHistoryNavigation(null)}>Keep editing settings</button>{" "}
+                                <button type="button" disabled={busy || dictionaryBusy} onClick={() => {
+                                    if (pendingHistoryNavigation === "test") openAssessmentFromSettings(); else openAssessmentHistory();
+                                }}>Discard changes and continue</button>
+                            </div>}
+                            <AssessmentHistory key={user.id} userId={user.id} revision={assessmentRevision} onStart={() => navigateToHistory("test")} />
                         </section>
 
                         <section

@@ -26,3 +26,75 @@
     .assessment-item { padding: .5rem; }
     .assessment-results table { font-size: .8rem; }
 }
+
+/* Profile keeps the standard modal's vertical scrolling; only the graph scrolls horizontally. */
+.settings-modal.assessment-profile-modal { width: min(960px, calc(100vw - 2rem)); }
+.assessment-profile-history { padding: 1.25rem; border-top: 1px solid #525966; }
+.assessment-profile-history > h3 { scroll-margin-top: 1rem; }
+.assessment-trends { display: grid; gap: 1rem; min-width: 0; margin-top: 1.5rem; }
+.assessment-trend-latest { margin-top: 1rem; }
+.assessment-trend-year { display: flex; align-items: center; justify-content: center; gap: 1.25rem; }
+.assessment-trend-year strong { min-width: 4ch; text-align: center; font-size: 1.15rem; }
+.assessment-trend-controls { display: flex; flex-wrap: wrap; gap: 1rem; }
+.assessment-trend-controls label { flex: 1 1 220px; min-width: 0; }
+.assessment-trends label { display: grid; gap: .4rem; }
+.assessment-trends select { max-width: 100%; min-width: 0; width: 100%; padding: .5rem; color: inherit; background: #171b21; border: 1px solid #596573; border-radius: 6px; font: inherit; }
+.assessment-trend-legend { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; }
+.assessment-trend-legend > span { display: inline-flex; align-items: center; gap: .4rem; }
+.assessment-trend-legend svg { flex-shrink: 0; }
+.assessment-trend-scroll { width: 100%; min-width: 0; overflow-x: auto; overscroll-behavior-x: contain; }
+.assessment-trend-chart { display: block; width: 100%; min-width: 720px; height: auto; background: #22262d; }
+.assessment-trend-chart text { fill: #d2dae2; font-family: inherit; font-size: 12px; }
+.assessment-trend-grid { stroke: #596573; stroke-width: 1; }
+.assessment-trend-month-line { opacity: .3; }
+.assessment-trend-selected-date { stroke: #d2dae2; stroke-width: 1; stroke-dasharray: 2 4; }
+.assessment-trend-marker { cursor: pointer; }
+.assessment-trend-marker:focus { outline: none; }
+.assessment-trend-marker:focus-visible .assessment-trend-hit { stroke: white; stroke-width: 2; }
+.assessment-trend-marker:hover .assessment-trend-hit { stroke: #d2dae2; stroke-width: 1; }
+.assessment-trend-selected { display: grid; gap: .75rem; border-top: 1px solid #596573; padding-top: 1rem; }
+.assessment-trend-evidence { padding: .8rem; background: #171b21; border: 1px solid #596573; border-radius: 8px; }
+.assessment-trend-evidence progress { width: 100%; }
+.assessment-trend-selected > details > summary { cursor: pointer; padding-block: .6rem; }
+@media (max-width: 520px) {
+    .assessment-profile-history { padding: .75rem; }
+    .assessment-trend-controls { gap: .75rem; }
+}
+
+/* Centre proficiency headings, scores, and descriptions. */
+.assessment-profile-history > h3,
+.assessment-trend-latest,
+.assessment-trend-controls,
+.assessment-trends > p,
+.assessment-trend-selected > h4,
+.assessment-trend-selected > p,
+.assessment-trend-selected > label,
+.assessment-trend-evidence {
+    text-align: center;
+}
+
+/* Centre the test button below the profile information. */
+.assessment-profile-history > div > button {
+    display: block;
+    margin-inline: auto;
+}
+
+/* Centre the graph controls and legend items. */
+.assessment-trend-controls,
+.assessment-trend-legend {
+    justify-content: center;
+}
+
+/* Centre the selected text inside the dropdowns. */
+.assessment-trends select {
+    text-align: center;
+    text-align-last: center;
+}
+
+/* Let assessment history span the profile modal. */
+.settings-modal.assessment-profile-modal
+> .settings-section.assessment-profile-history {
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+}
