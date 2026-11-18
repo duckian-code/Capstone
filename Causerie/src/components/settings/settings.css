@@ -84,8 +84,6 @@
 
 .settings-modal::backdrop {
     background: rgb(0 0 0 / 60%);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
 }
 
 .settings-modal * {
