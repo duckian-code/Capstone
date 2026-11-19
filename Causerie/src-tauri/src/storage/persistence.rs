@@ -85,7 +85,7 @@ pub struct Sticky {
 pub struct AppState {
     pub id: i64,
     pub active_user_id: String,
-    pub onboarding_completed_at: String,
+    pub onboarding_completed_at: Option<String>,
 }
 
 // INITIALIZATION
