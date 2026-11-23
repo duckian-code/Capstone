@@ -538,3 +538,53 @@
     white-space: pre-wrap;
     overflow-wrap: anywhere;
 }
+
+.cw .cw-header-content {
+    display: flow-root;
+    min-width: 0;
+    margin: 0;
+}
+
+.cw-header-content > * {
+    margin-bottom: 0.35rem;
+}
+
+.cw-header-content > :last-child {
+    margin-bottom: 0;
+}
+
+@media (min-width: 1001px) {
+    .cw {
+        /*
+         * Both headers share their natural required height.
+         * Large expanded panels scroll rather than consume the screen.
+         */
+        --cw-top-row: min(
+                var(--cw-shared-header-height, 110px),
+                45dvh
+        );
+    }
+
+    .cw .cw-practice,
+    .cw .cw-conversation {
+        grid-template-rows:
+            var(--cw-top-row)
+            minmax(0, 1fr)
+            clamp(170px, 23dvh, 220px);
+    }
+
+    .cw .cw-practice:has(.tutorial-callout) {
+        grid-template-rows:
+            var(--cw-top-row)
+            minmax(0, 1fr)
+            auto
+            clamp(170px, 23dvh, 220px);
+    }
+
+    .cw .cw-context,
+    .cw .cw-conversation-header {
+        min-height: 0;
+        overflow: auto;
+        scrollbar-gutter: stable;
+    }
+}

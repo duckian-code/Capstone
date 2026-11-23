@@ -1,4 +1,15 @@
-export const LESSONS = ['translation', 'hint', 'teacher', 'sticky', 'goals', 'reminders', 'spelling', 'profile', 'settings', 'voice'] as const;
+export const LESSONS = [
+    "translation",
+    "teacher",
+    "hint",
+    "sticky",
+    "goals",
+    "reminders",
+    "spelling",
+    "profile",
+    "settings",
+    "voice",
+] as const;
 export type Lesson = typeof LESSONS[number];
 export type Outcome = 'pending' | 'completed' | 'skipped';
 export interface TutorialProgress {
@@ -35,9 +46,25 @@ export function exchange(state: TutorialProgress, id: string): TutorialProgress 
 }
 export function eligible(state: TutorialProgress): boolean {
     const next = nextLesson(state);
+
     if (!next) return false;
-    if (next === 'translation' && state.lastResolved === 0) return true;
-    const gap = next === 'goals' || next === 'reminders' ? 2 : 1;
+
+    if (next === "translation" && state.lastResolved === 0) {
+        return true;
+    }
+
+    // Offer help immediately after translation succeeds or is skipped
+    // TutorialPanel still waits until dialogs and other interactions finish
+    if (
+        next === "teacher" &&
+        state.steps.translation !== "pending"
+    ) {
+        return true;
+    }
+
+    const gap =
+        next === "goals" || next === "reminders" ? 2 : 1;
+
     return state.exchanges - state.lastResolved >= gap;
 }
 export const LABELS: Record<Lesson, string> = {

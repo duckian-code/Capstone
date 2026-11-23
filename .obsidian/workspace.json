@@ -80,7 +80,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "4361f68798d9ad95",
@@ -187,19 +188,20 @@
   },
   "active": "f33f2a99dccfd070",
   "lastOpenFiles": [
+    "Causerie/src/components/conversation/ConversationWorkspace.tsx~",
+    "Causerie/src/components/conversation/conversation.css~",
+    "Causerie/src/components/onboarding/tutorial.css~",
+    "Causerie/src/components/onboarding/TutorialProvider.tsx~",
+    "Causerie/src/components/conversation/AskDotPanel.tsx~",
+    "Causerie/src/components/onboarding/TutorialPanel.tsx~",
+    "Causerie/src/services/tutorial-model.ts~",
+    "Causerie/src/components/onboarding/TutorialPractice.tsx~",
+    "Documentation/ONBOARDING OVERHAUL PLANNING.md",
     "Documentation/french-proficiency-source-guide.md",
     "Info/FINAL Capstone Proposal - Lily McClellan.pdf",
-    "Documentation/ONBOARDING OVERHAUL PLANNING.md",
     "Causerie/work/onboarding-design/prompt-concepts.html",
     "Causerie/work/onboarding-design",
-    "Causerie/work",
     "Documentation/CEFR TESTING PLANNING.md",
-    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/work-products.bin",
-    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/query-cache.bin",
-    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/dep-graph.bin",
-    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/cqfvqzt24sz9yk6by6kyu8y6u.o",
-    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/9p9f7z3231c20a1o6lrfc125f.o",
-    "Causerie/src-tauri/target/debug/incremental/causerie-3ezorq1q48ddx/s-ho8cr7rhla-1ii642a-8gnelh245qcgfaook66druyt0/7fujcb434bk16xmpkeucdxzp3.o",
     "Documentation/FINAL PRESENTATION GUIDE.md",
     "Documentation/french-reading-question-sources.md",
     "Documentation/french-grammar-question-sources.md",

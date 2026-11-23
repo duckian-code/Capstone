@@ -1,5 +1,5 @@
 import { TutorialPanel } from "../onboarding/TutorialPanel";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import type { ReactNode } from "react";
 
 import type {
@@ -69,6 +69,9 @@ interface Props {
 export function ConversationWorkspace(props: Props) {
     const narrow = useNarrowLayout();
     const workspaceRef = useRef<HTMLElement>(null);
+    const practiceHeaderContentRef = useRef<HTMLDivElement>(null);
+    const conversationHeaderContentRef = useRef<HTMLDivElement>(null);
+
     const feedback = useFeedbackBadges(props.activeThread.id);
 
     const selectedMessage = props.messages.find(
@@ -142,6 +145,72 @@ export function ConversationWorkspace(props: Props) {
             props.onMobileViewChange("feedback");
         }
     }
+
+    useLayoutEffect(() => {
+        const workspace = workspaceRef.current;
+        const practiceContent = practiceHeaderContentRef.current;
+        const conversationContent = conversationHeaderContentRef.current;
+
+        if (!workspace) return;
+
+        if (narrow || !practiceContent || !conversationContent) {
+            workspace.style.removeProperty("--cw-shared-header-height");
+            return;
+        }
+
+        let frame = 0;
+
+        function requiredHeight(content: HTMLElement): number {
+            const header = content.parentElement;
+            if (!header) return 0;
+
+            const style = getComputedStyle(header);
+            const pixels = (value: string) => Number.parseFloat(value) || 0;
+
+            return (
+                content.getBoundingClientRect().height +
+                pixels(style.paddingTop) +
+                pixels(style.paddingBottom) +
+                pixels(style.borderTopWidth) +
+                pixels(style.borderBottomWidth)
+            );
+        }
+
+        function measure() {
+            frame = 0;
+
+            const height = Math.ceil(
+                Math.max(
+                    110,
+                    requiredHeight(practiceContent!),
+                    requiredHeight(conversationContent!),
+                ),
+            );
+
+            workspace!.style.setProperty(
+                "--cw-shared-header-height",
+                `${height}px`,
+            );
+        }
+
+        function scheduleMeasure() {
+            if (!frame) {
+                frame = requestAnimationFrame(measure);
+            }
+        }
+
+        const observer = new ResizeObserver(scheduleMeasure);
+        observer.observe(practiceContent);
+        observer.observe(conversationContent);
+
+        measure();
+
+        return () => {
+            observer.disconnect();
+            cancelAnimationFrame(frame);
+            workspace.style.removeProperty("--cw-shared-header-height");
+        };
+    }, [narrow]);
 
     return (
         <main
@@ -222,24 +291,28 @@ export function ConversationWorkspace(props: Props) {
 
             <section className="cw-practice" aria-label="Practice area">
                 <header className="cw-context">
-                    <h2>
-                        {props.context.language}
-                        {props.context.proficiency
-                            ? ` · ${props.context.proficiency}`
-                            : ""}
-                    </h2>
+                    <div
+                        ref={practiceHeaderContentRef}
+                        className="cw-header-content">
+                        <h2>
+                            {props.context.language}
+                            {props.context.proficiency
+                                ? ` · ${props.context.proficiency}`
+                                : ""}
+                        </h2>
 
-                    {props.context.goals.length > 0 && (
-                        <>
-                            <p className="cw-muted">Learning goals</p>
+                        {props.context.goals.length > 0 && (
+                            <>
+                                <p className="cw-muted">Learning goals</p>
 
-                            <ul className="cw-goals">
-                                {props.context.goals.map((goal) => (
-                                    <li key={goal}>{goal}</li>
-                                ))}
-                            </ul>
-                        </>
-                    )}
+                                <ul className="cw-goals">
+                                    {props.context.goals.map((goal) => (
+                                        <li key={goal}>{goal}</li>
+                                    ))}
+                                </ul>
+                            </>
+                        )}
+                    </div>
                 </header>
 
                 <MascotStage
@@ -288,51 +361,55 @@ export function ConversationWorkspace(props: Props) {
 
             <section
                 className="cw-conversation"
-                aria-labelledby="conversation-title"
-            >
+                aria-labelledby="conversation-title">
                 <header className="cw-conversation-header">
-                    <div className="cw-thread-heading">
-                        <h2 id="conversation-title">
-                            {props.activeThread.title}
-                        </h2>
+                    <div
+                        ref={conversationHeaderContentRef}
+                        className="cw-header-content"
+                    >
+                        <div className="cw-thread-heading">
+                            <h2 id="conversation-title">
+                                {props.activeThread.title}
+                            </h2>
 
-                        <ThreadActions
-                            key={props.activeThread.id}
-                            thread={props.activeThread}
-                            disabled={props.navigationDisabled}
-                            onRename={props.onRenameThread}
-                            onDelete={props.onDeleteThread}
-                        />
-                    </div>
-
-                    <AskDotPanel
-                        key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}
-                        threadId={props.activeThread.id}
-                        language={props.context.language}
-                        disabled={props.navigationDisabled}
-                    />
-
-                    <time dateTime={props.activeThread.createdAt}>
-                        {new Date(
-                            props.activeThread.createdAt,
-                        ).toLocaleDateString()}
-                    </time>
-
-                    {feedback.error && (
-                        <div role="alert">
-                            <p>
-                                Could not update feedback indicators:{" "}
-                                {feedback.error}
-                            </p>
-
-                            <button
-                                type="button"
-                                onClick={() => void feedback.refresh()}
-                            >
-                                Retry
-                            </button>
+                            <ThreadActions
+                                key={props.activeThread.id}
+                                thread={props.activeThread}
+                                disabled={props.navigationDisabled}
+                                onRename={props.onRenameThread}
+                                onDelete={props.onDeleteThread}
+                            />
                         </div>
-                    )}
+
+                        <AskDotPanel
+                            key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}
+                            threadId={props.activeThread.id}
+                            language={props.context.language}
+                            disabled={props.navigationDisabled}
+                        />
+
+                        <time dateTime={props.activeThread.createdAt}>
+                            {new Date(
+                                props.activeThread.createdAt,
+                            ).toLocaleDateString()}
+                        </time>
+
+                        {feedback.error && (
+                            <div role="alert">
+                                <p>
+                                    Could not update feedback indicators:{" "}
+                                    {feedback.error}
+                                </p>
+
+                                <button
+                                    type="button"
+                                    onClick={() => void feedback.refresh()}
+                                >
+                                    Retry
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </header>
 
                 {props.historyLoading ? (

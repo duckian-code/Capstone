@@ -77,7 +77,7 @@ export function AskDotPanel({ threadId, language, disabled = false }: Props) {
     return (
         <details className="cw-ask-dot">
             <summary>
-                Ask Dot anything about {languageLabel}
+                Ask Dot for help
             </summary>
 
             <div className="cw-ask-dot-body">

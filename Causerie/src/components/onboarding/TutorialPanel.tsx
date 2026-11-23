@@ -101,8 +101,18 @@ export function TutorialPanel({ messages, threadId, voice, busy, onCreateThread 
     const available = (id: Lesson) => !voice || !['translation','hint','sticky','spelling'].includes(id);
     const shown = next && quiet && (due || (isDiscovery && discovery)) && (isDiscovery ? LESSONS.slice(6).some(id => state?.steps[id] === 'pending' && available(id)) : available(next)) && (source || !['translation','hint','sticky'].includes(next));
     return <>
-        {shown && <aside className="tutorial-callout" aria-label={isDiscovery ? 'More ways to learn' : 'Onboarding guidance'}>
-            {isDiscovery ? <>
+        {shown && <aside
+            className={
+                next === "teacher"
+                    ? "tutorial-callout tutorial-callout--teacher"
+                    : "tutorial-callout"
+            }
+            aria-label={
+                isDiscovery
+                    ? "More ways to learn"
+                    : "Onboarding guidance"
+            }>
+        {isDiscovery ? <>
                 <header><h2>More ways to learn</h2><button aria-expanded={!collapsed} onClick={() => setCollapsed(value => !value)}>{collapsed ? 'Expand' : 'Collapse'}</button></header>
                 {!collapsed && <ul>{LESSONS.slice(6).filter(id => state?.steps[id] === 'pending' && available(id)).map(id => <li key={id}>
                     <div><strong>{LABELS[id]}</strong><p>{COPY[id]}</p>{!available(id) && <p>Available in a written thread.</p>}</div>
@@ -111,13 +121,54 @@ export function TutorialPanel({ messages, threadId, voice, busy, onCreateThread 
                 </li>)}</ul>}
                 <button onClick={() => store.skipDiscovery()}>Hide suggestions (skip remaining)</button>
             </> : <>
-                <p className="tutorial-eyebrow">{store.replaying ? 'Tutorial replay' : 'Explore Causerie'}</p>
-                <h2>{LABELS[next]}</h2><p>{COPY[next]}</p>
+
+            {next === "teacher" ? (
+                <p className="tutorial-teacher-question">
+                    Need some help making a response?
+                </p>
+            ) : (
+                <>
+                    <p className="tutorial-eyebrow">
+                        {store.replaying ? "Tutorial replay" : "Explore Causerie"}
+                    </p>
+                    <h2>{LABELS[next]}</h2>
+                    <p>{COPY[next]}</p>
+                </>
+            )}
+
+            <h2>{LABELS[next]}</h2><p>{COPY[next]}</p>
                 {next === 'sticky' && validCorrection && <p>Try making a note about “{validCorrection.text}” from your message.</p>}
-                <div className="tutorial-actions"><button onClick={() => explore(next)}>{next === 'goals' ? 'Choose a goal' : next === 'reminders' ? 'Set a reminder' : 'Try it'}</button>
-                    <button onClick={() => store.skip(next)}>{next === 'goals' || next === 'reminders' ? 'Later' : 'Continue'}</button></div>
-            </>}
-            {store.replaying ? <button onClick={() => store.endReplay()}>Exit replay</button> : <button onClick={() => store.skipAll()}>Skip tutorial</button>}
+            <div className="tutorial-actions">
+                <button type="button" onClick={() => explore(next)}>
+                    {next === "teacher"
+                        ? "Yes please"
+                        : next === "goals"
+                            ? "Choose a goal"
+                            : next === "reminders"
+                                ? "Set a reminder"
+                                : "Try it"}
+                </button>
+
+                <button type="button" onClick={() => store.skip(next)}>
+                    {next === "teacher" ||
+                    next === "goals" ||
+                    next === "reminders"
+                        ? "Later"
+                        : "Continue"}
+                </button>
+            </div>
+        </>}
+            {next !== "teacher" && (
+                store.replaying ? (
+                    <button type="button" onClick={() => store.endReplay()}>
+                        Exit replay
+                    </button>
+                ) : (
+                    <button type="button" onClick={() => store.skipAll()}>
+                        Skip tutorial
+                    </button>
+                )
+            )}
         </aside>}
         {practice && <TutorialPractice key={`${threadId}:${practice.lesson}:${practice.message.id}`} lesson={practice.lesson} message={practice.message} initialText={practice.text} onClose={() => setPractice(null)} />}
     </>;

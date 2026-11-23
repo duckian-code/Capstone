@@ -1,19 +1,186 @@
-/* Reserve space for guidance so it never covers messages, selection tools, or drafts. */
-.tutorial-slot { display:contents; }
-.cw .cw-practice:has(.tutorial-callout) { grid-template-rows:minmax(80px,auto) minmax(0,1fr) auto clamp(170px,23dvh,220px); }
-.tutorial-slot:has(.tutorial-callout) { display:block; min-height:0; max-height:30dvh; overflow:auto; }
-@media(max-height:600px) { .tutorial-slot:has(.tutorial-callout) { max-height:22dvh; } }
-.tutorial-callout { flex:none; padding:1rem; margin:.4rem; border:1px solid var(--cw-accent,#b7ded7); border-radius:12px; background:var(--cw-panel,#22262d); color:var(--cw-text,#f2f3f5); box-shadow:0 4px 16px #0003; }
-.tutorial-callout header,.tutorial-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; }
-.tutorial-callout p { margin-block:.5rem; }
-.tutorial-callout ul { list-style:none; padding:0; }
-.tutorial-callout li { display:grid; grid-template-columns:1fr auto auto; gap:.4rem; padding-block:.6rem; border-bottom:1px solid var(--cw-border,#525966); align-items:center; }
-.tutorial-eyebrow { font-size:.8rem; }
-.tutorial-menu { margin-block:.5rem; }
-.tutorial-menu label,.tutorial-menu button { display:block; margin-top:.5rem; max-width:100%; }
-.tutorial-menu select { width:100%; }
-.tutorial-status { position:fixed; bottom:1rem; left:50%; transform:translateX(-50%); max-width:min(90vw,40rem); padding:1rem; z-index:200; background:#22262d; color:#f2f3f5; border:1px solid #b7ded7; border-radius:10px; }
-.tutorial-picker { max-width:min(90vw,38rem); max-height:85vh; overflow:auto; padding:1.5rem; border-radius:12px; background:#22262d; color:#f2f3f5; border:1px solid #b7ded7; }
-.tutorial-picker input { display:block; width:100%; margin-block:.5rem; padding:.5rem; font:inherit; }
-.tutorial-picker button { margin:.4rem; padding:.5rem; }
-.tutorial-picker blockquote { max-height:12rem; overflow:auto; margin-inline:0; }
+/* Empty tutorial slots must not introduce an extra grid row. */
+.tutorial-slot {
+    display: contents;
+}
+
+/* Keep guidance in its own row, separate from the composer. */
+.cw .cw-practice:has(.tutorial-callout) {
+    grid-template-rows:
+        var(--cw-top-row, minmax(110px, auto))
+        minmax(0, 1fr)
+        auto
+        clamp(170px, 23dvh, 220px);
+}
+
+.tutorial-slot:has(.tutorial-callout) {
+    display: block;
+    min-height: 0;
+    max-height: 30dvh;
+    overflow: auto;
+}
+
+.tutorial-callout {
+    margin: 0.4rem;
+    padding: 0.85rem;
+    border: 1px solid var(--cw-accent, #b7ded7);
+    border-radius: 12px;
+    background: var(--cw-panel, #22262d);
+    color: var(--cw-text, #f2f3f5);
+    box-shadow: 0 4px 16px #0003;
+}
+
+.tutorial-callout header,
+.tutorial-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tutorial-callout p {
+    margin-block: 0.5rem;
+}
+
+.tutorial-callout ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tutorial-callout li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 0.4rem;
+    padding-block: 0.6rem;
+    border-bottom: 1px solid var(--cw-border, #525966);
+}
+
+.tutorial-eyebrow {
+    font-size: 0.8rem;
+}
+
+/* A smaller, quieter invitation for reply assistance. */
+.tutorial-callout--teacher {
+    width: fit-content;
+    max-width: calc(100% - 0.8rem);
+    padding: 0.65rem 0.85rem;
+    border-color: var(--cw-border, #525966);
+    box-shadow: none;
+}
+
+.tutorial-callout--teacher .tutorial-teacher-question {
+    margin: 0 0 0.4rem;
+}
+
+.tutorial-callout--teacher .tutorial-actions button {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.9rem;
+}
+
+.tutorial-menu {
+    margin-block: 0.5rem;
+}
+
+.tutorial-menu label,
+.tutorial-menu button {
+    display: block;
+    margin-top: 0.5rem;
+    max-width: 100%;
+}
+
+.tutorial-menu select {
+    width: 100%;
+}
+
+.tutorial-status {
+    position: fixed;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: min(90vw, 40rem);
+    padding: 1rem;
+    z-index: 200;
+    background: #22262d;
+    color: #f2f3f5;
+    border: 1px solid #b7ded7;
+    border-radius: 10px;
+}
+
+@media (max-height: 600px) {
+    .tutorial-slot:has(.tutorial-callout) {
+        max-height: 22dvh;
+    }
+}
+
+.tutorial-picker {
+    width: min(90vw, 38rem);
+    max-height: 85dvh;
+    overflow: auto;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: #22262d;
+    color: #f2f3f5;
+    border: 1px solid #b7ded7;
+    box-sizing: border-box;
+}
+
+.tutorial-picker button {
+    margin: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+}
+
+.tutorial-picker .tutorial-selection-region {
+    position: relative;
+
+    /* Room for the action above the first line of selected text. */
+    padding-top: 3rem;
+    margin-block: 0.75rem;
+}
+
+.tutorial-picker .tutorial-selection-text {
+    margin: 0;
+    max-height: none;
+    overflow: visible;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.65;
+    user-select: text;
+    -webkit-user-select: text;
+    cursor: text;
+}
+
+.tutorial-picker .tutorial-selection-action {
+    position: absolute;
+    z-index: 1;
+    width: 160px;
+    max-width: 100%;
+    min-height: 36px;
+    margin: 0;
+    padding: 0.4rem 0.65rem;
+    border: 1px solid #b7ded7;
+    border-radius: 8px;
+    background: #313a43;
+    color: #f2f3f5;
+    box-shadow: 0 3px 10px #0005;
+    cursor: pointer;
+}
+
+.tutorial-picker .tutorial-selection-preview {
+    display: block;
+    margin-block: 1rem;
+}
+
+.tutorial-picker .tutorial-selection-preview textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 0.4rem;
+    padding: 0.65rem;
+    border: 1px solid #525966;
+    border-radius: 8px;
+    background: #171a1f;
+    color: inherit;
+    font: inherit;
+    resize: vertical;
+}

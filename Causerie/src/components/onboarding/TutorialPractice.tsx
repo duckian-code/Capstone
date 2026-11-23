@@ -1,47 +1,299 @@
-import { useEffect, useRef, useState } from 'react';
-import { useDictionary } from '../dictionary/DictionaryProvider';
-import { useStickies } from '../sticky/StickyProvider';
-import { useMessageHints, hasMultipleWords } from '../hints/MessageHints';
-import type { ConversationMessage } from '../../data/models/conversation-types';
+import { useEffect, useRef, useState } from "react";
+import { useDictionary } from "../dictionary/DictionaryProvider";
+import { selectedWord } from "../dictionary/selected-word";
+import { useStickies } from "../sticky/StickyProvider";
+import {
+    useMessageHints,
+    hasMultipleWords,
+} from "../hints/MessageHints";
+import type { ConversationMessage } from "../../data/models/conversation-types";
 
-export function TutorialPractice({ lesson, message, initialText, onClose }: {
-    lesson: 'translation' | 'hint' | 'sticky'; message: ConversationMessage; initialText?: string; onClose: () => void;
-}) {
-    const matches = [...message.content.matchAll(/[\p{L}\p{N}][\p{L}\p{M}\p{N}'’\-]*/gu)];
-    const words = matches.map(match => match[0]);
-    const first = matches[0], last = matches[Math.min(4, matches.length-1)];
-    const defaultText = lesson === 'translation' ? words[0] ?? '' : first && last ? message.content.slice(first.index, last.index! + last[0].length) : '';
-    const [text, setText] = useState(initialText ?? defaultText);
+interface SelectionState {
+    text: string;
+    word: string | null;
+    start: number;
+    end: number;
+    left: number;
+    top: number;
+}
+
+interface Props {
+    lesson: "translation" | "hint" | "sticky";
+    message: ConversationMessage;
+    initialText?: string;
+    onClose: () => void;
+}
+
+export function TutorialPractice({
+                                     lesson,
+                                     message,
+                                     initialText,
+                                     onClose,
+                                 }: Props) {
+    const dialogRef = useRef<HTMLDialogElement>(null);
+    const regionRef = useRef<HTMLDivElement>(null);
+    const textRef = useRef<HTMLQuoteElement>(null);
+    const actionRef = useRef<HTMLButtonElement>(null);
+
+    const [selection, setSelection] = useState<SelectionState | null>(
+        null,
+    );
     const [choosing, setChoosing] = useState(true);
-    const ref = useRef<HTMLDialogElement>(null);
+
     const { openWord } = useDictionary();
     const { openText } = useStickies();
     const hints = useMessageHints(message.id, message.content);
+
     useEffect(() => {
-        if (!choosing && !hints.isOpen) onClose();
+        if (!choosing && !hints.isOpen) {
+            onClose();
+        }
     }, [choosing, hints.isOpen, onClose]);
+
     useEffect(() => {
-        const dialog = ref.current;
-        const previous = document.activeElement;
+        const dialog = dialogRef.current;
+        const previousFocus = document.activeElement;
+
         dialog?.showModal();
-        return () => { dialog?.close(); if (previous instanceof HTMLElement && previous.isConnected) previous.focus(); };
+
+        return () => {
+            dialog?.close();
+
+            if (
+                previousFocus instanceof HTMLElement &&
+                previousFocus.isConnected
+            ) {
+                previousFocus.focus({ preventScroll: true });
+            }
+        };
     }, []);
-    const selected = text.trim();
-    const index = message.content.indexOf(selected);
-    const valid = !!selected && index >= 0 && (lesson === 'hint' ? hasMultipleWords(selected) : lesson === 'translation' ? words.includes(selected) : true);
-    function open() {
-        if (!valid) return;
-        ref.current?.close(); setChoosing(false);
-        if (lesson === 'translation') { openWord(selected); onClose(); }
-        else if (lesson === 'sticky') { openText(selected); onClose(); }
-        else hints.openRequest({ selected_text: selected, start_offset: index, end_offset: index + selected.length });
+
+    useEffect(() => {
+        if (!choosing) return;
+
+        function readSelection() {
+            const container = textRef.current;
+            const region = regionRef.current;
+            const current = window.getSelection();
+
+            // Preserve the captured selection when the user tabs
+            // from the message to its action button.
+            if (document.activeElement === actionRef.current) {
+                return;
+            }
+
+            if (
+                !container ||
+                !region ||
+                !current ||
+                current.isCollapsed ||
+                current.rangeCount !== 1
+            ) {
+                setSelection(null);
+                return;
+            }
+
+            const range = current.getRangeAt(0);
+
+            if (
+                !container.contains(range.startContainer) ||
+                !container.contains(range.endContainer)
+            ) {
+                setSelection(null);
+                return;
+            }
+
+            const raw = range.toString();
+            const text = raw.trim();
+
+            const bounds = Array.from(range.getClientRects()).find(
+                (rect) => rect.width > 0 && rect.height > 0,
+            );
+
+            if (!text || !bounds) {
+                setSelection(null);
+                return;
+            }
+
+            // Use the actual selected range, rather than indexOf:
+            // repeated phrases must retain their correct offsets.
+            const prefix = range.cloneRange();
+            prefix.selectNodeContents(container);
+            prefix.setEnd(range.startContainer, range.startOffset);
+
+            const leadingWhitespace =
+                raw.length - raw.trimStart().length;
+            const start = prefix.toString().length + leadingWhitespace;
+
+            const regionBounds = region.getBoundingClientRect();
+            const actionWidth = 160;
+
+            setSelection({
+                text,
+                word: selectedWord(container, range),
+                start,
+                end: start + text.length,
+                left: Math.max(
+                    0,
+                    Math.min(
+                        bounds.left - regionBounds.left,
+                        regionBounds.width - actionWidth,
+                    ),
+                ),
+                top: Math.max(
+                    0,
+                    bounds.top - regionBounds.top - 44,
+                ),
+            });
+        }
+
+        document.addEventListener("selectionchange", readSelection);
+        document.addEventListener("scroll", readSelection, true);
+        window.addEventListener("resize", readSelection);
+
+        return () => {
+            document.removeEventListener(
+                "selectionchange",
+                readSelection,
+            );
+            document.removeEventListener(
+                "scroll",
+                readSelection,
+                true,
+            );
+            window.removeEventListener("resize", readSelection);
+        };
+    }, [choosing, message.id, message.content]);
+
+    const valid =
+        selection !== null &&
+        (lesson === "translation"
+            ? selection.word !== null
+            : lesson === "hint"
+                ? hasMultipleWords(selection.text)
+                : selection.text.length > 0);
+
+    const title =
+        lesson === "translation"
+            ? "Click and drag to highlight a word to translate"
+            : lesson === "hint"
+                ? "Click and drag to highlight a phrase for a hint"
+                : "Click and drag to highlight text for a sticky";
+
+    const actionLabel =
+        lesson === "translation"
+            ? "Translate"
+            : lesson === "hint"
+                ? "Get hint"
+                : "Create sticky";
+
+    function openSelectedFeature() {
+        if (!selection || !valid) return;
+
+        const captured = selection;
+
+        dialogRef.current?.close();
+        window.getSelection()?.removeAllRanges();
+        setChoosing(false);
+
+        if (lesson === "translation" && captured.word) {
+            openWord(captured.word);
+            onClose();
+        } else if (lesson === "sticky") {
+            openText(captured.text);
+            onClose();
+        } else if (lesson === "hint") {
+            hints.openRequest({
+                selected_text: captured.text,
+                start_offset: captured.start,
+                end_offset: captured.end,
+            });
+        }
     }
-    return <>{choosing && <dialog className="tutorial-picker" ref={ref} onCancel={onClose} aria-labelledby="tutorial-picker-title">
-        <h2 id="tutorial-picker-title">{lesson === 'translation' ? 'Choose a word to translate' : 'Choose text from this message'}</h2>
-        <blockquote>{message.content}</blockquote>
-        <label>Selected text<input autoFocus value={text} onChange={e => setText(e.target.value)} /></label>
-        <p>{lesson === 'translation' ? 'Enter one word exactly as it appears above.' : 'Enter a phrase exactly as it appears above. Hints require at least two words.'}</p>
-        <button disabled={!valid} onClick={open}>{lesson === 'translation' ? 'Translate' : lesson === 'hint' ? 'Get hint' : 'Create sticky'}</button>
-        <button onClick={onClose}>Back to conversation</button>
-    </dialog>}{hints.ui}</>;
+
+    return (
+        <>
+            {choosing && (
+                <dialog
+                    ref={dialogRef}
+                    className="tutorial-picker"
+                    aria-labelledby="tutorial-picker-title"
+                    onCancel={(event) => {
+                        event.preventDefault();
+                        onClose();
+                    }}
+                >
+                    <h2 id="tutorial-picker-title">{title}</h2>
+
+                    {lesson === "sticky" && initialText && (
+                        <p>
+                            Try making a note about “{initialText}”,
+                            or highlight another useful phrase.
+                        </p>
+                    )}
+
+                    <div
+                        ref={regionRef}
+                        className="tutorial-selection-region"
+                    >
+                        <blockquote
+                            ref={textRef}
+                            className="tutorial-selection-text"
+                            tabIndex={0}
+                            aria-label="Practice message"
+                        >
+                            {message.content}
+                        </blockquote>
+
+                        {selection && valid && (
+                            <button
+                                ref={actionRef}
+                                type="button"
+                                className="tutorial-selection-action"
+                                style={{
+                                    left: selection.left,
+                                    top: selection.top,
+                                }}
+                                onPointerDown={(event) => {
+                                    // Keep the highlight until click.
+                                    event.preventDefault();
+                                }}
+                                onClick={openSelectedFeature}
+                            >
+                                {actionLabel}
+                            </button>
+                        )}
+                    </div>
+
+                    <label
+                        className="tutorial-selection-preview"
+                        htmlFor="tutorial-selected-text"
+                    >
+                        Selected text
+                        <textarea
+                            id="tutorial-selected-text"
+                            readOnly
+                            rows={2}
+                            value={selection?.text ?? ""}
+                            placeholder="Highlight text in the message above."
+                        />
+                    </label>
+
+                    {selection && !valid && (
+                        <p role="status">
+                            {lesson === "translation"
+                                ? "Highlight one complete word."
+                                : "Highlight at least two words for a phrase hint."}
+                        </p>
+                    )}
+
+                    <button type="button" onClick={onClose}>
+                        Back to conversation
+                    </button>
+                </dialog>
+            )}
+
+            {hints.ui}
+        </>
+    );
 }

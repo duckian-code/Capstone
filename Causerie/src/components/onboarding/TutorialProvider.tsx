@@ -34,7 +34,7 @@ export function TutorialProvider({ userId, children }: { userId: string; childre
     }, [loaded, complete, store.state?.noticeSeen]);
     if (!loaded) return <main className="conversation-placeholder"><p role={error ? 'alert' : 'status'}>{error ?? 'Loading learning space…'}</p>{error && <button onClick={() => setRetry(n => n+1)}>Retry</button>}</main>;
     return <>{children}{store.error && <div className="tutorial-status" role="alert">Tutorial progress could not be saved: {store.error} <button onClick={() => store.retrySave()}>Retry saving</button></div>}
-        {notice && <div className="tutorial-status" role="status">You’re all set! Happy learning. <button onClick={() => setNotice(false)}>Dismiss</button></div>}</>;
+        {notice && <div className="tutorial-status" role="status">You’ve completed the tutorial! Happy learning! <button onClick={() => setNotice(false)}>Dismiss</button></div>}</>;
 }
 interface TutorialMenuProps {
     onLaunch: (action: () => void) => void;
