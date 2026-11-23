@@ -12,7 +12,10 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
     const dialog = useRef<HTMLDialogElement>(null);
     const [view, setView] = useState<AssessmentResponse | null>(null);
     const [answers, setAnswers] = useState<Record<string, string>>({});
-    const [struckOptions, setStruckOptions] = useState<Record<string, string>>({});
+    const [struckOptions, setStruckOptions] =
+        useState<Record<string, string[]>>({});
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const questionHeading = useRef<HTMLParagraphElement>(null);
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [confirmExit, setConfirmExit] = useState<"dialog" | "window" | null>(null);
@@ -82,6 +85,7 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             setView(response);
             setAnswers({});
             setStruckOptions({});
+            setCurrentQuestionIndex(0);
             if (response.status === "completed") { dirtyRef.current = false; onCompleted(); }
             dialog.current
                 ?.querySelector<HTMLElement>(".assessment-content")
@@ -146,12 +150,39 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
         }
     }
     const active = view?.status === "in_progress" ? view : null;
-    const total = active ? active.config.blocks * active.config.questionsPerSkill * active.scoringPolicy.includedSkills.length : 0;
+    const questionCount = active?.block.items.length ?? 0;
+    const currentQuestion = active?.block.items[currentQuestionIndex];
+    const blockNumber = active ? active.block.index + 1 : 0;
     const isFollowUp = active?.block.phase === "follow_up";
-    const roundLabel = active ? isFollowUp
-        ? `Follow-up ${active.block.index - active.config.blocks + 1}`
-        : `Block ${active.block.index + 1} of ${active.config.blocks}` : "";
-    const answered = active ? active.block.items.filter(i => answers[i.id]).length : 0;
+
+    const answered = active
+        ? active.block.items.filter(item => Boolean(answers[item.id])).length
+        : 0;
+
+    const totalAnswered = (active?.answeredQuestionCount ?? 0) + answered;
+    const isLastQuestion = currentQuestionIndex === questionCount - 1;
+    const navigationLocked = busy || !!confirmExit;
+    const answersLocked = navigationLocked || retryingSubmission;
+
+    const firstUnansweredIndex = active
+        ? active.block.items.findIndex(item => !answers[item.id])
+        : -1;
+
+    function navigateToQuestion(index: number) {
+        if (busyRef.current || confirmExit) return;
+        if (index < 0 || index >= questionCount) return;
+        setCurrentQuestionIndex(index);
+    }
+
+    useEffect(() => {
+        if (!active) return;
+
+        questionHeading.current?.focus({ preventScroll: true });
+        dialog.current
+            ?.querySelector<HTMLElement>(".assessment-content")
+            ?.scrollTo({ top: 0 });
+    }, [active?.block.index, currentQuestionIndex]);
+
     return createPortal(<dialog ref={dialog} className="settings-modal settings-modal-wide assessment-dialog"
                                 aria-labelledby="assessment-title" aria-busy={busy}
                                 onCancel={event => { event.preventDefault(); requestClose(); }}>
@@ -181,81 +212,189 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                     void run(() => assessments.start(userId, id));
                 }}>{busy ? "Starting…" : started ? "Retry starting assessment" : "Begin assessment"}</button>
             </>}
-            {active && <>
-                <p role="status">{roundLabel} · {answered} of {active.block.items.length} answered in this round.</p>
-                {isFollowUp && <p>Additional questions for {Array.from(new Set(active.block.items.map(item => item.skill))).map(skillName).join(", ")}.
-                    More follow-up rounds may be needed.</p>}
-                <p>{active.answeredQuestionCount + answered} questions answered across this assessment.</p>
-                <progress aria-label={isFollowUp ? "Current follow-up questions answered" : "Main assessment questions answered"}
-                          max={isFollowUp ? active.block.items.length : total}
-                          value={isFollowUp ? answered : active.answeredQuestionCount + answered} />
-                <p className="settings-help">
-                    Click × to strike out an option. Click it again to restore the option.
-                </p>
-                <form onSubmit={event => {
-                    event.preventDefault();
-                    if (busyRef.current || confirmExit || answered !== active.block.items.length) return;
-                    frozenSubmission.current ??= { blockIndex: active.block.index, answers: { ...answers } };
-                    setRetryingSubmission(true);
-                    const submission = frozenSubmission.current;
-                    void run(() => assessments.submit(userId, id, submission.blockIndex, submission.answers));
-                }}>
-                    <fieldset disabled={busy || retryingSubmission || !!confirmExit}>
-                        <legend>{roundLabel} questions</legend>
-                        {active.block.items.map((item, index) => <fieldset className="assessment-item" key={item.id}>
-                            <legend>{index + 1}. {skillName(item.skill)}</legend>
-                            <PassageText passage={item.passage} />
-                            <p className="assessment-question" lang="fr">{item.prompt}</p>
-                            {item.options.map(option => {
-                                const isStruck =
-                                    struckOptions[item.id]?.includes(option.id) ?? false;
+            {active && currentQuestion && <>
+                <div className="assessment-round-header">
+                    <div>
+                        <p className="assessment-block-label">
+                            Block{" "}
+                            <span className={isFollowUp ? "assessment-extra-round" : undefined}>
+                    {blockNumber}
+                </span>
+                            <span>/{active.config.blocks}</span>
+                        </p>
+                        {isFollowUp && (
+                            <p className="assessment-round-note">Additional round</p>
+                        )}
+                    </div>
 
-                                return (
-                                    <div
-                                        key={option.id}
-                                        className={`assessment-option-row${isStruck ? " is-struck" : ""}`}>
-                                        <div
-                                            key={option.id}
-                                            className={`assessment-option-row${isStruck ? " is-struck" : ""}`}>
-                                            <button
-                                                type="button"
-                                                className="assessment-option-strike"
-                                                aria-label={`Strike out option: ${option.text}`}
-                                                aria-pressed={isStruck}
-                                                title={isStruck ? "Restore this option" : "Strike out this option"}
-                                                onClick={() => toggleOptionStrike(item.id, option.id)}>
-                                                <span aria-hidden="true">×</span>
-                                            </button>
+                    <p className="assessment-total-answered" role="status">
+                        <strong>{totalAnswered}</strong> total questions answered
+                    </p>
+                </div>
 
-                                            <label className="assessment-option" lang="fr">
-                                                <input
-                                                    type="radio"
-                                                    name={item.id}
-                                                    value={option.id}
-                                                    required
-                                                    disabled={isStruck}
-                                                    checked={answers[item.id] === option.id}
-                                                    onChange={() => {
-                                                        if (isStruck) return;
+                <progress
+                    aria-label="Questions answered in this block"
+                    max={questionCount}
+                    value={answered}/>
 
-                                                        setAnswers(previous => ({
-                                                            ...previous,
-                                                            [item.id]: option.id,
-                                                        }));
-                                                    }}
-                                                />
-                                                <span>{option.text}</span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                        </fieldset>)}
+                {/*<p className="assessment-block-progress">*/}
+                {/*    {answered} of {questionCount} answered in this block*/}
+                {/*</p>*/}
+
+                <form
+                    noValidate
+                    onSubmit={event => {
+                        event.preventDefault();
+
+                        if (
+                            busyRef.current ||
+                            confirmExit ||
+                            !isLastQuestion ||
+                            answered !== questionCount
+                        ) return;
+
+                        frozenSubmission.current ??= {
+                            blockIndex: active.block.index,
+                            answers: { ...answers },
+                        };
+
+                        setRetryingSubmission(true);
+                        const submission = frozenSubmission.current;
+
+                        void run(() => assessments.submit(
+                            userId,
+                            id,
+                            submission.blockIndex,
+                            submission.answers,
+                        ));
+                    }}>
+                    <fieldset
+                        className="assessment-item"
+                        key={currentQuestion.id}
+                        disabled={answersLocked}>
+                        <legend>
+                            Question {currentQuestionIndex + 1} of {questionCount}
+                            {" · "}
+                            {skillName(currentQuestion.skill)}
+                        </legend>
+
+                        <p className="settings-help">
+                            Click × to strike out an option. Click it again to restore the option.
+                        </p>
+
+                        <PassageText passage={currentQuestion.passage} />
+
+                        <p
+                            ref={questionHeading}
+                            className="assessment-question"
+                            lang="fr"
+                            tabIndex={-1}>
+                            {currentQuestion.prompt}
+                        </p>
+
+                        {currentQuestion.options.map(option => {
+                            const isStruck =
+                                struckOptions[currentQuestion.id]?.includes(option.id)
+                                ?? false;
+
+                            return (
+                                <div
+                                    key={option.id}
+                                    className={`assessment-option-row${isStruck ? " is-struck" : ""}`}>
+                                    <button
+                                        type="button"
+                                        className="assessment-option-strike"
+                                        aria-label={`Strike out option: ${option.text}`}
+                                        aria-pressed={isStruck}
+                                        title={
+                                            isStruck
+                                                ? "Restore this option"
+                                                : "Strike out this option"
+                                        }
+                                        onClick={() => toggleOptionStrike(
+                                            currentQuestion.id,
+                                            option.id,
+                                        )}>
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+
+                                    <label className="assessment-option" lang="fr">
+                                        <input
+                                            type="radio"
+                                            name={currentQuestion.id}
+                                            value={option.id}
+                                            disabled={isStruck}
+                                            checked={
+                                                answers[currentQuestion.id] === option.id
+                                            }
+                                            onChange={() => {
+                                                if (isStruck || answersLocked) return;
+
+                                                setAnswers(previous => ({
+                                                    ...previous,
+                                                    [currentQuestion.id]: option.id,
+                                                }));
+                                            }}
+                                        />
+                                        <span>{option.text}</span>
+                                    </label>
+                                </div>
+                            );
+                        })}
                     </fieldset>
-                    <button type="submit" disabled={busy || !!confirmExit || answered !== active.block.items.length}>
-                        {busy ? "Saving…" : retryingSubmission ? "Retry this submission" : isFollowUp ? "Submit follow-up" : "Submit block"}
-                    </button>
-                    {retryingSubmission && !busy && <p>Your submitted answers are locked while the save is retried. Retry uses the same submission and cannot create duplicate results.</p>}
+
+                    <div className="assessment-question-navigation">
+                        <button
+                            type="button"
+                            disabled={navigationLocked || currentQuestionIndex === 0}
+                            onClick={() => navigateToQuestion(currentQuestionIndex - 1)}>
+                            Previous
+                        </button>
+
+                        <span className="assessment-question-position">
+                {currentQuestionIndex + 1} / {questionCount}
+            </span>
+
+                        {!isLastQuestion ? (
+                            <button
+                                key="next"
+                                type="button"
+                                disabled={navigationLocked}
+                                onClick={() => navigateToQuestion(currentQuestionIndex + 1)}>
+                                Next
+                            </button>
+                        ) : (
+                            <button
+                                key="submit"
+                                type="submit"
+                                disabled={navigationLocked || answered !== questionCount}>
+                                {busy
+                                    ? "Saving…"
+                                    : retryingSubmission
+                                        ? "Retry submission"
+                                        : "Submit block"}
+                            </button>
+                        )}
+                    </div>
+
+                    {isLastQuestion && firstUnansweredIndex !== -1 && (
+                        <p className="assessment-unanswered-notice">
+                            Answer all questions before submitting.{" "}
+                            <button
+                                type="button"
+                                disabled={navigationLocked}
+                                onClick={() => navigateToQuestion(firstUnansweredIndex)}>
+                                Go to first unanswered question
+                            </button>
+                        </p>
+                    )}
+
+                    {retryingSubmission && !busy && (
+                        <p role="status">
+                            Your submitted answers are locked while the save is retried.
+                            Retry uses the same submission and cannot create duplicate results.
+                        </p>
+                    )}
                 </form>
             </>}
             {view?.status === "completed" && <><p role="status">Assessment saved.</p><AssessmentResults record={view} />

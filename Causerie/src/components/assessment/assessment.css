@@ -151,3 +151,92 @@
     cursor: not-allowed;
     opacity: .5;
 }
+
+.assessment-round-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: .75rem;
+}
+
+.assessment-block-label {
+    margin: 0;
+    color: #fff;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.assessment-extra-round {
+    color: #facc15;
+}
+
+.assessment-round-note {
+    margin: .25rem 0 0;
+    font-size: .875rem;
+}
+
+.assessment-total-answered {
+    margin: 0;
+    text-align: right;
+    font-size: .95rem;
+}
+
+.assessment-total-answered strong {
+    font-variant-numeric: tabular-nums;
+}
+
+.assessment-block-progress {
+    margin: .35rem 0 1rem;
+    font-size: .875rem;
+}
+
+.assessment-question-navigation {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: .75rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #596573;
+}
+
+.assessment-question-navigation > button {
+    min-height: 2.75rem;
+}
+
+.assessment-question-navigation > button:first-child {
+    justify-self: start;
+}
+
+.assessment-question-navigation > button:last-child {
+    justify-self: end;
+}
+
+.assessment-question-position {
+    font-variant-numeric: tabular-nums;
+}
+
+.assessment-unanswered-notice {
+    margin-top: 1rem;
+}
+
+.assessment-question:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: .25rem;
+}
+
+@media (max-width: 520px) {
+    .assessment-round-header {
+        align-items: flex-start;
+        gap: .75rem;
+    }
+
+    .assessment-total-answered {
+        max-width: 12rem;
+    }
+
+    .assessment-question-navigation {
+        gap: .5rem;
+    }
+}
