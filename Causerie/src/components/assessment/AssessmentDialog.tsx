@@ -12,6 +12,7 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
     const dialog = useRef<HTMLDialogElement>(null);
     const [view, setView] = useState<AssessmentResponse | null>(null);
     const [answers, setAnswers] = useState<Record<string, string>>({});
+    const [struckOptions, setStruckOptions] = useState<Record<string, string>>({});
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [confirmExit, setConfirmExit] = useState<"dialog" | "window" | null>(null);
@@ -78,7 +79,9 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             if (!alive.current) return;
             if (response.userId !== userId || response.id !== id) throw new Error("Assessment profile mismatch.");
             frozenSubmission.current = null; setRetryingSubmission(false);
-            setView(response); setAnswers({});
+            setView(response);
+            setAnswers({});
+            setStruckOptions({});
             if (response.status === "completed") { dirtyRef.current = false; onCompleted(); }
             dialog.current
                 ?.querySelector<HTMLElement>(".assessment-content")
@@ -88,6 +91,35 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
         } finally {
             busyRef.current = false;
             if (alive.current) setBusy(false);
+        }
+    }
+
+    function toggleOptionStrike(questionId: string, optionId: string) {
+        if (busyRef.current || retryingSubmission || confirmExit) return;
+
+        const isStruck = struckOptions[questionId]?.includes(optionId) ?? false;
+
+        setStruckOptions(previous => {
+            const options = previous[questionId] ?? [];
+
+            return {
+                // TODO: evaluate type mismatch with options
+                ...previous,
+                [questionId]: isStruck
+                    ? options.filter(id => id !== optionId)
+                    : [...options, optionId],
+            };
+        });
+
+        // Eliminating the selected answer makes this question unanswered.
+        if (!isStruck) {
+            setAnswers(previous => {
+                if (previous[questionId] !== optionId) return previous;
+
+                const next = { ...previous };
+                delete next[questionId];
+                return next;
+            });
         }
     }
     function requestClose() {
@@ -157,6 +189,9 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                 <progress aria-label={isFollowUp ? "Current follow-up questions answered" : "Main assessment questions answered"}
                           max={isFollowUp ? active.block.items.length : total}
                           value={isFollowUp ? answered : active.answeredQuestionCount + answered} />
+                <p className="settings-help">
+                    Click × to strike out an option. Click it again to restore the option.
+                </p>
                 <form onSubmit={event => {
                     event.preventDefault();
                     if (busyRef.current || confirmExit || answered !== active.block.items.length) return;
@@ -171,11 +206,50 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                             <legend>{index + 1}. {skillName(item.skill)}</legend>
                             <PassageText passage={item.passage} />
                             <p className="assessment-question" lang="fr">{item.prompt}</p>
-                            {item.options.map(option => <label key={option.id} className="assessment-option" lang="fr">
-                                <input type="radio" name={item.id} value={option.id} required checked={answers[item.id] === option.id}
-                                       onChange={() => setAnswers(previous => ({ ...previous, [item.id]: option.id }))} />
-                                <span>{option.text}</span>
-                            </label>)}
+                            {item.options.map(option => {
+                                const isStruck =
+                                    struckOptions[item.id]?.includes(option.id) ?? false;
+
+                                return (
+                                    <div
+                                        key={option.id}
+                                        className={`assessment-option-row${isStruck ? " is-struck" : ""}`}>
+                                        <div
+                                            key={option.id}
+                                            className={`assessment-option-row${isStruck ? " is-struck" : ""}`}>
+                                            <button
+                                                type="button"
+                                                className="assessment-option-strike"
+                                                aria-label={`Strike out option: ${option.text}`}
+                                                aria-pressed={isStruck}
+                                                title={isStruck ? "Restore this option" : "Strike out this option"}
+                                                onClick={() => toggleOptionStrike(item.id, option.id)}>
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+
+                                            <label className="assessment-option" lang="fr">
+                                                <input
+                                                    type="radio"
+                                                    name={item.id}
+                                                    value={option.id}
+                                                    required
+                                                    disabled={isStruck}
+                                                    checked={answers[item.id] === option.id}
+                                                    onChange={() => {
+                                                        if (isStruck) return;
+
+                                                        setAnswers(previous => ({
+                                                            ...previous,
+                                                            [item.id]: option.id,
+                                                        }));
+                                                    }}
+                                                />
+                                                <span>{option.text}</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </fieldset>)}
                     </fieldset>
                     <button type="submit" disabled={busy || !!confirmExit || answered !== active.block.items.length}>
