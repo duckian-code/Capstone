@@ -53,6 +53,32 @@ export const tutorial = {
         const next = exchange(state, id);
         return next !== state && !next.firstUserMessageId && userMessageId ? { ...next, firstUserMessageId: userMessageId } : next;
     }); },
+    
+    claimFeedbackCue(): boolean {
+        if (replay) return false;
+
+        let claimed = false;
+
+        update(state => {
+            const onboardingActive = LESSONS.some(
+                id => state.steps[id] === "pending",
+            );
+
+            if (state.feedbackCueShown || !onboardingActive) {
+                return state;
+            }
+
+            claimed = true;
+
+            return {
+                ...state,
+                feedbackCueShown: true,
+            };
+        });
+
+        return claimed;
+    },
+
     acknowledge() { update(state => ({ ...state, noticeSeen: true })); },
     startReplay(id?: Lesson) {
         generation++;

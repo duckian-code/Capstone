@@ -3,6 +3,7 @@ import type { ConversationMessage } from "../../data/models/conversation-types.t
 import { StickyMessageText } from "../sticky/StickyMessageText.tsx";
 import { useStickies } from "../sticky/StickyProvider.tsx";
 import type { FeedbackBadges } from "../../services/feedback-state";
+import { FeedbackTutorialCue } from "../onboarding/FeedbackTutorialCue.tsx";
 
 interface Props {
     threadId: string;
@@ -99,26 +100,29 @@ export function MessageHistory({threadId, prompt, messages, selectedMessageId, o
                                     messageId={message.id}
                                     text={message.content}
                                 />
-
-
-                                {message.role === "user" && (
-                                    <button
-                                        type="button"
-                                        className="cw-feedback-button"
-                                        data-unread={feedbackBadges[message.id]?.unread || undefined}
-                                        aria-pressed={selectedMessageId === message.id}
-                                        aria-controls="conversation-feedback"
-                                        aria-label={
-                                            feedbackBadges[message.id]?.unread
-                                                ? "View unread feedback for this message"
-                                                : "View feedback for this message"
-                                        }
-                                        onClick={() => onSelectMessage(message.id)}>
-                                        {feedbackBadges[message.id]?.unread
-                                            ? "Feedback · New"
-                                            : "View feedback"}
-                                    </button>
-                                )}
+                                    {message.role === "user" && (
+                                            <FeedbackTutorialCue
+                                                messageId={message.id}
+                                                available={!!feedbackBadges[message.id]?.available}
+                                                unread={!!feedbackBadges[message.id]?.unread}>
+                                                <button
+                                                    type="button"
+                                                    className="cw-feedback-button"
+                                                    data-unread={feedbackBadges[message.id]?.unread || undefined}
+                                                    aria-pressed={selectedMessageId === message.id}
+                                                    aria-controls="conversation-feedback"
+                                                    aria-label={
+                                                        feedbackBadges[message.id]?.unread
+                                                            ? "View unread feedback for this message"
+                                                            : "View feedback for this message"
+                                                    }
+                                                    onClick={() => onSelectMessage(message.id)}>
+                                                    {feedbackBadges[message.id]?.unread
+                                                        ? "Feedback · New"
+                                                        : "View feedback"}
+                                                </button>
+                                            </FeedbackTutorialCue>
+                                        )}
                             </article>
                         </li>
                     ))}

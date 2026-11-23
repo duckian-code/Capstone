@@ -184,3 +184,172 @@
     font: inherit;
     resize: vertical;
 }
+
+.feedback-tutorial-cue {
+    display: inline-flex;
+    max-width: 100%;
+}
+
+.cw .feedback-tutorial-cue[data-pulsing="true"] > button {
+    animation: tutorial-feedback-pulse 3s ease-in-out 3;
+}
+
+@keyframes tutorial-feedback-pulse {
+    0%,
+    100% {
+        border-color: #d7a0b6;
+        box-shadow: 0 0 0 2px rgb(215 160 182 / 20%);
+    }
+
+    33% {
+        border-color: #c5b0ed;
+        box-shadow: 0 0 12px 3px rgb(197 176 237 / 35%);
+    }
+
+    66% {
+        border-color: #b7ded7;
+        box-shadow: 0 0 12px 3px rgb(183 222 215 / 35%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cw .feedback-tutorial-cue[data-pulsing="true"] > button {
+        animation: none;
+        border-color: #b7ded7;
+        box-shadow: 0 0 0 2px rgb(183 222 215 / 35%);
+    }
+}
+
+/* Hide the empty host without reserving layout space. */
+.cw > .cw-tutorial-rail {
+    display: none;
+}
+
+/* Restore the compact, opaque checklist box. */
+.cw .tutorial-discovery {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0.65rem;
+    border: 1px solid var(--cw-border, #525966);
+    border-radius: 12px;
+    background: var(--cw-panel, #22262d);
+    color: var(--cw-text, #f2f3f5);
+    box-shadow: 0 4px 16px #0003;
+}
+
+.cw .tutorial-discovery header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+}
+
+.cw .tutorial-discovery h2 {
+    margin: 0;
+    font-size: 0.85rem;
+    line-height: 1.3;
+}
+
+.cw .tutorial-discovery ul {
+    list-style: none;
+    margin: 0.45rem 0;
+    padding: 0;
+}
+
+.cw .tutorial-discovery li {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 0.2rem;
+    padding-block: 0.5rem;
+    border-bottom: 1px solid var(--cw-border, #525966);
+}
+
+.cw .tutorial-discovery li > div {
+    min-width: 0;
+}
+
+.cw .tutorial-discovery strong {
+    font-size: 0.85rem;
+}
+
+.cw .tutorial-discovery p {
+    margin: 0.15rem 0 0;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+    color: var(--cw-muted, #b7bfcb);
+}
+
+.cw .tutorial-discovery button {
+    flex-shrink: 0;
+    min-width: 28px;
+    min-height: 30px;
+    margin: 0;
+    padding: 0.25rem 0.35rem;
+    font-size: 0.8rem;
+}
+
+.cw .tutorial-discovery footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+}
+
+/* Desktop: float over column three, immediately below its header. */
+@media (min-width: 1001px) {
+    .cw {
+        position: relative;
+    }
+
+    .cw > .cw-tutorial-rail:has(.tutorial-discovery) {
+        display: block;
+        position: absolute;
+        grid-column: 3 / 4;
+        grid-row: 1 / 4;
+
+        top: calc(var(--cw-top-row, 110px) + 0.65rem);
+        right: 0.65rem;
+
+        width: min(240px, calc(100% - 1.3rem));
+        max-height: min(
+                45dvh,
+                calc(100% - var(--cw-top-row, 110px) - 1.3rem)
+        );
+
+        min-width: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border-radius: 12px;
+        overflow: auto;
+        overscroll-behavior: contain;
+        z-index: 40;
+    }
+}
+
+/* Mobile: retain the compact floating panel. */
+@media (max-width: 1000px) {
+    .cw > .cw-tutorial-rail:has(.tutorial-discovery) {
+        display: block;
+        position: fixed;
+        top: calc(4rem + env(safe-area-inset-top));
+        right: max(0.65rem, env(safe-area-inset-right));
+        z-index: 40;
+
+        width: min(250px, calc(100vw - 1.3rem));
+        max-height: 50dvh;
+
+        box-sizing: border-box;
+        border-radius: 12px;
+        overflow: auto;
+        overscroll-behavior: contain;
+    }
+}
+
+@media (pointer: coarse) {
+    .cw .tutorial-discovery button {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}

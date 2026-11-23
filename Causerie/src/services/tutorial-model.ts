@@ -21,6 +21,7 @@ export interface TutorialProgress {
     exchangeIds: string[];
     noticeSeen: boolean;
     firstUserMessageId?: string;
+    feedbackCueShown?: boolean;
 }
 export function initialProgress(legacy = false): TutorialProgress {
     return { version: 1, steps: Object.fromEntries(LESSONS.map(id => [id, legacy ? 'skipped' : 'pending'])) as Record<Lesson, Outcome>, exchanges: 0, lastResolved: 0, exchangeIds: [], noticeSeen: legacy };

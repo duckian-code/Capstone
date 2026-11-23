@@ -24,6 +24,8 @@ import "./conversation.css";
 import { VoiceComposer } from "./VoiceComposer";
 import { AskDotPanel } from "./AskDotPanel";
 
+import { FeedbackTutorialCue } from "../onboarding/FeedbackTutorialCue.tsx";
+
 export type MobileView =
     | "threads"
     | "mascot"
@@ -254,29 +256,35 @@ export function ConversationWorkspace(props: Props) {
                     </button>
 
                     {feedbackBadge?.available && (
-                        <button
-                            type="button"
-                            className="cw-feedback-shortcut"
-                            data-unread={feedbackBadge.unread || undefined}
-                            aria-label={
-                                feedbackBadge.unread
-                                    ? "Open unread feedback"
-                                    : "Open feedback"
-                            }
-                            aria-pressed={props.mobileView === "feedback"}
-                            onClick={() =>
-                                props.onMobileViewChange("feedback")
-                            }
-                        >
-                            <span aria-hidden="true">!</span>
+                        <FeedbackTutorialCue
+                            messageId={feedbackMessage?.id ?? ""}
+                            available={feedbackBadge.available}
+                            unread={feedbackBadge.unread}>
+                            <button
+                                type="button"
+                                className="cw-feedback-shortcut"
+                                data-unread={feedbackBadge.unread || undefined}
+                                aria-label={
+                                    feedbackBadge.unread
+                                        ? "Open unread feedback"
+                                        : "Open feedback"
+                                }
+                                aria-pressed={props.mobileView === "feedback"}
+                                onClick={() =>
+                                    props.onMobileViewChange("feedback")
+                                }
+                            >
+                                <span aria-hidden="true">!</span>
 
-                            {feedbackBadge.unread && (
-                                <span
-                                    className="cw-unread-dot"
-                                    aria-hidden="true"
-                                />
-                            )}
-                        </button>
+                                {feedbackBadge.unread && (
+                                    <span
+                                        className="cw-unread-dot"
+                                        aria-hidden="true"
+                                    />
+                                )}
+                            </button>
+                        </FeedbackTutorialCue>
+
                     )}
                 </nav>
             </header>
@@ -448,6 +456,10 @@ export function ConversationWorkspace(props: Props) {
                     onRead={feedback.markRead}
                 />
             </section>
+            <div
+                id="tutorial-discovery-host"
+                className="cw-tutorial-rail"
+            />
         </main>
     );
 }
