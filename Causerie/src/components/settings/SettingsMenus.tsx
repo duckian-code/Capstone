@@ -29,6 +29,7 @@ import {
     type ProficiencyLevel,
 } from "../../services/proficiency";
 import { ResetApplicationButton } from "../ResetApplicationButton";
+import { TutorialMenu } from "../onboarding/TutorialProvider";
 
 const DEFAULT_AVATAR_URL = "/images/default-avatar.png";
 
@@ -597,6 +598,7 @@ const SETTINGS_NAVIGATION = [
     ...SETTINGS_SECTIONS.map(({ id, label }) => ({ id, label })),
     { id: "assessments", label: "Assessment history" },
     { id: "personal-dictionary", label: "Personal dictionary" },
+    { id: "tutorials", label: "Tutorials" },
     { id: "reset", label: "Reset application" },
 ];
 
@@ -813,6 +815,27 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose, 
         draft.proficiency !== null &&
         savedProficiency !== null &&
         draft.proficiency !== savedProficiency;
+
+    function launchTutorial(action: () => void) {
+        if (
+            busyRef.current ||
+            dictionaryBusy ||
+            dirty ||
+            dictionaryDirty
+        ) {
+            return;
+        }
+
+        action();
+        onClose();
+
+        // Request guidance after Settings closes and replay state updates.
+        requestAnimationFrame(() => {
+            window.dispatchEvent(
+                new Event("causerie:tutorial-request"),
+            );
+        });
+    }
 
     useEffect(() => {
         let cancelled = false;
@@ -1094,6 +1117,33 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose, 
                             </button>
                         </section>
                     </fieldset>
+
+                    <section
+                        id="settings-section-tutorials"
+                        className="settings-section"
+                        aria-labelledby="settings-section-title-tutorials">
+                        <h3 id="settings-section-title-tutorials">
+                            Tutorials
+                        </h3>
+
+                        <TutorialMenu
+                            onLaunch={launchTutorial}
+                            launchDisabled={
+                                busy ||
+                                dictionaryBusy ||
+                                dirty ||
+                                dictionaryDirty
+                            }
+                        />
+
+                        {(dirty || dictionaryDirty) && (
+                            <p className="settings-help">
+                                Save your settings before starting a tutorial,
+                                or close Settings and discard your changes,
+                                then reopen this section.
+                            </p>
+                        )}
+                    </section>
 
                     <section
                         id="settings-section-reset"

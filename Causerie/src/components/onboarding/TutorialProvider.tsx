@@ -36,15 +36,79 @@ export function TutorialProvider({ userId, children }: { userId: string; childre
     return <>{children}{store.error && <div className="tutorial-status" role="alert">Tutorial progress could not be saved: {store.error} <button onClick={() => store.retrySave()}>Retry saving</button></div>}
         {notice && <div className="tutorial-status" role="status">You’re all set! Happy learning. <button onClick={() => setNotice(false)}>Dismiss</button></div>}</>;
 }
-export function TutorialMenu() {
+interface TutorialMenuProps {
+    onLaunch: (action: () => void) => void;
+    launchDisabled?: boolean;
+}
+
+export function TutorialMenu({
+                                 onLaunch,
+                                 launchDisabled = false,
+                             }: TutorialMenuProps) {
     const store = useTutorial();
-    const [choice, setChoice] = useState<Lesson | 'all'>('all');
-    function closeMenu(element: HTMLElement) { element.closest('details')?.removeAttribute('open'); }
-    function request() { window.dispatchEvent(new Event('causerie:tutorial-request')); }
-    return <details className="tutorial-menu"><summary>Tutorials</summary>
-        {store.state && nextLesson(store.state) && <><button onClick={e => { closeMenu(e.currentTarget); request(); }}>Continue tutorial</button><button onClick={e => { store.skipAll(); closeMenu(e.currentTarget); }}>Skip remaining tutorial</button></>}
-        <label>Replay <select value={choice} onChange={e => setChoice(e.target.value as Lesson | 'all')}><option value="all">Entire tutorial</option>{LESSONS.map(id => <option key={id} value={id}>{LABELS[id]}</option>)}</select></label>
-        <button onClick={e => { closeMenu(e.currentTarget); store.startReplay(choice === 'all' ? undefined : choice); request(); }}>Start replay</button>
-        {store.replaying && <button onClick={e => { closeMenu(e.currentTarget); store.endReplay(); }}>Exit replay</button>}
-    </details>;
+    const [choice, setChoice] = useState<Lesson | "all">("all");
+
+    return (
+        <div className="tutorial-menu">
+            <p className="settings-help">
+                Revisit the introduction or practice an individual feature.
+                Replaying preserves your saved preferences and original
+                onboarding completion.
+            </p>
+
+            {store.state && nextLesson(store.state) && (
+                <>
+                    <button
+                        type="button"
+                        disabled={launchDisabled}
+                        onClick={() => onLaunch(() => {})}>
+                        Continue tutorial
+                    </button>
+
+                    <button
+                        type="button"
+                        onClick={() => store.skipAll()}>
+                        Skip remaining tutorial
+                    </button>
+                </>
+            )}
+
+            <label>
+                Replay
+                <select
+                    value={choice}
+                    onChange={(event) =>
+                        setChoice(event.target.value as Lesson | "all")
+                    }>
+                    <option value="all">Entire tutorial</option>
+                    {LESSONS.map((id) => (
+                        <option key={id} value={id}>
+                            {LABELS[id]}
+                        </option>
+                    ))}
+                </select>
+            </label>
+
+            <button
+                type="button"
+                disabled={launchDisabled}
+                onClick={() =>
+                    onLaunch(() =>
+                        store.startReplay(
+                            choice === "all" ? undefined : choice,
+                        ),
+                    )
+                }>
+                Start replay
+            </button>
+
+            {store.replaying && (
+                <button
+                    type="button"
+                    onClick={() => store.endReplay()}>
+                    Exit replay
+                </button>
+            )}
+        </div>
+    );
 }
