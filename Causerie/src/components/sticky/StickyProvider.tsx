@@ -1,3 +1,4 @@
+import { tutorialAction, tutorialBusy } from "../../services/tutorial";
 import {
     createContext,
     useContext,
@@ -48,7 +49,7 @@ export function StickyProvider({ userId, children }: Props) {
             })
             .finally(() => {
                 if (!cancelled) setLoading(false);
-        });
+            });
 
         return () => { cancelled = true; };
     }, [userId, revision]);
@@ -87,7 +88,10 @@ export function StickyProvider({ userId, children }: Props) {
     }
 
     async function saveSticky(sticky: Sticky) {
-        const saved = await dal.stickies.save(sticky);
+        const done = tutorialAction("sticky");
+        const release = tutorialBusy();
+        let saved: Sticky;
+        try { saved = await dal.stickies.save(sticky); done(); } finally { release(); }
 
         setStickies((previous) => [
             saved,

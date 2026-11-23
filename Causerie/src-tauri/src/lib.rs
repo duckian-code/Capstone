@@ -105,6 +105,11 @@ pub fn run() {
         description: "proficiency_assessments",
         sql: include_str!("../migrations/0017_proficiency_assessments.sql"),
         kind: MigrationKind::Up,
+    }, Migration {
+        version: 18,
+        description: "onboarding_progress",
+        sql: include_str!("../migrations/0018_onboarding.sql"),
+        kind: MigrationKind::Up,
     }];
 
     tauri::Builder::default()
@@ -161,6 +166,9 @@ pub fn run() {
             storage::persistence::save_sticky,
             storage::persistence::update_sticky_text,
             storage::persistence::delete_sticky,
+            storage::onboarding::activate_onboarding_profile,
+            storage::onboarding::get_onboarding_progress,
+            storage::onboarding::save_onboarding_progress,
             storage::persistence::get_app_state,
             storage::persistence::complete_onboarding,
             dictionary::lookup::lookup_dictionary,

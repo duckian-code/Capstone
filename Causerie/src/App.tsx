@@ -1,3 +1,4 @@
+import { TutorialProvider } from "./components/onboarding/TutorialProvider";
 import { useAppSession } from "./hooks/useAppSession";
 import { RecoveryCenter } from "./components/RecoveryCenter";
 import { OnboardingScreen } from "./components/onboarding/OnboardingScreen";
@@ -33,14 +34,14 @@ export default function App() {
             )}
 
             {state.kind === "ready" && (
-                <SettingsProvider
+                <TutorialProvider key={state.session.user.id} userId={state.session.user.id}><SettingsProvider
                     key={state.session.user.id}
                     user={state.session.user}
                     onUserChange={updateUser}
                     goalSettings={state.session.goalSettings}
                     onGoalsChange={updateGoals}>
                     <ConversationScreen userId={state.session.user.id} context={state.session.context}/>
-                </SettingsProvider>
+                </SettingsProvider></TutorialProvider>
             )}
 
 

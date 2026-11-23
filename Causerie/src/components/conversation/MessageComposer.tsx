@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
 import { useStoredText } from "../../hooks/useStoredText";
 import { SpellingTextarea } from "./SpellingTextarea";
-import { useInlineSpelling } from "./useInlineSpelling";
+import { useInlineSpelling } from "../../hooks/useInlineSpelling.ts";
 import { LANGUAGE_OPTIONS } from "../../data/models/onboarding-types";
 import { EnglishDictionaryButton } from "../dictionary/EnglishDictionaryButton";
 import { invoke } from "../../services/recovery";

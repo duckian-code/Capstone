@@ -1,3 +1,4 @@
+import { TutorialMenu } from "../onboarding/TutorialProvider";
 import type { ConversationSummary } from "../../data/models/conversation-types.ts";
 import { AccountPanel } from "../settings/SettingsMenus.tsx";
 
@@ -54,6 +55,7 @@ export function ThreadSidebar({threads, activeThreadId, disabled = false, onSele
             </div>
 
             <footer className="cw-account-footer">
+                <TutorialMenu />
                 <AccountPanel disabled={disabled} />
             </footer>
         </aside>

@@ -1,3 +1,4 @@
+import { tutorial } from "../services/tutorial";
 import {ConversationMessage, ConversationStatus, ConversationSummary} from "../data/models/conversation-types.ts";
 import {Message} from "../data/models/dao-types.ts";
 import {useEffect, useRef, useState} from "react";
@@ -110,6 +111,7 @@ export function useConversationController(userId: string) {
             return;
         }
 
+        tutorial.exchange(turn.assistant.id, turn.user.id);
         const waiter = voiceWaiter.current;
         voiceWaiter.current = null;
         waiter?.resolve(turn.assistant);
@@ -227,7 +229,7 @@ export function useConversationController(userId: string) {
             const exists = previous.some((item) => item.id === message.id);
 
             return exists ? previous.map((item) =>
-                item.id === message.id ? message : item)
+                    item.id === message.id ? message : item)
                 : [...previous, message];
         });
     }

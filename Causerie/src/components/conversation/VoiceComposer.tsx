@@ -1,3 +1,4 @@
+import { tutorialBusy } from "../../services/tutorial";
 import { useEffect, useRef, useState } from "react";
 import type { ConversationMessage } from "../../data/models/conversation-types";
 import { invoke } from "../../services/recovery";
@@ -54,6 +55,9 @@ const labels: Record<Stage, string> = {
 
 export function VoiceComposer(props: Props) {
     const [stage, setStage] = useState<Stage>("off");
+    useEffect(() => {
+        if (stage !== 'off' && stage !== 'ready') return tutorialBusy();
+    }, [stage]);
     const [error, setError] = useState<string | null>(null);
     const [transcript, setTranscript] = useState("");
 

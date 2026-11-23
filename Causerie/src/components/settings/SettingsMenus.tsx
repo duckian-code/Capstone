@@ -1,3 +1,4 @@
+import { tutorialAction } from "../../services/tutorial";
 import { ProfileAssessmentHistory } from "../assessment/AssessmentTrends";
 import { AssessmentHistory } from "../assessment/AssessmentResults";
 import { AssessmentDialog } from "../assessment/AssessmentDialog";
@@ -35,6 +36,7 @@ interface SettingsContextValue {
     user: User;
     openProfile: () => void;
     openSettings: () => void;
+    openSection: (section: "goals" | "reminders") => void;
     openAssessment: () => void;
     openAssessmentHistory: () => void;
     openAssessmentFromSettings: () => void;
@@ -56,6 +58,8 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
         null,
     );
 
+    const [sectionRequest, setSectionRequest] = useState<{ id: string; nonce: number } | null>(null);
+    useEffect(() => { if (menu) tutorialAction(menu === "profile" ? "profile" : "settings")(); }, [menu]);
     const [assessmentOpen, setAssessmentOpen] = useState(false);
     const [assessmentRevision, setAssessmentRevision] = useState(0);
     const [historyRequest, setHistoryRequest] = useState(0);
@@ -93,7 +97,8 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
             value={{
                 user,
                 openProfile: () => { setHistoryRequest(0); setMenu("profile"); },
-                openSettings: () => setMenu("settings"),
+                openSettings: () => { setSectionRequest(null); setMenu("settings"); },
+                openSection: id => { setSectionRequest({ id, nonce: Date.now() }); setMenu("settings"); },
                 openAssessment: () => setAssessmentOpen(true),
                 openAssessmentHistory: () => visitAssessmentHistory(false),
                 openAssessmentFromSettings: () => visitAssessmentHistory(true),
@@ -114,6 +119,7 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
 
             {menu === "settings" && (
                 <FullSettingsMenu
+                    sectionRequest={sectionRequest}
                     user={user}
                     onSaved={applyChanges}
                     onClose={() => setMenu(null)}
@@ -130,7 +136,7 @@ export function SettingsProvider({user, onUserChange, goalSettings, onGoalsChang
     );
 }
 
-function useSettings() {
+export function useSettings() {
     const context = useContext(SettingsContext);
 
     if (!context) {
@@ -348,7 +354,7 @@ interface EditorProps {
     onClose: () => void;
 }
 
-async function readAvatar(file: File): Promise<string> {
+export async function readAvatar(file: File): Promise<string> {
     const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
 
     if (!allowedTypes.includes(file.type)) {
@@ -582,6 +588,7 @@ function ProfileMenu({ user, onSaved, onClose, historyRequest, assessmentOpen }:
 }
 
 interface FullSettingsProps extends EditorProps {
+    sectionRequest?: { id: string; nonce: number } | null;
     goalSettings: GoalSettings;
     onGoalsSaved: (settings: GoalSettings) => void;
 }
@@ -593,7 +600,7 @@ const SETTINGS_NAVIGATION = [
     { id: "reset", label: "Reset application" },
 ];
 
-function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }: FullSettingsProps ) {
+function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose, sectionRequest }: FullSettingsProps ) {
     const { openAssessmentHistory, openAssessmentFromSettings, assessmentRevision } = useSettings();
     const [pendingHistoryNavigation, setPendingHistoryNavigation] = useState<"history" | "test" | null>(null);
     const [dictionaryOpen, setDictionaryOpen] = useState(false);
@@ -606,6 +613,11 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
     const [saved, setSaved] = useState(false);
     const [activeSection, setActiveSection] = useState(SETTINGS_SECTIONS[0]?.id ?? "");
     const settingsContentRef = useRef<HTMLFormElement>(null);
+    useEffect(() => {
+        if (!sectionRequest) return;
+        const frame = requestAnimationFrame(() => scrollToSection(sectionRequest.id));
+        return () => cancelAnimationFrame(frame);
+    }, [sectionRequest]);
 
     function scrollToSection(sectionId: string) {
         const container = settingsContentRef.current;
@@ -907,7 +919,9 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
             }
 
             if (goalsDirty) {
+                const done = tutorialAction("goals");
                 const savedGoals = await dal.goals.saveSelection(user.id, draft.goalSlots);
+                if (savedGoals.slots.some(Boolean)) done();
 
                 onGoalsSaved(savedGoals);
 
@@ -920,7 +934,9 @@ function FullSettingsMenu({ user, goalSettings, onGoalsSaved, onSaved, onClose }
             }
 
             if (remindersDirty && draft.reminders) {
+                const done = tutorialAction("reminders");
                 const result = await reminders.save(user.id, draft.reminders);
+                if (result.settings.enabled) done();
 
                 setSavedReminders(result.settings);
                 setRemindersDeliveryError(result.last_error);

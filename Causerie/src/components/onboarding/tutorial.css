@@ -1,0 +1,19 @@
+/* Reserve space for guidance so it never covers messages, selection tools, or drafts. */
+.tutorial-slot { display:contents; }
+.cw .cw-practice:has(.tutorial-callout) { grid-template-rows:minmax(80px,auto) minmax(0,1fr) auto clamp(170px,23dvh,220px); }
+.tutorial-slot:has(.tutorial-callout) { display:block; min-height:0; max-height:30dvh; overflow:auto; }
+@media(max-height:600px) { .tutorial-slot:has(.tutorial-callout) { max-height:22dvh; } }
+.tutorial-callout { flex:none; padding:1rem; margin:.4rem; border:1px solid var(--cw-accent,#b7ded7); border-radius:12px; background:var(--cw-panel,#22262d); color:var(--cw-text,#f2f3f5); box-shadow:0 4px 16px #0003; }
+.tutorial-callout header,.tutorial-actions { display:flex; flex-wrap:wrap; align-items:center; gap:.5rem; }
+.tutorial-callout p { margin-block:.5rem; }
+.tutorial-callout ul { list-style:none; padding:0; }
+.tutorial-callout li { display:grid; grid-template-columns:1fr auto auto; gap:.4rem; padding-block:.6rem; border-bottom:1px solid var(--cw-border,#525966); align-items:center; }
+.tutorial-eyebrow { font-size:.8rem; }
+.tutorial-menu { margin-block:.5rem; }
+.tutorial-menu label,.tutorial-menu button { display:block; margin-top:.5rem; max-width:100%; }
+.tutorial-menu select { width:100%; }
+.tutorial-status { position:fixed; bottom:1rem; left:50%; transform:translateX(-50%); max-width:min(90vw,40rem); padding:1rem; z-index:200; background:#22262d; color:#f2f3f5; border:1px solid #b7ded7; border-radius:10px; }
+.tutorial-picker { max-width:min(90vw,38rem); max-height:85vh; overflow:auto; padding:1.5rem; border-radius:12px; background:#22262d; color:#f2f3f5; border:1px solid #b7ded7; }
+.tutorial-picker input { display:block; width:100%; margin-block:.5rem; padding:.5rem; font:inherit; }
+.tutorial-picker button { margin:.4rem; padding:.5rem; }
+.tutorial-picker blockquote { max-height:12rem; overflow:auto; margin-inline:0; }

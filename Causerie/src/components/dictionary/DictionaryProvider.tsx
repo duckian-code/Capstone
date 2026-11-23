@@ -1,3 +1,4 @@
+import { tutorialAction, tutorialBusy } from "../../services/tutorial";
 import {
     createContext,
     useContext,
@@ -98,10 +99,13 @@ function DictionaryPanel({ word, language, onClose }: PanelProps) {
 
         setState({ status: "loading" });
 
+        const done = tutorialAction("translation");
+        const release = tutorialBusy();
         void dal.dictionary.lookup(word, language)
             .then((result) => {
                 if (!cancelled) {
                     setState({ status: "ready", result });
+                    if (result.meanings.length) done();
                 }
             })
             .catch((error: unknown) => {
@@ -111,7 +115,7 @@ function DictionaryPanel({ word, language, onClose }: PanelProps) {
                         message: parseCommandError(error).message,
                     });
                 }
-            });
+            }).finally(release);
 
         // ignore responses after closing or switching the selected word
         return () => {

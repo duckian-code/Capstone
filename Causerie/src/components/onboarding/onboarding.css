@@ -105,3 +105,8 @@
     color: #ffd0d0;
     overflow-wrap: anywhere;
 }
+
+.onboarding-level { display:block; margin-block: .75rem; }
+.onboarding-card table { width:100%; text-align:left; margin-block:1rem; }
+
+.onboarding-level input[type="radio"] { width:auto; display:inline; margin-right:.5rem; }

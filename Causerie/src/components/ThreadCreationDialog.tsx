@@ -1,3 +1,4 @@
+import { tutorialAction } from "../services/tutorial";
 import { useEffect, useRef, useState } from "react";
 import { dal } from "../data/dal";
 import type {
@@ -200,7 +201,7 @@ export function ThreadCreationDialog({creating, error, onCreate, onClearError, o
                         type="button"
                         disabled={creating}
                         aria-pressed={voice}
-                        onClick={() => changeVoice(true)}>
+                        onClick={() => { changeVoice(true); tutorialAction("voice")(); }}>
                         Voice conversation
                     </button>
                 </div>

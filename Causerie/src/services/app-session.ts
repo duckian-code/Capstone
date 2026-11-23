@@ -25,7 +25,7 @@ export async function loadAppSession(): Promise<AppSession | null> {
 
     const state = await dal.appState.get();
 
-    if (!state) {
+    if (!state || !state.onboarding_completed_at) {
         return null;
     }
 

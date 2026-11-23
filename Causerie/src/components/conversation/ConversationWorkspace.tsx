@@ -1,3 +1,4 @@
+import { TutorialPanel } from "../onboarding/TutorialPanel";
 import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 
@@ -253,6 +254,9 @@ export function ConversationWorkspace(props: Props) {
                     {props.mascot}
                 </MascotStage>
 
+                <div className="tutorial-slot">
+                    <TutorialPanel messages={props.messages} threadId={props.activeThread.id} voice={props.activeThread.conversationMode === "voice"} busy={props.sendDisabled || props.historyLoading || !!props.historyError} onCreateThread={props.onCreateThread} />
+                </div>
                 {props.activeThread.conversationMode === "voice" ? (
                     <VoiceComposer
                         key={`${props.userId}:${props.activeThread.id}:${props.context.language}`}

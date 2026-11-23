@@ -1,3 +1,4 @@
+import { tutorialAction, tutorialBusy } from "../../services/tutorial";
 import { useEffect, useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { invoke } from "@tauri-apps/api/core";
@@ -46,6 +47,8 @@ export function AskDotPanel({ threadId, language, disabled = false }: Props) {
         setError(null);
         setAnswer(null);
 
+        const done = tutorialAction("teacher");
+        const release = tutorialBusy();
         try {
             const result = await invoke<string>("ask_dot", {
                 threadId,
@@ -53,6 +56,7 @@ export function AskDotPanel({ threadId, language, disabled = false }: Props) {
                 question: text,
             });
 
+            done();
             if (mounted.current) {
                 setAnswer(result);
             }
@@ -61,6 +65,7 @@ export function AskDotPanel({ threadId, language, disabled = false }: Props) {
                 setError(parseCommandError(reason).message);
             }
         } finally {
+            release();
             inFlight.current = false;
 
             if (mounted.current) {

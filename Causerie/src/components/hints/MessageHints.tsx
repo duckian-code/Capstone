@@ -72,6 +72,7 @@ export function useMessageHints(messageId: string, messageText: string) {
 
     return {
         hints,
+        isOpen: panel !== null,
         openRequest: (selection: HintSelection) =>
             setPanel({ kind: "request", selection }),
         openSaved: (items: MessageHint[]) =>
@@ -112,12 +113,12 @@ export function useMessageHints(messageId: string, messageText: string) {
 }
 
 function HintDialog({
-    panel,
-    messageId,
-    messageText,
-    onClose,
-    onSaved,
-}: {
+                        panel,
+                        messageId,
+                        messageText,
+                        onClose,
+                        onSaved,
+                    }: {
     panel: Panel;
     messageId: string;
     messageText: string;

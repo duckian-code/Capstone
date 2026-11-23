@@ -47,4 +47,5 @@ export interface OnboardingInput {
     pronouns: string;
     targetLanguage: string;
     apiKey: string;
+    avatarDataUrl?: string | null;
 }

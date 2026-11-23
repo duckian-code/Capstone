@@ -3,7 +3,7 @@ import { callBackend } from "./base";
 export interface AppState {
     id: number;
     active_user_id: string;
-    onboarding_completed_at: string;
+    onboarding_completed_at: string | null;
 }
 
 export class AppStateDAO {

@@ -1,3 +1,4 @@
+import { tutorialAction, tutorialBusy } from "../../services/tutorial";
 import { invoke } from "../../services/recovery";
 import { getDatabase } from "../database";
 
@@ -42,18 +43,23 @@ export const hintDAO = {
     },
 
     async request(request: HintRequest): Promise<MessageHint> {
-        await getDatabase();
+        const done = tutorialAction("hint");
+        const release = tutorialBusy();
+        try {
+            await getDatabase();
 
-        const saved = await invoke<MessageHint>(
-            "request_message_hint",
-            { request },
-        );
+            const saved = await invoke<MessageHint>(
+                "request_message_hint",
+                { request },
+            );
 
-        // refresh every mounted display of this particular message
-        for (const listener of hintChangeListeners) {
-            listener(saved.message_id);
-        }
+            // refresh every mounted display of this particular message
+            for (const listener of hintChangeListeners) {
+                listener(saved.message_id);
+            }
 
-        return saved;
+            done();
+            return saved;
+        } finally { release(); }
     },
 }

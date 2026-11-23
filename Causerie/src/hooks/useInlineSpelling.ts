@@ -1,11 +1,12 @@
+import { tutorialAction, tutorialBusy } from "../services/tutorial.ts";
 import { useEffect, useRef, useState } from "react";
-import { checkSpelling } from "../../services/spelling";
-import type { SpellingIssue } from "../../services/spelling";
-import { parseCommandError } from "../../services/command-error";
+import { checkSpelling } from "../services/spelling.ts";
+import type { SpellingIssue } from "../services/spelling.ts";
+import { parseCommandError } from "../services/command-error.ts";
 import {
     PERSONAL_DICTIONARY_CHANGED, personalDictionary, personalKey,
-} from "../../services/personal-dictionary";
-import { remapIssues } from "./spelling-edits";
+} from "../services/personal-dictionary.ts";
+import { remapIssues } from "../components/conversation/spelling-edits.ts";
 
 interface Props {
     userId: string;
@@ -61,11 +62,14 @@ export function useInlineSpelling(props: Props) {
         const request = ++generation.current;
         setChecking(true);
         setError(null);
+        const done = tutorialAction("spelling");
+        const release = tutorialBusy();
         try {
             const result = await checkSpelling(
                 snapshot.userId, snapshot.text, snapshot.language,
             );
             if (!alive.current || request !== generation.current) return;
+            done();
             checked.current = true;
             publish(result.issues);
             setStatus(result.issues.length
@@ -76,6 +80,7 @@ export function useInlineSpelling(props: Props) {
                 setError(parseCommandError(reason).message);
             }
         } finally {
+            release();
             if (alive.current && request === generation.current) setChecking(false);
         }
     }
