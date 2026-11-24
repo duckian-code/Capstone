@@ -588,3 +588,46 @@
         scrollbar-gutter: stable;
     }
 }
+
+/* Let the teacher panel extend over the conversation. */
+.cw .cw-conversation-header {
+    position: relative;
+    z-index: 5;
+    overflow: visible;
+}
+
+/* Keep the closed control in the normal header layout. */
+.cw .cw-ask-dot {
+    position: relative;
+    background: var(--color-surface);
+}
+
+/* Expanded content floats beneath the control. */
+.cw .cw-ask-dot > .cw-ask-dot-body {
+    position: absolute;
+    top: calc(100% + .4rem);
+    inset-inline: 0;
+    z-index: 1;
+
+    box-sizing: border-box;
+    min-width: 0;
+    max-height: min(38dvh, 28rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: .75rem;
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+    box-shadow: 0 12px 32px var(--color-shadow);
+}
+
+/* Ensure the floating content stays hidden when collapsed. */
+.cw .cw-ask-dot:not([open]) > .cw-ask-dot-body {
+    display: none;
+}
+
+.cw .cw-ask-dot[open] > summary {
+    color: var(--color-accent-primary);
+}
