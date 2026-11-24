@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub const LEVELS: [&str; 5] = ["A1", "A2", "B1", "B2", "C1"];
+pub const TOO_DIFFICULT_ANSWER: &str = "__too_difficult__";
 pub type Answers = BTreeMap<String, String>;
 pub type Seen = BTreeMap<(String, String), String>; // bank/question -> last shown UTC
 
@@ -54,7 +55,7 @@ pub fn config() -> Config {
 }
 pub fn policy() -> Policy {
     Policy {
-        version: "fr-wave1-equal-category-ranks-followups-v2".into(),
+        version: "fr-wave1-equal-category-ranks-followups-difficulty-skip-v3".into(),
         included_skills: ["reading", "vocabulary", "grammar"]
             .map(String::from)
             .to_vec(),
@@ -322,7 +323,11 @@ pub fn validate(banks: &[Bank], cfg: &Config, policy: &Policy) -> Result<(), Str
                 || !ids.contains(&q.correct_option_id)
                 || q.options
                 .iter()
-                .any(|o| o.id.is_empty() || o.text.trim().is_empty())
+                .any(|o| {
+                    o.id.is_empty()
+                        || o.id == TOO_DIFFICULT_ANSWER
+                        || o.text.trim().is_empty()
+                })
             {
                 return Err(format!("Invalid question: {}", q.id));
             }
@@ -418,6 +423,12 @@ impl Attempt {
                     group.len(),
                     &self.config,
                 );
+            }
+            if group.iter().any(|item| {
+                item.submitted_option_id.as_deref() == Some(TOO_DIFFICULT_ANSWER)
+            }) {
+                let current = rank(&group[0].administered_difficulty, &self.config);
+                return self.config.levels[current.saturating_sub(1)].clone();
             }
         }
         self.config.starting_level.clone()
@@ -547,13 +558,32 @@ impl Attempt {
     pub fn submit(&mut self, index: usize, answers: &Answers, now: String) -> Result<(), String> {
         let block = self.blocks.get_mut(index).ok_or("Invalid block.")?;
         if answers.len() != block.items.len()
-            || block.items.iter().any(|i| {
-            !answers
-                .get(&i.question.id)
-                .is_some_and(|id| i.displayed_option_order.contains(id))
+            || block.items.iter().any(|item| {
+            !answers.get(&item.question.id).is_some_and(|id| {
+                id == TOO_DIFFICULT_ANSWER
+                    || item.displayed_option_order.contains(id)
+            })
         })
         {
-            return Err("Answer every question with a valid option before submitting.".into());
+            return Err(
+                "Answer every question with a valid option or category skip before submitting."
+                    .into(),
+            );
+        }
+
+        // A category skip must cover every question in that category, including questions that previously had ordinary answers.
+        for item in &block.items {
+            if answers[&item.question.id] == TOO_DIFFICULT_ANSWER
+                && block.items.iter().any(|other| {
+                other.skill == item.skill
+                    && answers[&other.question.id] != TOO_DIFFICULT_ANSWER
+            })
+            {
+                return Err(
+                    "A difficulty skip must include every question in the category."
+                        .into(),
+                );
+            }
         }
         if block.submitted_at.is_some() {
             return if block
@@ -710,7 +740,8 @@ pub fn public_view(a: &Attempt) -> serde_json::Value {
         "status": a.status, "config": a.config, "scoringPolicy": a.scoring_policy,
         "answeredQuestionCount": a.blocks.iter().filter(|b| b.submitted_at.is_some()).map(|b| b.items.len()).sum::<usize>(),
         "block": { "index": b.index, "phase": b.phase, "items": b.items.iter().map(|i| serde_json::json!({
-            "id": i.question.id, "skill": i.skill, "prompt": i.question.prompt, "passage": i.passage,
+            "id": i.question.id, "skill": i.skill, "administeredDifficulty": i.administered_difficulty,
+            "prompt": i.question.prompt, "passage": i.passage,
             "options": i.displayed_option_order.iter().map(|id| i.question.options.iter().find(|o| &o.id == id).unwrap()).collect::<Vec<_>>()
         })).collect::<Vec<_>>() } })
 }

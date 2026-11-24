@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { assessments, skillName, type AssessmentRecord, type Passage } from "../../services/assessment";
+import {
+    assessments,
+    skillName,
+    type AssessmentRecord,
+    type Passage,
+    TOO_DIFFICULT_ANSWER
+} from "../../services/assessment";
 import { parseCommandError } from "../../services/command-error";
 import "./assessment.css";
 const percent = (n: number) => new Intl.NumberFormat(undefined, { style: "percent", maximumFractionDigits: 1 }).format(n);
@@ -56,6 +62,11 @@ export function AssessmentResults({ record, compact = false }: { record: Assessm
                     <summary>{index + 1}. {skillName(item.skill)} · {item.administeredDifficulty} · {item.correct ? "Correct" : "Incorrect"}</summary>
                     <PassageText passage={item.passage} />
                     <p className="assessment-question" lang={record.language}>{item.question.prompt}</p>
+                    {item.submittedOptionId === TOO_DIFFICULT_ANSWER && (
+                        <p>
+                            Marked too difficult — category skipped and counted as incorrect.
+                        </p>
+                    )}
                     <ol>{item.displayedOptionOrder.map(id => <li key={id} lang={record.language}>
                         {item.question.options.find(o => o.id === id)?.text}
                         {id === item.submittedOptionId && <strong> — Your answer</strong>}

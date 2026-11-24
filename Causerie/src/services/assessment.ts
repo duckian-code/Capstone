@@ -47,10 +47,21 @@ export interface ActiveAssessment {
     id: string; userId: string; language: string; status: "in_progress";
     config: AssessmentConfig; scoringPolicy: ScoringPolicy;
     answeredQuestionCount: number;
-    block: { index: number; phase: "main" | "follow_up"; items: { id: string; skill: string; prompt: string; passage: Passage | null; options: OptionItem[] }[] };
+    block: {
+        index: number;
+        phase: "main" | "follow_up";
+        items: {
+            id: string;
+            skill: string;
+            administeredDifficulty: AssessmentLevel;
+            prompt: string;
+            passage: Passage | null;
+            options: OptionItem[];
+        }[];
+    };
 }
 export type AssessmentResponse = ActiveAssessment | AssessmentRecord;
-export const skillName = (skill: string) => ({ reading: "Reading comprehension", vocabulary: "Vocabulary", grammar: "Grammar" }[skill] ?? skill);
+export const skillName = (skill: string) => ({ reading: "Reading Comprehension", vocabulary: "Vocabulary", grammar: "Grammar" }[skill] ?? skill);
 export const assessments = {
     info: () => callBackend<{ language: string; config: AssessmentConfig; scoringPolicy: ScoringPolicy }>("french_assessment_info"),
     start: (userId: string, attemptId: string) => callBackend<AssessmentResponse>("start_french_assessment", { userId, attemptId }),
@@ -59,3 +70,5 @@ export const assessments = {
     cancel: (userId: string, attemptId: string) => callBackend<void>("cancel_assessment", { userId, attemptId }),
     list: (userId: string, language = "fr") => callBackend<AssessmentRecord[]>("list_assessments", { userId, language }),
 };
+
+export const TOO_DIFFICULT_ANSWER = "__too_difficult__";

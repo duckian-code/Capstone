@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { assessments, skillName, type AssessmentResponse } from "../../services/assessment";
+import {assessments, skillName, type AssessmentResponse, TOO_DIFFICULT_ANSWER} from "../../services/assessment";
 import { parseCommandError } from "../../services/command-error";
 import { AssessmentResults, PassageText } from "./AssessmentResults";
 
@@ -31,6 +31,8 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
     // Retain the exact request after a transport/save error, even if the commit succeeded.
     const frozenSubmission = useRef<{ blockIndex: number; answers: Record<string, string> } | null>(null);
     const [retryingSubmission, setRetryingSubmission] = useState(false);
+    const [pendingSkipSkill, setPendingSkipSkill] = useState<string | null>(null);
+
     dirtyRef.current = started && view?.status !== "completed";
 
     useEffect(() => {
@@ -86,6 +88,7 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             setAnswers({});
             setStruckOptions({});
             setCurrentQuestionIndex(0);
+            setPendingSkipSkill(null);
             if (response.status === "completed") { dirtyRef.current = false; onCompleted(); }
             dialog.current
                 ?.querySelector<HTMLElement>(".assessment-content")
@@ -99,7 +102,13 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
     }
 
     function toggleOptionStrike(questionId: string, optionId: string) {
-        if (busyRef.current || retryingSubmission || confirmExit) return;
+        if (
+            busyRef.current ||
+            retryingSubmission ||
+            confirmExit ||
+            pendingSkipSkill !== null ||
+            answers[questionId] === TOO_DIFFICULT_ANSWER
+        ) return;
 
         const isStruck = struckOptions[questionId]?.includes(optionId) ?? false;
 
@@ -160,19 +169,74 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
         : 0;
 
     const totalAnswered = (active?.answeredQuestionCount ?? 0) + answered;
-    const isLastQuestion = currentQuestionIndex === questionCount - 1;
-    const navigationLocked = busy || !!confirmExit;
-    const answersLocked = navigationLocked || retryingSubmission;
+    const currentQuestionSkipped = currentQuestion
+        ? answers[currentQuestion.id] === TOO_DIFFICULT_ANSWER
+        : false;
+
+    const availableQuestionIndices = active
+        ? active.block.items.flatMap((item, index) =>
+            answers[item.id] === TOO_DIFFICULT_ANSWER ? [] : [index]
+        )
+        : [];
+
+    const previousQuestionIndex = [...availableQuestionIndices]
+        .reverse()
+        .find(index => index < currentQuestionIndex) ?? -1;
+
+    const nextQuestionIndex = availableQuestionIndices
+        .find(index => index > currentQuestionIndex) ?? -1;
+
+    const isLastQuestion = nextQuestionIndex === -1;
+    const navigationLocked = busy || !!confirmExit || pendingSkipSkill !== null;
+    const answersLocked =
+        navigationLocked || retryingSubmission || currentQuestionSkipped;
 
     const firstUnansweredIndex = active
         ? active.block.items.findIndex(item => !answers[item.id])
         : -1;
 
     function navigateToQuestion(index: number) {
-        if (busyRef.current || confirmExit) return;
+        if (busyRef.current || confirmExit || pendingSkipSkill !== null) return;
         if (index < 0 || index >= questionCount) return;
         setCurrentQuestionIndex(index);
     }
+
+    function confirmDifficultySkip() {
+        if (
+            !active ||
+            !pendingSkipSkill ||
+            busyRef.current ||
+            retryingSubmission ||
+            confirmExit
+        ) return;
+
+        const nextAnswers = { ...answers };
+
+        for (const item of active.block.items) {
+            if (item.skill === pendingSkipSkill) {
+                nextAnswers[item.id] = TOO_DIFFICULT_ANSWER;
+            }
+        }
+
+        const remainingIndices = active.block.items.flatMap((item, index) =>
+            nextAnswers[item.id] === TOO_DIFFICULT_ANSWER ? [] : [index]
+        );
+
+        // Advance to the next available category. If this was the final category, return to an unanswered question elsewhere in the block
+        const destination =
+            remainingIndices.find(index => index > currentQuestionIndex)
+            ?? remainingIndices.find(index => !nextAnswers[active.block.items[index].id])
+            ?? remainingIndices[remainingIndices.length - 1]
+            ?? questionCount - 1;
+
+        setAnswers(nextAnswers);
+        setPendingSkipSkill(null);
+        setCurrentQuestionIndex(destination);
+    }
+
+    useEffect(() => {
+        if (confirmExit) setPendingSkipSkill(null);
+    }, [confirmExit]);
 
     useEffect(() => {
         if (!active) return;
@@ -249,6 +313,7 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                         if (
                             busyRef.current ||
                             confirmExit ||
+                            pendingSkipSkill !== null ||
                             !isLastQuestion ||
                             answered !== questionCount
                         ) return;
@@ -268,15 +333,32 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                             submission.answers,
                         ));
                     }}>
+
+                    <div className="assessment-question-toolbar">
+                        <span>
+                            Question {currentQuestionIndex + 1} / {questionCount}
+                        </span>
+
+                        <button
+                            type="button"
+                            className="assessment-too-difficult"
+                            disabled={answersLocked}
+                            onClick={() => setPendingSkipSkill(currentQuestion.skill)}>
+                            Too difficult
+                        </button>
+                    </div>
+
                     <fieldset
                         className="assessment-item"
                         key={currentQuestion.id}
                         disabled={answersLocked}>
-                        <legend>
-                            Question {currentQuestionIndex + 1} of {questionCount}
-                            {" · "}
-                            {skillName(currentQuestion.skill)}
-                        </legend>
+                        <legend>{skillName(currentQuestion.skill)}</legend>
+                        {currentQuestionSkipped && (
+                            <p role="status">
+                                This category was skipped. Its questions count as incorrect.
+                                You can submit the block when all remaining questions are answered.
+                            </p>
+                        )}
 
                         <p className="settings-help">
                             Click × to strike out an option. Click it again to restore the option.
@@ -346,8 +428,8 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                     <div className="assessment-question-navigation">
                         <button
                             type="button"
-                            disabled={navigationLocked || currentQuestionIndex === 0}
-                            onClick={() => navigateToQuestion(currentQuestionIndex - 1)}>
+                            disabled={navigationLocked || previousQuestionIndex === -1}
+                            onClick={() => navigateToQuestion(previousQuestionIndex)}>
                             Previous
                         </button>
 
@@ -360,7 +442,7 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                                 key="next"
                                 type="button"
                                 disabled={navigationLocked}
-                                onClick={() => navigateToQuestion(currentQuestionIndex + 1)}>
+                                onClick={() => navigateToQuestion(nextQuestionIndex)}>
                                 Next
                             </button>
                         ) : (
@@ -400,5 +482,111 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             {view?.status === "completed" && <><p role="status">Assessment saved.</p><AssessmentResults record={view} />
                 <button type="button" onClick={onClose}>Done</button></>}
         </div>
+        {pendingSkipSkill !== null && (
+            <DifficultySkipDialog
+                category={skillName(pendingSkipSkill)}
+                isAtMinimumLevel={
+                    active?.block.items.find(
+                        item => item.skill === pendingSkipSkill
+                    )?.administeredDifficulty === "A1"
+                }
+                onCancel={() => setPendingSkipSkill(null)}
+                onConfirm={confirmDifficultySkip}
+            />
+        )}
     </dialog>, document.body);
+}
+
+function DifficultySkipDialog({
+                                  category,
+                                  isAtMinimumLevel,
+                                  onCancel,
+                                  onConfirm,
+                              }: {
+    category: string;
+    isAtMinimumLevel: boolean;
+    onCancel: () => void;
+    onConfirm: () => void;
+}) {
+    const modal = useRef<HTMLDialogElement>(null);
+
+    useEffect(() => {
+        const element = modal.current!;
+        element.showModal();
+
+        return () => element.close();
+    }, []);
+
+    return createPortal(
+        <dialog
+            ref={modal}
+            className="assessment-difficulty-dialog"
+            aria-labelledby="difficulty-skip-title"
+            aria-describedby={[
+                "difficulty-skip-description",
+                isAtMinimumLevel ? "difficulty-skip-minimum" : "",
+                "difficulty-skip-important",
+            ].filter(Boolean).join(" ")}
+            onCancel={event => {
+                event.preventDefault();
+                event.stopPropagation();
+                onCancel();
+            }}>
+            <h3 id="difficulty-skip-title">
+                Skip{" "}
+                <span className="assessment-category-highlight">
+                    {category}
+                </span>
+                ?
+            </h3>
+
+            <div id="difficulty-skip-description">
+                <p>
+                    All{" "}
+                    <strong className="assessment-category-highlight">
+                        {category}
+                    </strong>{" "}
+                    questions in this block will be marked incorrect,
+                    including any you already answered.
+                </p>
+
+                {!isAtMinimumLevel && (
+                    <p>
+                        This category’s next difficulty will drop by one level.
+                    </p>
+                )}
+            </div>
+
+            {isAtMinimumLevel && (
+                <p
+                    id="difficulty-skip-minimum"
+                    className="assessment-minimum-notice">
+                    <strong>Already at A1:</strong> this category is at the
+                    lowest difficulty and will remain at A1.
+                </p>
+            )}
+
+            <div
+                id="difficulty-skip-important"
+                className="assessment-skip-important">
+                <strong>Important</strong>
+                <p>You cannot undo this for the current block.</p>
+            </div>
+
+            <p>Are you sure you want to continue?</p>
+
+            <div className="assessment-difficulty-actions">
+                <button type="button" autoFocus onClick={onCancel}>
+                    Keep answering
+                </button>
+                <button
+                    type="button"
+                    className="assessment-too-difficult"
+                    onClick={onConfirm}>
+                    Yes, skip category
+                </button>
+            </div>
+        </dialog>,
+        document.body,
+    );
 }

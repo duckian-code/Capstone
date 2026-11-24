@@ -747,3 +747,86 @@ fn exhaustion_completion_is_saved_without_issuing_an_empty_block() {
         assert_eq!(n, 1);
     });
 }
+
+#[test]
+fn difficulty_skip_scores_category_incorrect_and_drops_one_level() {
+    let mut a = attempt();
+
+    // Verify the explicit skip does not depend on the ordinary threshold.
+    a.config.decrease_below = 0.0;
+
+    let mut answers = answers_for(&a, [4, 4, 4]);
+    for item in &a.blocks[0].items {
+        if item.skill == "reading" {
+            answers.insert(
+                item.question.id.clone(),
+                TOO_DIFFICULT_ANSWER.into(),
+            );
+        }
+    }
+
+    a.submit(0, &answers, now()).unwrap();
+
+    assert!(a.blocks[0].items.iter()
+        .filter(|item| item.skill == "reading")
+        .all(|item| item.correct == Some(false)));
+
+    assert!(a.blocks[0].items.iter()
+        .filter(|item| item.skill != "reading")
+        .all(|item| item.correct == Some(true)));
+
+    // Identical retries also work after serialization.
+    let json = serde_json::to_string(&a).unwrap();
+    let mut restored: Attempt = serde_json::from_str(&json).unwrap();
+    restored.submit(0, &answers, now()).unwrap();
+
+    restored.next_block(&banks().unwrap(), &Seen::new(), now()).unwrap();
+
+    assert!(restored.blocks[1].items.iter()
+        .filter(|item| item.skill == "reading")
+        .all(|item| item.administered_difficulty == "A2"));
+
+    assert!(restored.blocks[1].items.iter()
+        .filter(|item| item.skill != "reading")
+        .all(|item| item.administered_difficulty == "B2"));
+}
+
+#[test]
+fn difficulty_skip_rejects_partial_category_without_mutation() {
+    let mut a = attempt();
+    let mut answers = answers_for(&a, [4, 4, 4]);
+    let question_id = a.blocks[0].items[0].question.id.clone();
+
+    answers.insert(question_id, TOO_DIFFICULT_ANSWER.into());
+
+    let before = serde_json::to_value(&a).unwrap();
+    assert!(a.submit(0, &answers, now()).is_err());
+    assert_eq!(before, serde_json::to_value(&a).unwrap());
+}
+
+#[test]
+fn difficulty_skip_stops_at_a1() {
+    let mut a = attempt();
+    let bank_data = banks().unwrap();
+
+    for index in 0..3 {
+        let answers: Answers = a.blocks[index].items.iter()
+            .map(|item| (
+                item.question.id.clone(),
+                TOO_DIFFICULT_ANSWER.into(),
+            ))
+            .collect();
+
+        a.submit(index, &answers, now()).unwrap();
+
+        if index < 2 {
+            a.next_block(&bank_data, &Seen::new(), now()).unwrap();
+        }
+    }
+
+    assert!(a.blocks[1].items.iter()
+        .all(|item| item.administered_difficulty == "A2"));
+    assert!(a.blocks[2].items.iter()
+        .all(|item| item.administered_difficulty == "A1"));
+    assert_eq!(a.status, "completed");
+}
