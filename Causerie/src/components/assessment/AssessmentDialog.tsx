@@ -280,7 +280,7 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
     return createPortal(<dialog ref={dialog} className="settings-modal settings-modal-wide assessment-dialog"
                                 aria-labelledby="assessment-title" aria-busy={busy}
                                 onCancel={event => { event.preventDefault(); requestClose(); }}>
-        <header className="settings-modal-header"><h2 id="assessment-title">French proficiency test</h2>
+        <header className="settings-modal-header"><h2 id="assessment-title">French Proficiency Test</h2>
             <button type="button" disabled={busy} onClick={requestClose} aria-label="Close French proficiency test">×</button></header>
         <div className="assessment-content">
             {confirmExit && <div className="settings-close-confirmation" role="alert">
@@ -290,23 +290,150 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             </div>}
             {error && <p className="settings-error" role="alert">{error}</p>}
             {!view && !info && <p role="status">{error ? <button type="button" onClick={() => setInfoRetry(n => n+1)}>Retry assessment setup</button> : "Checking assessment configuration and question banks…"}</p>}
-            {!view && info && <>
-                <p>Start with {info.config.blocks * info.config.questionsPerSkill * info.scoringPolicy.includedSkills.length} questions in {info.config.blocks} blocks:
-                    {" "}{info.config.questionsPerSkill} questions per skill per block ({info.scoringPolicy.includedSkills.map(skillName).join(", ")}).
-                    Each skill starts at {info.config.startingLevel} and adapts independently within {info.config.levels[0]}–{info.config.levels[info.config.levels.length-1]}.</p>
-                {info.config.followUp && <p>If a skill routes to a lower level after the final main block and still has no placement,
-                    you will receive {info.config.questionsPerSkill} follow-up questions for that skill per round.
-                    Follow-ups continue until that skill has a placement or no full set of unused questions remains.
-                    Established skills receive no extra questions. If questions run out, the result is saved as “Placement not established”.</p>}
-                <p>You can change answers within a block. Submitted blocks are locked. Answers and explanations are shown after completion.</p>
-                <p><strong>Unfinished tests are discarded if you cancel, close, or restart the app.</strong> Completed results are saved to this profile’s assessment history.</p>
-                <p>These draft questions provide an estimate based on the assessed skills. Your conversation proficiency setting will not change.</p>
-                <button type="button" disabled={busy || !guardReady || !!confirmExit} onClick={() => {
-                    setStarted(true); dirtyRef.current = true;
-                    void run(() => assessments.start(userId, id));
-                }}>{busy ? "Starting…" : started ? "Retry starting assessment" : "Begin assessment"}</button>
-            </>}
-            {active && currentQuestion && <>
+            {!view && info && (
+                <section
+                    className="assessment-intro"
+                    aria-labelledby="assessment-intro-title">
+                    <div className="assessment-intro-hero">
+                        <h3 id="assessment-intro-title">
+                            Find Your Proficiency
+                        </h3>
+
+                        <p className="assessment-intro-description">
+                            Explore your strengths and find room to grow, one question
+                            at a time. The difficulty adapts as you go.
+                        </p>
+                    </div>
+
+                    <dl className="assessment-intro-facts">
+                        <div>
+                            <dt>Main blocks</dt>
+                            <dd>{info.config.blocks}</dd>
+                        </div>
+                        <div>
+                            <dt>Questions per block</dt>
+                            <dd>
+                                {info.config.questionsPerSkill
+                                    * info.scoringPolicy.includedSkills.length}
+                            </dd>
+                        </div>
+                        <div>
+                            <dt>Levels explored</dt>
+                            <dd>
+                                {info.config.levels[0]}–{info.config.levels.at(-1)}
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <section
+                        className="assessment-intro-skills"
+                        aria-labelledby="assessment-intro-skills-title">
+                        <h4 id="assessment-intro-skills-title">What you’ll explore</h4>
+
+                        <ul>
+                            {info.scoringPolicy.includedSkills.map(skill => (
+                                <li key={skill}>{skillName(skill)}</li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    <section
+                        className="assessment-intro-guide"
+                        aria-labelledby="assessment-intro-guide-title">
+                        <h4 id="assessment-intro-guide-title">Make yourself comfortable</h4>
+
+                        <ol>
+                            <li>
+                                <strong>Take it one question at a time.</strong>
+                                <p>
+                                    Move back and forth to review your answers before
+                                    submitting each block.
+                                </p>
+                            </li>
+                            <li>
+                                <strong>Give yourself space to think.</strong>
+                                <p>
+                                    Strike out options to narrow your choices. If a
+                                    category feels too difficult, you can choose to skip it.
+                                </p>
+                            </li>
+                            <li>
+                                <strong>See the bigger picture.</strong>
+                                <p>
+                                    Finish to see your estimated level, answers, and
+                                    explanations in your assessment history.
+                                </p>
+                            </li>
+                        </ol>
+                    </section>
+
+                    <details className="assessment-intro-details">
+                        <summary>A few more things to know</summary>
+
+                        <div>
+                            <p>
+                                Each category begins at {info.config.startingLevel} and
+                                adapts independently. Submitted blocks cannot be changed.
+                            </p>
+
+                            {info.config.followUp && (
+                                <p>
+                                    You may receive additional questions after the main
+                                    blocks if a category needs more evidence for placement.
+                                    If there aren’t enough questions left, that category
+                                    will be marked “Placement not established”.
+                                </p>
+                            )}
+
+                            <p>
+                                Confirming “Too difficult” marks every question in that
+                                category for the current block as incorrect, including
+                                earlier answers. Its next difficulty drops by one level,
+                                with A1 as the minimum.
+                            </p>
+
+                            <p>
+                                This test uses draft questions and gives an estimate,
+                                not a certified CEFR result. Your conversation proficiency
+                                setting will stay the same.
+                            </p>
+                        </div>
+                    </details>
+
+                    <div className="assessment-intro-footer">
+                        <div className="assessment-intro-session-note">
+                            <strong>Plan to finish in one sitting.</strong>
+                            <p>
+                                Unfinished tests aren’t saved if you close the test or
+                                restart the app.
+                            </p>
+                        </div>
+
+                        <div className="assessment-intro-actions">
+                            <button
+                                type="button"
+                                className="assessment-start"
+                                disabled={busy || !guardReady || !!confirmExit}
+                                onClick={() => {
+                                    setStarted(true);
+                                    dirtyRef.current = true;
+                                    void run(() => assessments.start(userId, id));
+                                }}>
+                                {busy
+                                    ? "Starting…"
+                                    : started
+                                        ? "Retry starting test"
+                                        : "Begin assessment"}
+                                {!busy && <span aria-hidden="true"> →</span>}
+                            </button>
+
+                            <p>Completed results are saved to your profile.</p>
+                        </div>
+                    </div>
+                </section>
+            )}
+            {active && currentQuestion && (
+                <div className="assessment-test">
                 <div className="assessment-round-header">
                     <div>
                         <p className="assessment-block-label">
@@ -412,8 +539,12 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                             return (
                                 <div
                                     key={option.id}
-                                    className={`assessment-option-row${isStruck ? " is-struck" : ""}`}>
-                                    <button
+                                    className={[
+                                        "assessment-option-row",
+                                        isStruck ? "is-struck" : "",
+                                        answers[currentQuestion.id] === option.id ? "is-selected" : "",
+                                    ].filter(Boolean).join(" ")}>
+                                <button
                                         type="button"
                                         className="assessment-option-strike"
                                         aria-label={`Strike out option: ${option.text}`}
@@ -508,7 +639,8 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
                         </p>
                     )}
                 </form>
-            </>}
+                </div>
+            )}
             {view?.status === "completed" && <><p role="status">Assessment saved.</p><AssessmentResults record={view} />
                 <button type="button" onClick={onClose}>Done</button></>}
         </div>
