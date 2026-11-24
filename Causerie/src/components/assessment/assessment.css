@@ -1024,3 +1024,210 @@
         padding-inline: .75rem;
     }
 }
+
+/* Latest proficiency summary */
+.settings-modal .profile-proficiency {
+    width: 100%;
+    min-width: 0;
+    color: var(--color-text-primary);
+    line-height: 1.6;
+}
+
+.settings-modal .profile-proficiency-card {
+    padding: 1.75rem 1.25rem 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    background: var(--color-surface-raised);
+    text-align: center;
+}
+
+.settings-modal .profile-proficiency-eyebrow {
+    margin: 0 0 1rem;
+    color: var(--color-text-secondary);
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+.settings-modal .profile-proficiency-overall {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .35rem;
+    margin: 0;
+}
+
+.settings-modal .profile-proficiency-overall dt {
+    color: var(--color-text-secondary);
+    font-size: .95rem;
+}
+
+.settings-modal .profile-proficiency-overall dd {
+    margin: 0;
+    color: var(--color-accent-primary);
+    font-size: clamp(3rem, 7vw, 4.25rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -.035em;
+}
+
+/* Three equal category columns */
+.settings-modal .profile-proficiency-skills {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 1.5rem 0 0;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.settings-modal .profile-proficiency-skills > div {
+    display: grid;
+    grid-template-rows: minmax(3rem, auto) auto;
+    align-content: start;
+    gap: .5rem;
+    min-width: 0;
+    padding-inline: .75rem;
+}
+
+.settings-modal .profile-proficiency-skills > div + div {
+    border-left: 1px solid var(--color-border);
+}
+
+.settings-modal .profile-proficiency-skills dt {
+    align-self: center;
+    color: var(--color-text-secondary);
+    font-size: .85rem;
+    font-weight: 600;
+    text-wrap: balance;
+}
+
+.settings-modal .profile-proficiency-skills dd {
+    margin: 0;
+    color: var(--color-accent-warm);
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.settings-modal .profile-proficiency-overall dd.profile-proficiency-unavailable {
+    margin-top: .5rem;
+    color: var(--color-text-secondary);
+    font-size: 1.5rem;
+    letter-spacing: normal;
+}
+
+.settings-modal .profile-proficiency-skills dd.profile-proficiency-unavailable {
+    color: var(--color-text-secondary);
+    font-size: .85rem;
+    font-weight: 600;
+}
+
+.settings-modal .profile-proficiency-date {
+    margin: 1rem 0 .25rem;
+    color: var(--color-text-secondary);
+    font-size: .85rem;
+}
+
+.settings-modal .profile-proficiency-caption {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: .8rem;
+}
+
+/* Assessment action */
+.settings-modal .profile-proficiency-actions {
+    display: flex;
+    justify-content: center;
+    margin-block: 1.25rem;
+}
+
+.settings-modal .profile-proficiency button.profile-proficiency-start {
+    min-height: 2.85rem;
+    padding: .7rem 1.25rem;
+    border: 1px solid var(--color-accent-primary);
+    border-radius: .65rem;
+    background: var(--color-accent-primary);
+    color: var(--color-accent-primary-text);
+    font-weight: 800;
+}
+
+.settings-modal .profile-proficiency button.profile-proficiency-start:hover:not(:disabled),
+.settings-modal .profile-proficiency button.profile-proficiency-start:active:not(:disabled) {
+    border-color: var(--color-accent-primary);
+    background: var(--color-accent-primary);
+    color: var(--color-accent-primary-text);
+    box-shadow: inset 0 0 0 2px var(--color-accent-primary-text);
+}
+
+/* Advanced information stays collapsed until requested. */
+.settings-modal .profile-proficiency-advanced {
+    border: 1px solid var(--color-border);
+    border-radius: .75rem;
+    background: var(--color-sidebar);
+}
+
+.settings-modal .profile-proficiency-advanced > summary {
+    padding: 1rem 1.25rem;
+    color: var(--color-accent-primary);
+    font-size: .95rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.settings-modal .profile-proficiency-advanced[open] > summary {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.settings-modal .profile-proficiency-advanced-content {
+    min-width: 0;
+    padding: 1rem;
+}
+
+.settings-modal .profile-proficiency-advanced-intro {
+    margin: 0 0 1rem;
+    color: var(--color-text-secondary);
+    font-size: .875rem;
+}
+
+.settings-modal .profile-proficiency-message,
+.settings-modal .profile-proficiency-empty {
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background: var(--color-surface-raised);
+    text-align: center;
+}
+
+.settings-modal .profile-proficiency-empty h4 {
+    margin: 0;
+    color: var(--color-accent-primary);
+    font-size: 1.15rem;
+}
+
+.settings-modal .profile-proficiency-empty p {
+    max-width: 45ch;
+    margin: .75rem auto 1.25rem;
+    color: var(--color-text-secondary);
+}
+
+.settings-modal .profile-proficiency :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+}
+
+@media (max-width: 520px) {
+    .settings-modal .profile-proficiency-card {
+        padding: 1.25rem .65rem 1rem;
+    }
+
+    .settings-modal .profile-proficiency-skills > div {
+        padding-inline: .35rem;
+    }
+
+    .settings-modal .profile-proficiency-skills dt {
+        font-size: .75rem;
+    }
+
+    .settings-modal .profile-proficiency-advanced-content {
+        padding: .75rem;
+    }
+}

@@ -147,25 +147,160 @@ export function AssessmentTimeline({ records }: { records: AssessmentRecord[] })
     </div>;
 }
 
-export function ProfileAssessmentHistory({ userId, revision, onStart }: { userId: string; revision: number; onStart: () => void }) {
+export function ProfileAssessmentHistory({ userId, revision, onStart }: {
+    userId: string;
+    revision: number;
+    onStart: () => void;
+}) {
     const [records, setRecords] = useState<AssessmentRecord[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [retry, setRetry] = useState(0);
+
     useEffect(() => {
-        let alive = true; setRecords(null); setError(null);
-        assessments.list(userId).then(rows => { if (alive) setRecords(chronologicalAssessments(rows, userId)); })
-            .catch(reason => { if (alive) setError(parseCommandError(reason).message); });
-        return () => { alive = false; };
+        let alive = true;
+        setRecords(null);
+        setError(null);
+
+        assessments.list(userId)
+            .then(rows => {
+                if (alive) {
+                    setRecords(chronologicalAssessments(rows, userId));
+                }
+            })
+            .catch(reason => {
+                if (alive) setError(parseCommandError(reason).message);
+            });
+
+        return () => {
+            alive = false;
+        };
     }, [userId, revision, retry]);
+
     const latest = records?.[records.length - 1];
-    return <div>
-        <button type="button" onClick={onStart}>Take French proficiency test</button>
-        {error ? <p role="alert">{error} <button type="button" onClick={() => setRetry(n => n+1)}>Retry loading assessments</button></p>
-            : records === null ? <p role="status">Loading French assessments…</p> : <>
-                {latest ? <div className="assessment-trend-latest"><h4>Latest completed assessment</h4>
-                    <AssessmentResults record={latest} compact />
-                </div> : <p>No French assessment completed yet. Take a test to begin your history.</p>}
-                <AssessmentTimeline records={records} />
-            </>}
-    </div>;
+    const overallLevel = latest?.results.overall.status === "available"
+        ? latest.results.overall.category
+        : null;
+
+    return (
+        <div className="profile-proficiency">
+            {error ? (
+                <div className="profile-proficiency-message" role="alert">
+                    <p>{error}</p>
+                    <button
+                        type="button"
+                        onClick={() => setRetry(value => value + 1)}>
+                        Retry loading assessments
+                    </button>
+                </div>
+            ) : records === null ? (
+                <p className="profile-proficiency-message" role="status">
+                    Loading proficiency…
+                </p>
+            ) : latest ? (
+                <>
+                    <div className="profile-proficiency-card">
+                        <p className="profile-proficiency-eyebrow">
+                            Latest Assessment
+                        </p>
+
+                        <dl className="profile-proficiency-overall">
+                            <dt>Overall Proficiency</dt>
+                            <dd
+                                className={
+                                    overallLevel
+                                        ? undefined
+                                        : "profile-proficiency-unavailable"
+                                }>
+                                {overallLevel ?? "Not established"}
+                            </dd>
+                        </dl>
+
+                        <dl className="profile-proficiency-skills">
+                            {TREND_SKILLS.map(skill => {
+                                const result = latest.results.skills[skill];
+                                const level =
+                                    result?.placementStatus === "established"
+                                        ? result.category
+                                        : null;
+
+                                return (
+                                    <div key={skill}>
+                                        <dt>{skillName(skill)}</dt>
+                                        <dd
+                                            className={
+                                                level
+                                                    ? undefined
+                                                    : "profile-proficiency-unavailable"
+                                            }>
+                                            {level ?? (
+                                                result
+                                                    ? "Not established"
+                                                    : "Not assessed"
+                                            )}
+                                        </dd>
+                                    </div>
+                                );
+                            })}
+                        </dl>
+
+                        <p className="profile-proficiency-date">
+                            Assessed{" "}
+                            <time dateTime={latest.completedAt}>
+                                {new Date(latest.completedAt).toLocaleDateString(
+                                    undefined,
+                                    {
+                                        month: "long",
+                                        day: "numeric",
+                                        year: "numeric",
+                                    },
+                                )}
+                            </time>
+                        </p>
+
+                        <p className="profile-proficiency-caption">
+                            Estimated levels from your latest completed test.
+                        </p>
+                    </div>
+
+                    <div className="profile-proficiency-actions">
+                        <button
+                            type="button"
+                            className="profile-proficiency-start"
+                            onClick={onStart}>
+                            Take another assessment
+                        </button>
+                    </div>
+
+                    <details
+                        className="profile-proficiency-advanced"
+                        key={latest.id}>
+                        <summary>Advanced proficiency info</summary>
+
+                        <div className="profile-proficiency-advanced-content">
+                            <p className="profile-proficiency-advanced-intro">
+                                Explore your assessment history, progress,
+                                scoring details, and previous answers.
+                            </p>
+
+                            <AssessmentTimeline records={records} />
+                        </div>
+                    </details>
+                </>
+            ) : (
+                <div className="profile-proficiency-empty">
+                    <h4>Discover your starting point</h4>
+                    <p>
+                        Complete an assessment to see your overall level
+                        and your reading, vocabulary, and grammar levels here.
+                    </p>
+                    <button
+                        type="button"
+                        className="profile-proficiency-start"
+                        onClick={onStart}>
+                        Take Proficiency Test
+                    </button>
+                </div>
+            )}
+        </div>
+    );
 }

@@ -581,7 +581,7 @@ function ProfileMenu({ user, onSaved, onClose, historyRequest, assessmentOpen }:
                 )}
             </form>
             <section className="settings-section assessment-profile-history" aria-labelledby="profile-assessment-history-title">
-                <h3 id="profile-assessment-history-title" ref={historyHeading} tabIndex={-1}>French assessment history</h3>
+                <h3 id="profile-assessment-history-title" ref={historyHeading} tabIndex={-1}>Assessment History</h3>
                 <ProfileAssessmentHistory key={user.id} userId={user.id} revision={assessmentRevision} onStart={openAssessment} />
             </section>
         </SettingsModal>
