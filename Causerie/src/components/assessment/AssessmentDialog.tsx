@@ -222,15 +222,45 @@ export function AssessmentDialog({ userId, onClose, onCompleted }: {
             nextAnswers[item.id] === TOO_DIFFICULT_ANSWER ? [] : [index]
         );
 
-        // Advance to the next available category. If this was the final category, return to an unanswered question elsewhere in the block
+        setAnswers(nextAnswers);
+        setPendingSkipSkill(null);
+
+        const blockComplete = active.block.items.every(
+            item => Boolean(nextAnswers[item.id])
+        );
+
+        if (blockComplete) {
+            // Keep the retry button accessible if saving fails.
+            setCurrentQuestionIndex(
+                remainingIndices[remainingIndices.length - 1]
+                ?? questionCount - 1
+            );
+
+            frozenSubmission.current = {
+                blockIndex: active.block.index,
+                answers: { ...nextAnswers },
+            };
+
+            setRetryingSubmission(true);
+            const submission = frozenSubmission.current;
+
+            void run(() => assessments.submit(
+                userId,
+                id,
+                submission.blockIndex,
+                submission.answers,
+            ));
+            return;
+        }
+
         const destination =
             remainingIndices.find(index => index > currentQuestionIndex)
-            ?? remainingIndices.find(index => !nextAnswers[active.block.items[index].id])
+            ?? remainingIndices.find(
+                index => !nextAnswers[active.block.items[index].id]
+            )
             ?? remainingIndices[remainingIndices.length - 1]
             ?? questionCount - 1;
 
-        setAnswers(nextAnswers);
-        setPendingSkipSkill(null);
         setCurrentQuestionIndex(destination);
     }
 
