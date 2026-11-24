@@ -28,6 +28,14 @@ interface Props {
 // max input length.
 const MAX_LENGTH = 1000;
 
+// for replaced undo/redo functionality
+interface DraftSnapshot {
+    text: string;
+    start: number;
+    end: number;
+}
+
+
 export function MessageComposer({ userId, threadId, language, disabled, canCancel, cancelling, onSend, onCancel, draftKey }: Props) {
     const [draft, setDraft] = useStoredText(draftKey);
     const [restoring, setRestoring] = useState(false);
@@ -65,11 +73,107 @@ export function MessageComposer({ userId, threadId, language, disabled, canCance
     }, []);
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const draftHistory = useRef<{
+        current: DraftSnapshot;
+        undo: DraftSnapshot[];
+        redo: DraftSnapshot[];
+    }>({
+        current: {
+            text: draft,
+            start: draft.length,
+            end: draft.length,
+        },
+        undo: [],
+        redo: [],
+    });
+
+    const replayingDraft = useRef(false);
+
+    function rememberSelection() {
+        const textarea = textareaRef.current;
+        const current = draftHistory.current.current;
+
+        if (!textarea || textarea.value !== current.text) return;
+
+        current.start = textarea.selectionStart;
+        current.end = textarea.selectionEnd;
+    }
+
+    function recordDraft(next: string) {
+        const history = draftHistory.current;
+
+        if (!replayingDraft.current && next !== history.current.text) {
+            history.undo.push({ ...history.current });
+
+            // Bound memory usage during long editing sessions.
+            if (history.undo.length > 200) history.undo.shift();
+
+            history.redo = [];
+
+            const textarea = textareaRef.current;
+            const matchesInput = textarea?.value === next;
+
+            history.current = {
+                text: next,
+                start: matchesInput ? textarea.selectionStart : next.length,
+                end: matchesInput ? textarea.selectionEnd : next.length,
+            };
+        }
+
+        setDraft(next);
+    }
+
+    function resetDraftHistory(text: string) {
+        draftHistory.current = {
+            current: {
+                text,
+                start: text.length,
+                end: text.length,
+            },
+            undo: [],
+            redo: [],
+        };
+    }
+
+    function moveDraftHistory(direction: "undo" | "redo") {
+        rememberSelection();
+
+        const history = draftHistory.current;
+        const source = history[direction];
+        const target = source.pop();
+
+        if (!target) return;
+
+        const destination = direction === "undo" ? history.redo : history.undo;
+        destination.push({ ...history.current });
+
+        replayingDraft.current = true;
+
+        try {
+            // Use the spelling pipeline so annotations and stored drafts
+            // stay synchronized with the restored text.
+            spelling.change(target.text);
+            history.current = { ...target };
+            setLanguageError(null);
+        } finally {
+            replayingDraft.current = false;
+        }
+
+        requestAnimationFrame(() => {
+            const textarea = textareaRef.current;
+
+            // Don't move the caret if another edit has happened meanwhile.
+            if (!textarea || textarea.value !== target.text) return;
+
+            textarea.setSelectionRange(target.start, target.end);
+        });
+    }
+
     const cancelLock = useRef(false);
     const id = useId();
 
     const spelling = useInlineSpelling({
-        userId, language, text: draft, onChange: setDraft, maxLength: MAX_LENGTH,
+        userId, language, text: draft, onChange: recordDraft, maxLength: MAX_LENGTH,
     });
     const busy = canCancel || cancelling || restoring;
     const canSend =
@@ -133,6 +237,7 @@ export function MessageComposer({ userId, threadId, language, disabled, canCance
             // Both accepted and uncertain learner messages may proceed
             if (current.onSend(submittedDraft)) {
                 spelling.change("");
+                resetDraftHistory("");
             }
         } catch (reason) {
             if (mounted.current) {
@@ -159,6 +264,7 @@ export function MessageComposer({ userId, threadId, language, disabled, canCance
 
             if (restored !== null) {
                 spelling.change(restored);
+                resetDraftHistory(restored);
 
                 requestAnimationFrame(() => {
                     const textarea = textareaRef.current;
@@ -178,11 +284,31 @@ export function MessageComposer({ userId, threadId, language, disabled, canCance
     }
 
     function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-        if (
-            event.key === "Enter" &&
-            !event.shiftKey &&
-            !event.nativeEvent.isComposing
-        ) {
+        if (event.nativeEvent.isComposing) return;
+
+        const key = event.key.toLowerCase();
+        const modifier = event.ctrlKey || event.metaKey;
+
+        const isUndo = modifier && !event.altKey && key === "z" && !event.shiftKey;
+        const isRedo = modifier && !event.altKey && (
+            (key === "z" && event.shiftKey) ||
+            (key === "y" && !event.shiftKey)
+        );
+
+        if (isUndo || isRedo) {
+            // Prevent the webview's separate history from also running
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (event.currentTarget.readOnly) return;
+
+            moveDraftHistory(isRedo ? "redo" : "undo");
+            return;
+        }
+
+        rememberSelection();
+
+        if (event.key === "Enter" && !event.shiftKey) {
             event.preventDefault();
 
             // Enter never accidentally activates cancellation
@@ -217,6 +343,7 @@ export function MessageComposer({ userId, threadId, language, disabled, canCance
                 issues={spelling.issues}
                 onReplace={spelling.replace}
                 onAdd={spelling.add}
+                onSelect={rememberSelection}
             />
             <p id={`${id}-spelling`} className="spelling-status" role="status">{spelling.status}</p>
             {spelling.error && <p className="spelling-error" role="alert">{spelling.error}</p>}

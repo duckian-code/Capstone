@@ -17,6 +17,7 @@ interface Props {
     onKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
     onReplace: (issue: SpellingIssue, suggestion: string) => void;
     onAdd: (issue: SpellingIssue) => Promise<boolean>;
+    onSelect?: () => void;
 }
 interface OpenWord { issue: SpellingIssue; rect: DOMRect }
 
@@ -100,7 +101,9 @@ export function SpellingTextarea(props: Props) {
                         return;
                     }
                     props.onKeyDown(event);
-                }}/>
+                }}
+                onSelect={props.onSelect}
+            />
             <div ref={mirror} className="spelling-mirror" aria-hidden="true">
                 {segments}{props.value.slice(cursor)}{"\u200b"}
             </div>
