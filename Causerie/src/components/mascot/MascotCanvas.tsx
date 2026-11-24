@@ -1,14 +1,15 @@
 // WebKitGTK (the Linux Tauri WebView) does not reliably upload textures decoded
 // through Pixi's worker/createImageBitmap path. Use the browser Image loader instead.
+import {useEffect, useRef} from "react";
+import type { MascotState } from "../../state/mascotMachine.ts";
 import {
     AnimatedSprite,
     Application,
     Assets,
+    Graphics,
     Rectangle,
     Texture,
 } from "pixi.js";
-import {useEffect, useRef} from "react";
-import type { MascotState } from "../../state/mascotMachine.ts";
 
 Assets.setPreferences({
     preferWorkers: false,
@@ -181,7 +182,27 @@ export function MascotCanvas({ state, onError }: Props ) {
             });
 
             sprite.anchor.set(0.5);
+
+            // Add the surface first so Dot renders in front of it
+            const surface = new Graphics();
+            app.stage.addChild(surface);
             app.stage.addChild(sprite);
+
+            function surfaceColors() {
+                const styles = getComputedStyle(host!);
+
+                function color(variable: string, fallback: string) {
+                    return styles.getPropertyValue(variable).trim() || fallback;
+                }
+
+                return {
+                    top: color("--color-surface-raised", "#524a51"),
+                    front: color("--color-sidebar", "#403b40"),
+                    border: color("--color-border", "#776971"),
+                    highlight: color("--color-accent-warm", "#f1c899"),
+                    shadow: color("--color-bg", "#353338"),
+                };
+            }
 
             // Use this application's ticker so animation stops with the renderer
             app.ticker.add((ticker) => {
@@ -189,6 +210,92 @@ export function MascotCanvas({ state, onError }: Props ) {
             });
 
             sprite.play();
+
+            // Coordinates within each 192 × 192 animation frame
+            // Initial alignment estimate from the current sprite sheets
+            const STANDING_FOOT_Y = 186;
+            const SITTING_SEAT_Y = 126;
+            const SITTING_OFFSET_Y = STANDING_FOOT_Y - SITTING_SEAT_Y;
+
+            // RENDER SHELF - OPTION A
+            // function drawSurface() {
+            //     const colors = surfaceColors();
+            //     surface.clear();
+            //
+            //     // Soft-looking shadow beneath the shelf.
+            //     surface
+            //         .ellipse(0, 15, 65, 5)
+            //         .fill({ color: colors.shadow, alpha: 0.3 });
+            //
+            //     // Front face adds thickness.
+            //     surface
+            //         .roundRect(-68, 0, 136, 10, 3)
+            //         .fill(colors.front)
+            //         .stroke({
+            //             color: colors.border,
+            //             width: 1,
+            //             alpha: 0.8,
+            //         });
+            //
+            //     // Shallow top surface meets the mascot's contact line.
+            //     surface
+            //         .roundRect(-70, -3, 140, 5, 2)
+            //         .fill(colors.top)
+            //         .stroke({
+            //             color: colors.border,
+            //             width: 1,
+            //         });
+            //
+            //     // Warm edge detail.
+            //     surface
+            //         .moveTo(-65, 0)
+            //         .lineTo(65, 0)
+            //         .stroke({
+            //             color: colors.highlight,
+            //             width: 1,
+            //             alpha: 0.65,
+            //         });
+            // }
+
+            // RENDER PLATFORM - OPTION B
+            function drawSurface() {
+                const colors = surfaceColors();
+                surface.clear();
+
+                // Grounding shadow beneath the platform.
+                surface
+                    .ellipse(0, 15, 64, 7)
+                    .fill({ color: colors.shadow, alpha: 0.3 });
+
+                // Lower ellipse creates the platform's depth.
+                surface
+                    .ellipse(0, 6, 66, 11)
+                    .fill(colors.front)
+                    .stroke({
+                        color: colors.border,
+                        width: 1,
+                        alpha: 0.8,
+                    });
+
+                // Top surface, centered on the shared contact height.
+                surface
+                    .ellipse(0, 0, 66, 11)
+                    .fill(colors.top)
+                    .stroke({
+                        color: colors.highlight,
+                        width: 1,
+                        alpha: 0.55,
+                    });
+
+                // Subtle inset detail.
+                surface
+                    .ellipse(0, -1, 57, 7)
+                    .stroke({
+                        color: colors.border,
+                        width: 0.75,
+                        alpha: 0.45,
+                    });
+            }
 
             function resize() {
                 if (disposed) return;
@@ -200,14 +307,32 @@ export function MascotCanvas({ state, onError }: Props ) {
 
                 app.renderer.resize(width, height);
 
-                sprite.position.set(width / 2, height / 2);
+                const frameWidth = sprite.texture.width;
+                const frameHeight = sprite.texture.height;
+
+                // Reserve space for the seated pose's hanging legs
+                // Use the same scale for every pose to avoid size jumps
+                const layoutHeight = frameHeight + SITTING_OFFSET_Y;
 
                 const scale = Math.min(
-                    (width * 0.7) / sprite.texture.width,
-                    (height * 0.8) / sprite.texture.height
+                    (width * 0.85) / frameWidth,
+                    (height * 0.98) / layoutHeight,
                 );
 
+                const layoutTop = (height - layoutHeight * scale) / 2;
+                const poseOffset = activeState === "idle" ? SITTING_OFFSET_Y : 0;
+
                 sprite.scale.set(scale);
+                sprite.position.set(
+                    width / 2,
+                    layoutTop + (frameHeight / 2 + poseOffset) * scale,
+                );
+                surface.position.set(
+                    width / 2,
+                    layoutTop + STANDING_FOOT_Y * scale,
+                );
+                surface.scale.set(scale);
+                drawSurface();
             }
 
             updateSpriteRef.current = (nextState) => {

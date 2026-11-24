@@ -1591,3 +1591,27 @@ button:disabled,
     outline: 2px solid var(--color-accent-primary);
     outline-offset: 3px;
 }
+
+.cw .cw-stage {
+    padding-bottom: .25rem;
+}
+
+@media (max-width: 1000px) {
+    .cw .cw-stage {
+        grid-template-rows:
+            auto
+            minmax(130px, 1.2fr)
+            minmax(170px, 1fr);
+        gap: .75rem;
+        padding-bottom: .25rem;
+    }
+
+    .cw .cw-stage > .cw-mascot {
+        width: min(100%, 400px);
+        height: 100%;
+    }
+
+    .cw .mascot-speech-scroll {
+        padding: .75rem .85rem;
+    }
+}
