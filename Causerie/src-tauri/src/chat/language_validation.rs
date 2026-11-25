@@ -177,6 +177,57 @@ fn output_decision(raw: &str, target: Language) -> Decision {
     Decision::Accepted
 }
 
+fn teacher_output_decision(raw: &str, target: Language) -> Decision {
+    let text = clean(raw);
+
+    // The complete answer must confidently match the target language
+    match confident_language(&text) {
+        Some(language) if language == target => {}
+        Some(_) => return Decision::Rejected,
+        None => return Decision::Uncertain,
+    }
+
+    // Short examples, names, and isolated vocabulary are unreliable language-detection samples. Check substantial fragments instead.
+    for span in detector().detect_multiple_languages_of(&text) {
+        let fragment = &text[span.start_index()..span.end_index()];
+
+        if word_count(fragment) >= 4
+            && confident_language(fragment)
+            .is_some_and(|language| language != target)
+        {
+            return Decision::Rejected;
+        }
+    }
+
+    // Catch clear foreign-language sentences, but don't reject an otherwise confidently classified answer for an uncertain example.
+    for sentence in text.split(['.', '!', '?', '\n', ';']) {
+        if word_count(sentence) >= 4
+            && confident_language(sentence)
+            .is_some_and(|language| language != target)
+        {
+            return Decision::Rejected;
+        }
+    }
+
+    Decision::Accepted
+}
+
+pub(crate) async fn assess_teacher_output(
+    text: &str,
+    language: &str,
+) -> Result<Decision, CommandError> {
+    let target = target_language(language)?;
+    let text = text.to_owned();
+
+    tauri::async_runtime::spawn_blocking(move || {
+        teacher_output_decision(&text, target)
+    })
+        .await
+        .map_err(|_| {
+            CommandError::app("Teacher language validation could not finish.")
+        })
+}
+
 async fn assess(
     text: &str,
     language: &str,
@@ -284,4 +335,59 @@ pub async fn validate_user_language(
     }
 
     assess_input(&text, &current).await
+}
+
+#[cfg(test)]
+mod teacher_output_tests {
+    use super::*;
+
+    #[test]
+    fn accepts_english_teaching_with_short_examples() {
+        let answer = "\
+Start with a greeting, say your name, and mention something about yourself.
+For example:
+Hello!
+My name is Alex.
+I enjoy reading and learning new languages.
+For a formal introduction, explain why you are writing and keep it brief.";
+
+        assert_eq!(
+            teacher_output_decision(answer, Language::English),
+            Decision::Accepted,
+        );
+    }
+
+    #[test]
+    fn rejects_a_french_answer_for_an_english_learner() {
+        let answer = "\
+Pour vous présenter, commencez par une salutation et indiquez votre nom.
+Expliquez ensuite pourquoi vous écrivez et présentez brièvement vos intérêts.";
+
+        assert_eq!(
+            teacher_output_decision(answer, Language::English),
+            Decision::Rejected,
+        );
+    }
+
+    #[test]
+    fn rejects_a_substantial_foreign_sentence() {
+        let answer = "\
+Begin your introduction with a greeting and your name.
+Explain why you are writing and mention one relevant interest.
+Je voudrais apprendre cette langue pour communiquer avec mes amis.
+Keep the final sentence short and friendly.";
+
+        assert_eq!(
+            teacher_output_decision(answer, Language::English),
+            Decision::Rejected,
+        );
+    }
+
+    #[test]
+    fn does_not_accept_empty_output() {
+        assert_eq!(
+            teacher_output_decision("", Language::English),
+            Decision::Uncertain,
+        );
+    }
 }
